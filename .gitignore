@@ -1,17 +1,5 @@
-# Emacs compiled files
-emacs/.emacs.d/*.eln
-emacs/.emacs.d/*.elc
-emacs/.emacs.d/*.el
-
-# Runtime / generated files
-emacs/.emacs.d/bookmarks~
-emacs/.emacs.d/eshell/
-emacs/.emacs.d/auto-save-list/
-emacs/.emacs.d/eln-cache/
-emacs/.emacs.d/history
-emacs/.emacs.d/recentf
-emacs/.emacs.d/backup-files
-emacs/.emacs.d/elpa
+# Emacs runtime files
+emacs/.emacs.d/
 
 # Tmux plugins
 tmux/.tmux/plugins/
