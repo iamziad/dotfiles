@@ -40,6 +40,11 @@
 ;; Open files in read-only mode by default
 (add-hook 'find-file-hook #'read-only-mode)
 
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
+
+(setq switch-to-buffer-obey-display-actions t)
+
 ;;; ============================================================
 ;;; BACKUP & AUTO-SAVE
 ;;; ============================================================
@@ -68,6 +73,13 @@
 
 (global-whitespace-mode 1)
 (setq whitespace-style '(face trailing tabs))
+
+(dolist (hook '(dired-mode-hook
+                magit-mode-hook
+                magit-status-mode-hook
+                magit-log-mode-hook))
+  (add-hook hook (lambda ()
+                   (whitespace-mode 0))))
 
 ;;; ============================================================
 ;;; UI CHROME
@@ -290,9 +302,6 @@
 
 ;; Terminal
 (use-package vterm)
-(add-hook 'vterm-mode-hook (lambda () 
-                            (display-line-numbers-mode nil)
-                            (display-fill-column-indicator-mode nil)))
 
 ;; Drag lines/regions up and down
 (use-package drag-stuff
@@ -303,6 +312,11 @@
 (use-package anzu
   :config
   (global-anzu-mode 1))
+
+(with-eval-after-load 'anzu
+  (set-face-attribute 'anzu-mode-line nil
+                      :foreground (face-foreground 'font-lock-string-face)
+                      :weight 'bold))
 
 ;; Markdown support
 (use-package markdown-mode
@@ -326,15 +340,14 @@
   (vertico-resize t)
   (vertico-cycle  t))
 
-;; Recursive minibuffers + M-x filtering
 (use-package emacs
   :custom
   (enable-recursive-minibuffers    t)
   (read-extended-command-predicate #'command-completion-default-include-p))
 
 ;; Annotations in the minibuffer
-(use-package marginalia
-  :init (marginalia-mode))
+;; (use-package marginalia
+;;   :init (marginalia-mode))
 
 ;; Fuzzy / out-of-order matching
 (use-package orderless
@@ -354,42 +367,14 @@
   :ensure t
   :config
   (global-diff-hl-mode 1)
+  (diff-hl-flydiff-mode 1)
+
   (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
-
-;; doom-modeline
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :custom
-  ;; General
-  (doom-modeline-height 28)
-  (doom-modeline-bar-width 4)
-  (doom-modeline-icon t)
-  (doom-modeline-major-mode-icon t)
-  (doom-modeline-major-mode-color-icon t)
-  (doom-modeline-minor-modes nil)
-  (doom-modeline-percent-position nil)
-  (doom-modeline-position-line-format '("L%l"))
-  (doom-modeline-buffer-encoding nil)
-
-  ;; Buffer
-  (doom-modeline-buffer-file-name-style 'truncate-upto-project)
-  (doom-modeline-buffer-modification-icon t)
-  (doom-modeline-buffer-state-icon t)
-
-  ;; Git
-  (doom-modeline-vcs-max-length 20)
-  (doom-modeline-github nil))
-
 
 ;;; ============================================================
 ;;; KEYBINDINGS
 ;;; ============================================================
-
-;; Selection
-(global-set-key (kbd "C-v")   'set-mark-command)
-(global-set-key (kbd "M-v")   'mark-whole-line)
 
 ;; Editing
 (global-set-key (kbd "M-k")   'kill-line)
@@ -410,7 +395,6 @@
 
 (global-set-key (kbd "M-b") 'my/man-at-point)
 
-
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
 ;;; ============================================================
@@ -421,8 +405,6 @@
 ;; Files
 (define-key my-leader-map (kbd "r")   'recentf-open-files)
 (define-key my-leader-map (kbd "g f") 'ffap)
-(define-key my-leader-map (kbd "d r") 'revert-buffer)
-(define-key my-leader-map (kbd "C-z") #'read-only-mode)
 
 ;; Terminal
 (define-key my-leader-map (kbd "t h") #'my/vterm-horizontal)
@@ -430,7 +412,7 @@
 
 ;; Compile
 (define-key my-leader-map (kbd "c c") #'compile)
-(define-key my-leader-map (kbd "c r") #'my/compile-root)
+; (define-key my-leader-map (kbd "c r") #'my/compile-root)
 
 ;; Window navigation
 (define-key my-leader-map (kbd "h") #'windmove-left)
@@ -443,6 +425,58 @@
 (define-key my-leader-map (kbd "J") #'windmove-swap-states-down)
 (define-key my-leader-map (kbd "K") #'windmove-swap-states-up)
 (define-key my-leader-map (kbd "L") #'windmove-swap-states-right)
+
+;; Magit
+(define-key my-leader-map (kbd "g l") 'magit-list-repositories)
+
+;; diff-hl
+(define-key my-leader-map (kbd "C-u") 'diff-hl-revert-hunk)
+(define-key my-leader-map (kbd "C-'") 'diff-hl-next-hunk)
+(define-key my-leader-map (kbd "C-;") 'diff-hl-previous-hunk)
+(define-key my-leader-map (kbd "C-s") 'diff-hl-show-hunk)
+
+;;; ============================================================
+;;; MAGIT
+;;; ============================================================
+
+(define-prefix-command 'my-git-map)
+(define-key my-leader-map (kbd "g") 'my-git-map)
+
+(setq magit-repository-directories
+      '(("~/dotfiles" . 0)
+        ("~/Programming" . 1)))
+
+
+(defun my-magit-diff-visit-file-reuse-window (orig-fn &rest args)
+  "If the file is already open in another window, reuse it."
+  (let ((display-buffer-overriding-action
+         '((display-buffer-reuse-window display-buffer-same-window))))
+    (apply orig-fn args)))
+
+
+(with-eval-after-load 'magit
+  (advice-add 'magit-diff-visit-file :around #'my-magit-diff-visit-file-reuse-window)
+  (advice-add 'magit-diff-visit-worktree-file :around #'my-magit-diff-visit-file-reuse-window)
+
+  ;; Leader bindings
+  (define-key my-git-map (kbd "s") #'magit-status)
+  (define-key my-git-map (kbd "b") #'magit-branch)
+  (define-key my-git-map (kbd "c") #'magit-commit)
+  (define-key my-git-map (kbd "p") #'magit-push)
+  (define-key my-git-map (kbd "P") #'magit-pull)
+  (define-key my-git-map (kbd "f") #'magit-fetch)
+  (define-key my-git-map (kbd "l") #'magit-log)
+  (define-key my-git-map (kbd "r") #'magit-rebase)
+  (define-key my-git-map (kbd "m") #'magit-dispatch)
+  (define-key my-git-map (kbd "z") #'magit-stash)
+  (define-key my-git-map (kbd "X") #'magit-reset)
+  (define-key my-git-map (kbd "w") #'magit-worktree)
+  (define-key my-git-map (kbd "g") #'magit-refresh)
+
+  ;; Navigation & Conflicts
+  (define-key my-leader-map (kbd "C-,") #'magit-section-backward)
+  (define-key my-leader-map (kbd "C-.") #'magit-section-forward)
+  (define-key magit-mode-map (kbd "M-k") nil))
 
 ;;; ============================================================
 ;;; LOAD PATH & LOCAL MODES
