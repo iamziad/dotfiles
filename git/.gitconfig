@@ -1,0 +1,10 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Ziad Ahmed
+	email = dev.ziadahmed@gmail.com
+[core]
+	editor = emacsclient -c -a vim
+[init]
+	defaultBranch = main
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit

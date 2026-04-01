@@ -1,0 +1,29 @@
+
+;; ----- smex-history -----
+(
+ package-delete
+ eval-buffer
+ recompile
+ compile
+ describe-char
+ man
+ vterm
+)
+
+;; ----- smex-data -----
+(
+ (eval-buffer . 32)
+ (customize . 1)
+ (display-fill-column-indicator-mode . 2)
+ (treesit-install-language-grammar . 2)
+ (mood-line-mode . 7)
+ (package-delete . 5)
+ (package-list-packages . 3)
+ (telephone-line-mode . 7)
+ (doom-modeline-mode . 4)
+ (vterm . 5)
+ (man . 1)
+ (describe-char . 1)
+ (compile . 1)
+ (recompile . 9)
+)

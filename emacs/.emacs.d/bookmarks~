@@ -1,0 +1,29 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("i3config"
+ (filename . "~/.config/i3/config")
+ (front-context-string . "\n# client.focuse")
+ (rear-context-string . "jaVu Sans Mono 9")
+ (position . 651)
+ (last-modified 27064 39511 181992 238000))
+(".emacs"
+ (filename . "~/.emacs")
+ (front-context-string . "(set-face-attrib")
+ (rear-context-string . "rs-mode 0))))\n\n\n")
+ (position . 1049)
+ (last-modified 27061 24584 572928 954000))
+("plan.txt"
+ (filename . "~/Notes/plan.txt")
+ (front-context-string . "\n1 hour java\n1 h")
+ (rear-context-string . "ur CA\n1 hour git")
+ (position . 33)
+ (last-modified 27060 62752 229753 387000))
+("emacs-cheatsheet.txt"
+ (filename . "~/Notes/emacs-cheatsheet.txt")
+ (front-context-string . "\nM-v => previous")
+ (rear-context-string . "C-v => next page")
+ (position . 777)
+ (last-modified 27059 23186 114258 528000))
+)

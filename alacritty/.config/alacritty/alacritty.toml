@@ -1,0 +1,89 @@
+# Alacritty Configuration — Kanagawa Dragon
+# Converted from Kitty config
+
+[general]
+live_config_reload = true
+
+[env]
+TERM = "xterm-256color"
+
+[window]
+padding = { x = 2, y = 2 }
+opacity = 0.90
+# decorations = "None"  # Uncomment to hide window decorations
+
+[scrolling]
+history = 5000
+
+[font]
+size = 11.5
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+# Note: Alacritty does not support ligatures natively.
+# For ligature support, consider using WezTerm or Kitty.
+
+[cursor]
+style = { shape = "Block", blinking = "On" }
+blink_interval = 500
+unfocused_hollow = true
+
+# Note: cursor_trail is not supported in Alacritty.
+
+[bell]
+animation = "EaseOutExpo"
+duration = 0
+
+# [colors.primary]
+# background = "#181616"
+# foreground = "#c5c9c5"
+
+# [colors.cursor]
+# text   = "#181616"
+# cursor = "#c8c093"
+
+# [colors.selection]
+# text       = "#c5c9c5"
+# background = "#2d4f67"
+
+# [colors.normal]
+# black   = "#0d0c0c"
+# red     = "#c4746e"
+# green   = "#8a9a7b"
+# yellow  = "#c4b28a"
+# blue    = "#8ba4b0"
+# magenta = "#a292a3"
+# cyan    = "#8ea4a2"
+# white   = "#c8c093"
+
+# [colors.bright]
+# black   = "#a6a69c"
+# red     = "#e46876"
+# green   = "#87a987"
+# yellow  = "#e6c384"
+# blue    = "#7fb4ca"
+# magenta = "#938aa9"
+# cyan    = "#7aa89f"
+# white   = "#c5c9c5"
+
+# [colors.hints.start]
+# foreground = "#181616"
+# background = "#72a7c8"
+
+# [colors.hints.end]
+# foreground = "#181616"
+# background = "#727169"

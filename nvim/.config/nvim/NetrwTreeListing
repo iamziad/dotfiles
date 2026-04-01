@@ -1,0 +1,10 @@
+../
+nvim/
+| .git/
+| lua/
+| | config/
+| | plugins/
+| | | oil.lua
+| | ui/
+| init.lua
+| nvim-pack-lock.json
