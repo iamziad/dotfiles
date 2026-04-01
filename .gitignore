@@ -1,5 +1,6 @@
-# Emacs runtime files
+# Emacs runtime/backup files
 emacs/.emacs.d/
+*~
 
 # Tmux plugins
 tmux/.tmux/plugins/
