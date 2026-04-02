@@ -300,31 +300,25 @@
 ;;; PACKAGES
 ;;; ============================================================
 
-;; Terminal
 (use-package vterm)
 
-;; Drag lines/regions up and down
 (use-package drag-stuff
   :config
   (drag-stuff-global-mode 1))
 
-;; Show search match count in mode line
 (use-package anzu
   :config
-  (global-anzu-mode 1))
+  (global-anzu-mode 1)
+  (with-eval-after-load 'anzu
+    (set-face-attribute 'anzu-mode-line nil
+                        :foreground (face-foreground 'font-lock-type-face nil t)
+                        :weight 'bold)))
 
-(with-eval-after-load 'anzu
-  (set-face-attribute 'anzu-mode-line nil
-                      :foreground (face-foreground 'font-lock-string-face)
-                      :weight 'bold))
-
-;; Markdown support
 (use-package markdown-mode
   :mode ("\\.\\(md\\|markdown\\)$" . gfm-mode)
   :init
   (setq markdown-command "multimarkdown"))
 
-;; Jump to visible text
 (use-package avy
   :bind
   ("C-:"   . avy-goto-char)
@@ -333,7 +327,6 @@
   :custom
   (avy-all-windows nil))
 
-;; Vertical completion UI
 (use-package vertico
   :init (vertico-mode)
   :custom
@@ -345,11 +338,9 @@
   (enable-recursive-minibuffers    t)
   (read-extended-command-predicate #'command-completion-default-include-p))
 
-;; Annotations in the minibuffer
-;; (use-package marginalia
-;;   :init (marginalia-mode))
+(use-package marginalia
+  :init (marginalia-mode))
 
-;; Fuzzy / out-of-order matching
 (use-package orderless
   :custom
   (completion-styles              '(orderless basic))
@@ -395,6 +386,10 @@
 
 (global-set-key (kbd "M-b") 'my/man-at-point)
 
+;; C-c
+(global-set-key (kbd "C-c f") #'find-file-at-point)
+(global-set-key (kbd "C-c F") #'ffap-other-window)
+
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
 ;;; ============================================================
@@ -404,7 +399,6 @@
 
 ;; Files
 (define-key my-leader-map (kbd "r")   'recentf-open-files)
-(define-key my-leader-map (kbd "g f") 'ffap)
 
 ;; Terminal
 (define-key my-leader-map (kbd "t h") #'my/vterm-horizontal)

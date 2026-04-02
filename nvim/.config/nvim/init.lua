@@ -42,6 +42,7 @@ vim.pack.add({
 	"https://github.com/nvim-tree/nvim-web-devicons",
 	"https://github.com/rose-pine/neovim",
 	"https://github.com/morhetz/gruvbox.git",
+    "https://github.com/ellisonleao/gruvbox.nvim",
 
 	"https://www.github.com/echasnovski/mini.nvim",
 	"https://www.github.com/ibhagwan/fzf-lua",
@@ -81,6 +82,7 @@ local function packadd(name)
 end
 
 packadd("kanagawa.nvim")
+packadd("gruvbox.nvim")
 packadd("neovim")
 
 packadd("mini.nvim")
@@ -118,7 +120,7 @@ require("plugins.fzf-lua")
 require("plugins.gitsigns")
 require("plugins.oil")
 require("plugins.lsp")
-require("plugins.kanagawa")
+-- require("plugins.kanagawa")
 require("plugins.vim-tmux-navigator")
 require("plugins.tabout")
 require("plugins.flash")

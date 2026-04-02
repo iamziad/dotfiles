@@ -8,7 +8,7 @@ local opts = { noremap = true, silent = true }
 vim.visualbell = true
 
 opt.termguicolors = true
-cmd.colorscheme("habamax")
+cmd.colorscheme("gruvbox")
 vim.opt.termbidi = true
 vim.opt.showmode = false
 

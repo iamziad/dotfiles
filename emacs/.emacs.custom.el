@@ -72,9 +72,9 @@
      "e4a702e262c3e3501dfe25091621fe12cd63c7845221687e36a79e17cf3a67e0" \...all
      your theme hashes... default))
  '(package-selected-packages
-   '(anzu avy diff-hl doom-modeline doom-themes drag-stuff ido-vertical-mode
-          kanagawa-themes magit marginalia markdown-mode orderless smex
-          treesit-auto vertico vterm)))
+   '(anzu avy consult diff-hl doom-modeline doom-themes drag-stuff
+          ido-vertical-mode kanagawa-themes magit marginalia markdown-mode
+          orderless smartparens smex treesit-auto vertico vterm)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
