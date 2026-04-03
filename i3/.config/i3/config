@@ -9,6 +9,8 @@ set $mod Mod4
 exec --no-startup-id setxkbmap -layout us,ara -option "" -option grp:win_space_toggle
 exec_always setxkbmap -option ctrl:nocaps
 
+set $TERM /usr/bin/wezterm || /usr/bin/alacritty
+
 # ============================================================
 #  Monitors
 # ============================================================
@@ -24,15 +26,14 @@ exec --no-startup-id xrandr --output $pri --right-of $sec
 
 hide_edge_borders both
 font pango:DejaVu Sans Mono 10
-# client.focused          #444444   #222222   #0096cc   #2e9ef4   #285577
 
 bar {
     position top
 
     # output $pri
+    # height  25
     tray_output $pri
     tray_padding 4
-    # height  25
     font pango:JetBrainsMono Nerd Font 10
     status_command i3blocks
 
@@ -122,9 +123,6 @@ exec --no-startup-id nm-apple
 exec --no-startup-id redshift-gtk
 exec --no-startup-id flameshot
 
-# Mounted Disks
-# exec --no-startup-id sudo mount /dev/sda2 ~/MyDisk/
-
 # Daemons & scripts
 exec --no-startup-id dunst &
 exec --no-startup-id gromit-mpx &
@@ -205,8 +203,7 @@ bindsym $mod+f           fullscreen toggle
 bindsym $mod+s           layout stacking
 bindsym $mod+w           layout tabbed
 bindsym $mod+e           layout toggle split
-# bindsym $mod+Shift+space floating toggle
-bindsym $mod+Shift+f floating toggle
+bindsym $mod+Shift+f     floating toggle
 
 mode "resize" {
     bindsym j         resize shrink width  10 px or 10 ppt
@@ -249,10 +246,7 @@ bindsym XF86AudioPrev exec playerctl previous
 # ============================================================
 
 # Core
-# bindsym $mod+Return      exec ~/.local/kitty.app/bin/kitty
-# bindsym $mod+Return exec /usr/local/bin/st
-bindsym $mod+Return exec /usr/bin/alacritty
-
+bindsym $mod+Return      exec --no-startup-id $TERM
 bindsym $mod+d           exec --no-startup-id dmenu_run
 bindsym $mod+Shift+q     kill
 

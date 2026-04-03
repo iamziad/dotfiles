@@ -1,0 +1,47 @@
+format = """
+$directory$git_branch$git_status$python$nodejs$rust$character
+"""
+
+# =========================
+# Directory
+# =========================
+[directory]
+style = "bold #83a598"
+truncation_length = 3
+truncate_to_repo = true
+fish_style_pwd_dir_length = 1
+
+# =========================
+# Prompt symbol
+# =========================
+[character]
+success_symbol = "[>](bold #b8bb26)"
+error_symbol = "[>](bold #cc241d)"
+
+# =========================
+# Git
+# =========================
+[git_branch]
+symbol = ""
+style = "bold #fabd2f"
+format = "[$branch]($style) "
+
+[git_status]
+style = "#fb4934"
+format = "[$all_status$ahead_behind]($style) "
+
+conflicted = "!"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕"
+untracked = "?"
+stashed = "$"
+modified = "~"
+staged = "+"
+renamed = "»"
+deleted = "x"
+
+
+[python]
+symbol = ""
+pyenv_version_name = true
