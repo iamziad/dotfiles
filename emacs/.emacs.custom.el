@@ -72,12 +72,14 @@
      "e4a702e262c3e3501dfe25091621fe12cd63c7845221687e36a79e17cf3a67e0" \...all
      your theme hashes... default))
  '(package-selected-packages
-   '(anzu avy consult diff-hl doom-modeline doom-themes drag-stuff
-          ido-vertical-mode kanagawa-themes magit marginalia markdown-mode
-          orderless smartparens smex treesit-auto vertico vterm)))
+   '(anzu avy combobulate consult diff-hl doom-modeline doom-themes drag-stuff
+          expreg ido-vertical-mode kanagawa-themes magit marginalia
+          markdown-mode orderless smartparens smex treesit-auto vertico vterm))
+ '(package-vc-selected-packages
+   '((combobulate :url "https://github.com/mickeynp/combobulate"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(font-lock-preprocessor-face ((t (:foreground "#98C379")))))

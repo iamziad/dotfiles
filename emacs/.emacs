@@ -45,6 +45,14 @@
 
 (setq switch-to-buffer-obey-display-actions t)
 
+
+;;; ============================================================
+;;; GRUVBOX
+;;; ============================================================
+
+(custom-set-faces
+  '(font-lock-preprocessor-face ((t (:foreground "#98C379")))))
+
 ;;; ============================================================
 ;;; BACKUP & AUTO-SAVE
 ;;; ============================================================
@@ -359,9 +367,18 @@
   :config
   (global-diff-hl-mode 1)
   (diff-hl-flydiff-mode 1)
-
   (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+
+(use-package combobulate
+   :custom
+   (combobulate-key-prefix "C-c o")
+   :hook ((prog-mode . combobulate-mode))
+   :load-path ("~/Src/combobulate"))
+
+(use-package expreg
+  :bind (("C-=" . expreg-expand)
+         ("C--" . expreg-contract)))
 
 ;;; ============================================================
 ;;; KEYBINDINGS
@@ -421,7 +438,7 @@
 (define-key my-leader-map (kbd "L") #'windmove-swap-states-right)
 
 ;; Magit
-(define-key my-leader-map (kbd "g l") 'magit-list-repositories)
+(define-key my-leader-map (kbd "m l") 'magit-list-repositories)
 
 ;; diff-hl
 (define-key my-leader-map (kbd "C-u") 'diff-hl-revert-hunk)
@@ -493,6 +510,99 @@
 
 (my/require-directory (expand-file-name "modes" user-emacs-directory))
 (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/themes/"))
+
+
+;;; ============================================================
+;;; TREESITTER – CONFIGURATION & NAVIGATION (EMACS 30+)
+;;; ============================================================
+
+;; ── 1. Grammars sources ──────────────────────────────────────
+(setq treesit-language-source-alist
+      '((c           "https://github.com/tree-sitter/tree-sitter-c"          "v0.21.4")
+        (cpp         "https://github.com/tree-sitter/tree-sitter-cpp"        "v0.22.3")
+        (python      "https://github.com/tree-sitter/tree-sitter-python"     "v0.21.0")
+        (java        "https://github.com/tree-sitter/tree-sitter-java"       "v0.21.0")
+        (javascript  "https://github.com/tree-sitter/tree-sitter-javascript" "v0.21.4" "src")
+        (typescript  "https://github.com/tree-sitter/tree-sitter-typescript" "v0.21.2" "typescript/src")
+        (tsx         "https://github.com/tree-sitter/tree-sitter-typescript" "v0.21.2" "tsx/src")
+        (css         "https://github.com/tree-sitter/tree-sitter-css"        "v0.21.1")
+        (html        "https://github.com/tree-sitter/tree-sitter-html"       "v0.20.3")
+        (json        "https://github.com/tree-sitter/tree-sitter-json"       "v0.21.0")
+        (bash        "https://github.com/tree-sitter/tree-sitter-bash"       "v0.21.0")
+        (go          "https://github.com/tree-sitter/tree-sitter-go"         "v0.21.0" "src")
+        (gomod       "https://github.com/camdencheek/tree-sitter-go-mod"     "v1.0.1")
+        (yaml        "https://github.com/ikatyang/tree-sitter-yaml"          "v0.5.0")
+        (toml        "https://github.com/tree-sitter-grammars/tree-sitter-toml" "v0.6.0")
+        (cmake       "https://github.com/uyha/tree-sitter-cmake"             "v0.4.1")
+        (make        "https://github.com/tree-sitter-grammars/tree-sitter-make" "v1.1.0")
+        (asm         "https://github.com/RubixDev/tree-sitter-asm"           "main")
+        (dockerfile  "https://github.com/camdencheek/tree-sitter-dockerfile"  "v0.2.0")
+        (markdown    "https://github.com/ikatyang/tree-sitter-markdown"      "v0.7.1")))
+
+(defvar my/ts-lang-aliases
+  '((c++      . cpp)
+    (js       . javascript)
+    (makefile . make)
+    (sh       . bash))
+  "Map ts-mode lang names to grammar names.")
+
+;; ── 2. Settings & Auto-Install Logic ─────────────────────────
+
+(setq treesit-font-lock-level 4)
+
+(defvar my/ts-auto-install 't)
+
+(defun my/ts--maybe-install (lang)
+  (let ((lang-sym (if (stringp lang) (intern lang) lang)))
+    (unless (treesit-language-available-p lang-sym)
+      (pcase my/ts-auto-install
+        ('ask (when (y-or-n-p (format "Grammar for `%s` missing. Install? " lang-sym))
+                (treesit-install-language-grammar lang-sym)))
+        ('t (progn
+              (message "TreeSitter: installing grammar for %s..." lang-sym)
+              (treesit-install-language-grammar lang-sym)))))))
+
+;; ── 3. Mode Remapping ────────────────────────────────────────
+
+(defvar my/ts-mode-remap-alist
+  '((c-mode          . c-ts-mode)
+    (c++-mode        . c++-ts-mode)
+    (python-mode     . python-ts-mode)
+    (java-mode       . java-ts-mode)
+    (js-mode         . js-ts-mode)
+    (javascript-mode . js-ts-mode)
+    (tsx-mode        . tsx-ts-mode)
+    (go-mode         . go-ts-mode)
+    (css-mode        . css-ts-mode)
+    (sh-mode         . bash-ts-mode)
+    (makefile-mode   . makefile-ts-mode)
+    (asm-mode        . asm-ts-mode)
+    (dockerfile-mode . dockerfile-ts-mode)
+    (html-mode       . html-ts-mode)
+    (markdown-mode   . markdown-ts-mode)))
+
+(defun my/activate-ts-remaps ()
+  (dolist (pair my/ts-mode-remap-alist)
+    (let* ((ts-mode (cdr pair))
+            (lang (intern (replace-regexp-in-string "-ts-mode$" "" (symbol-name ts-mode))))
+            (lang (or (alist-get lang my/ts-lang-aliases) lang)))
+
+      (if (treesit-language-available-p lang)
+          (add-to-list 'major-mode-remap-alist pair)
+        (when (and (not (eq my/ts-auto-install nil))
+                   (my/ts--maybe-install lang))
+          (add-to-list 'major-mode-remap-alist pair))))))
+
+(add-hook 'after-init-hook #'my/activate-ts-remaps)
+
+;; ── 3.1 Explicit file associations ───────────────────────────
+
+(add-to-list 'auto-mode-alist '("\\.go\\'"             . go-ts-mode))
+(add-to-list 'auto-mode-alist '("go\\.mod\\'"          . go-mod-ts-mode))
+(add-to-list 'auto-mode-alist '("go\\.sum\\'"          . go-mod-ts-mode))
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'"  . cmake-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake\\'"          . cmake-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'"            . tsx-ts-mode))
 
 ;;; ============================================================
 ;;; FUNCTIONS
