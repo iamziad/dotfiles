@@ -1,5 +1,5 @@
 format = """
-$directory$git_branch$git_status$python$nodejs$rust$character
+$directory$git_branch$git_status$python$character
 """
 
 # =========================
@@ -15,7 +15,7 @@ fish_style_pwd_dir_length = 1
 # Prompt symbol
 # =========================
 [character]
-success_symbol = "[>](bold #b8bb26)"
+success_symbol = "[>](bold #b9bb26)"
 error_symbol = "[>](bold #cc241d)"
 
 # =========================
