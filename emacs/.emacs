@@ -437,7 +437,7 @@
 
 ;; Preventing deletion from overwriting kill-ring
 (global-set-key (kbd "DEL") 'my/delete-selected)
-(global-set-key (kbd "M-k") 'my/delete-line)
+(global-set-key (kbd "M-k") 'my/delete-smart-to-end)
 
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
@@ -520,6 +520,13 @@
   (define-key my-leader-map (kbd "C-,") #'magit-section-backward)
   (define-key my-leader-map (kbd "C-.") #'magit-section-forward)
   (define-key magit-mode-map (kbd "M-k") nil))
+
+(with-eval-after-load 'magit
+  (defun my/add-magit-repos-to-project ()
+    (dolist (repo (magit-list-repos))
+      (let ((default-directory (expand-file-name repo)))
+        (project-current t))))
+  (add-hook 'after-init-hook #'my/add-magit-repos-to-project))
 
 ;;; ============================================================
 ;;; LOAD PATH & LOCAL MODES
@@ -693,10 +700,6 @@
             (man topic)))
       (message "Nothing at point to look up."))))
 
-(defun my/delete-line ()
-  "Delete line without adding to kill ring."
-  (interactive)
-  (delete-region (point) (line-end-position)))
 
 (defun my/delete-selected ()
   "Delete selected region without adding to kill ring."
@@ -704,3 +707,10 @@
   (if (use-region-p)
       (delete-region (region-beginning) (region-end))
     (delete-char -1)))
+
+(defun my/delete-smart-to-end ()
+  "Delete to end of line, or delete newline if already at end of line."
+  (interactive)
+  (if (= (point) (line-end-position))
+      (unless (eobp)        (delete-char 1))
+    (delete-region (point) (line-end-position))))
