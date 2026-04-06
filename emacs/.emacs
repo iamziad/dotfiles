@@ -45,13 +45,29 @@
 
 (setq switch-to-buffer-obey-display-actions t)
 
-
 ;;; ============================================================
-;;; GRUVBOX
+;;; COLORTHEME
 ;;; ============================================================
 
-(custom-set-faces
-  '(font-lock-preprocessor-face ((t (:foreground "#98C379")))))
+;; Theme agnostic
+(defun my/remove-all-italics ()
+  (mapc (lambda (face)
+          (when (face-italic-p face)
+            (set-face-attribute face nil :slant 'normal)))
+        (face-list)))
+(add-hook 'after-init-hook #'my/remove-all-italics)
+
+;; Gruvbox
+(add-hook 'after-init-hook
+          (lambda ()
+            (set-face-attribute 'font-lock-preprocessor-face nil
+                                :foreground "#98C379"
+                                :slant 'normal
+                                :weight 'normal)
+            (set-face-attribute 'font-lock-function-name-face nil
+                                :foreground "#98C379"
+                                :slant 'normal
+                                :weight 'normal)))
 
 ;;; ============================================================
 ;;; BACKUP & AUTO-SAVE
@@ -316,11 +332,7 @@
 
 (use-package anzu
   :config
-  (global-anzu-mode 1)
-  (with-eval-after-load 'anzu
-    (set-face-attribute 'anzu-mode-line nil
-                        :foreground (face-foreground 'font-lock-type-face nil t)
-                        :weight 'bold)))
+  (global-anzu-mode 1))
 
 (use-package markdown-mode
   :mode ("\\.\\(md\\|markdown\\)$" . gfm-mode)
@@ -406,6 +418,10 @@
 ;; C-c
 (global-set-key (kbd "C-c f") #'find-file-at-point)
 (global-set-key (kbd "C-c F") #'ffap-other-window)
+
+;; Preventing deletion from overwriting kill-ring
+(global-set-key (kbd "DEL") 'my/delete-selected)
+(global-set-key (kbd "M-k") 'my/delete-line)
 
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
@@ -660,3 +676,15 @@
           (with-selected-window new-window
             (man topic)))
       (message "Nothing at point to look up."))))
+
+(defun my/delete-line ()
+  "Delete line without adding to kill ring."
+  (interactive)
+  (delete-region (point) (line-end-position)))
+
+(defun my/delete-selected ()
+  "Delete selected region without adding to kill ring."
+  (interactive)
+  (if (use-region-p)
+      (delete-region (region-beginning) (region-end))
+    (delete-char -1)))
