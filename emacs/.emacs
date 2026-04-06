@@ -81,15 +81,31 @@
 ;;; INDENTATION
 ;;; ============================================================
 
-(setq-default indent-tabs-mode nil
-              tab-width        4
-              standard-indent  4
-              c-basic-offset   4)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default standard-indent 4)
 
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (setq indent-tabs-mode nil
-                  tab-width 4)))
+(defun my/set-universal-indentation ()
+  "Force 4-space indentation for both classic and tree-sitter modes."
+  (setq indent-tabs-mode nil)
+  (setq tab-width 4)
+
+  (setq c-basic-offset 4)
+  (setq c-ts-mode-indent-offset 4)
+  (setq java-ts-mode-indent-offset 4)
+  (setq python-indent-offset 4)
+  (setq go-ts-mode-indent-offset 4)
+  (setq js-indent-level 4)
+  (setq typescript-ts-mode-indent-offset 4)
+  (setq css-indent-offset 4)
+  (setq web-mode-markup-indent-offset 4)
+  (setq json-ts-mode-indent-offset 4)
+  (setq yaml-ts-mode-indent-offset 4)
+  (setq rust-ts-mode-indent-offset 4))
+
+(add-hook 'prog-mode-hook #'my/set-universal-indentation)
+
+(add-hook 'text-mode-hook (lambda () (setq indent-tabs-mode nil)))
 
 ;;; ============================================================
 ;;; WHITESPACE
