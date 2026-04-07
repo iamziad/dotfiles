@@ -150,7 +150,10 @@ for_window [class="gThumb"] floating enable, resize set 1200 800
 for_window [class="Qalculate"] floating enable, move position center
 for_window [class="org.gnome.clocks"] floating enable, resize set 800 370, move position center
 
+# Default scratch pads
 
+for_window [instance="spterm"] move scratchpad
+for_window [instance="spterm"] floating enable
 
 # ============================================================
 #  Mouse Behavior
@@ -269,11 +272,15 @@ bindsym $mod+z           exec --no-startup-id emacsclient -c
 # Theme
 bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/i3/toggle-darkmode-manual-gtk.sh
 
-# Make the currently focused window a scratchpad
-bindsym $mod+Shift+minus move scratchpad
+# Scratch Pads
 
-# Show the first scratchpad window
+bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
+
+bindsym $mod+l exec --no-startup-id \
+    i3-msg '[instance="spterm"] scratchpad show' || \
+    wezterm start --class spterm
+
 
 # Rofi launcher (uncomment to enable)
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
