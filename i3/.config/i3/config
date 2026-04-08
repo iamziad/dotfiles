@@ -6,10 +6,10 @@
 set $mod Mod4
 
 # exec --no-startup-id setxkbmap -layout us,ara -option "" -option grp:alt_shift_toggle
+# exec_always setxkbmap -option ctrl:nocaps
 exec_always --no-startup-id setxkbmap -layout us,ara -option "" -option grp:win_space_toggle
-exec_always setxkbmap -option ctrl:nocaps
 
-set $TERM /usr/bin/wezterm || /usr/bin/alacritty
+set $TERM /usr/bin/alacritty
 
 # ============================================================
 #  Monitors
@@ -274,12 +274,12 @@ bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/i3/toggle-darkmode-manua
 
 # Scratch Pads
 
-bindsym $mod+Shift+minus move scratchpad
-bindsym $mod+minus scratchpad show
+bindsym $mod+Shift+minus mark "general", move scratchpad
+bindsym $mod+minus [con_mark="general"] scratchpad show
 
 bindsym $mod+l exec --no-startup-id \
     i3-msg '[instance="spterm"] scratchpad show' || \
-    wezterm start --class spterm
+    $TERM --class spterm
 
 
 # Rofi launcher (uncomment to enable)
