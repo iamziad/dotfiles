@@ -434,10 +434,14 @@
 ;; C-c
 (global-set-key (kbd "C-c f") #'find-file-at-point)
 (global-set-key (kbd "C-c F") #'ffap-other-window)
+(global-set-key (kbd "C-c gg") 'vc-git-grep)
+
 
 ;; Preventing deletion from overwriting kill-ring
 (global-set-key (kbd "DEL") 'my/delete-selected)
 (global-set-key (kbd "M-k") 'my/delete-smart-to-end)
+(global-set-key (kbd "<C-backspace>") 'my-backward-delete-word)
+(global-set-key (kbd "M-DEL") 'my-backward-delete-word)
 
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
@@ -714,3 +718,8 @@
   (if (= (point) (line-end-position))
       (unless (eobp)        (delete-char 1))
     (delete-region (point) (line-end-position))))
+
+(defun my-backward-delete-word ()
+  (interactive)
+  (delete-region (point) (progn (backward-word 1) (point))))
+
