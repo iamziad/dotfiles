@@ -8,7 +8,9 @@
  '(custom-safe-themes
    '("9cd784dfeea58d9d852d52be9126c1fba2b890ed368245624dec1df165a4f6fd"
      "f1e8339b04aef8f145dd4782d03499d9d716fdc0361319411ac2efc603249326" default))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(anzu avy clang-format diff-hl doom-themes drag-stuff expreg magit marginalia
+          markdown-mode nerd-icons orderless vertico vterm))
  '(package-vc-selected-packages
    '((combobulate :url "https://github.com/mickeynp/combobulate"))))
 (custom-set-faces

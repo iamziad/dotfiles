@@ -340,20 +340,27 @@
 ;;; PACKAGES
 ;;; ============================================================
 
+;; Essential
+
 (use-package vterm)
 
 (use-package drag-stuff
   :config
   (drag-stuff-global-mode 1))
 
+(use-package combobulate
+   :custom
+   (combobulate-key-prefix "C-c o")
+   :hook ((prog-mode . combobulate-mode))
+   :load-path ("~/Src/combobulate"))
+
+(use-package expreg
+  :bind (("C-=" . expreg-expand)
+         ("C--" . expreg-contract)))
+
 (use-package anzu
   :config
   (global-anzu-mode 1))
-
-(use-package markdown-mode
-  :mode ("\\.\\(md\\|markdown\\)$" . gfm-mode)
-  :init
-  (setq markdown-command "multimarkdown"))
 
 (use-package avy
   :bind
@@ -362,6 +369,11 @@
   ("M-g g" . avy-goto-line)
   :custom
   (avy-all-windows nil))
+
+(use-package magit)
+
+
+;; QOF
 
 (use-package vertico
   :init (vertico-mode)
@@ -383,7 +395,8 @@
   (completion-category-defaults  nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
-(use-package magit)
+
+;; UI
 
 (use-package doom-themes)
 
@@ -398,15 +411,12 @@
   (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
-(use-package combobulate
-   :custom
-   (combobulate-key-prefix "C-c o")
-   :hook ((prog-mode . combobulate-mode))
-   :load-path ("~/Src/combobulate"))
 
-(use-package expreg
-  :bind (("C-=" . expreg-expand)
-         ("C--" . expreg-contract)))
+;; Formatters
+
+(use-package clang-format
+  :config
+  (setq clang-format-style "file"))
 
 ;;; ============================================================
 ;;; KEYBINDINGS
