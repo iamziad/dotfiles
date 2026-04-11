@@ -46,30 +46,6 @@
 (setq switch-to-buffer-obey-display-actions t)
 
 ;;; ============================================================
-;;; COLORTHEME
-;;; ============================================================
-
-;; Theme agnostic
-(defun my/remove-all-italics ()
-  (mapc (lambda (face)
-          (when (face-italic-p face)
-            (set-face-attribute face nil :slant 'normal)))
-        (face-list)))
-(add-hook 'after-init-hook #'my/remove-all-italics)
-
-;; Gruvbox
-(add-hook 'after-init-hook
-          (lambda ()
-            (set-face-attribute 'font-lock-preprocessor-face nil
-                                :foreground "#98C379"
-                                :slant 'normal
-                                :weight 'normal)
-            (set-face-attribute 'font-lock-function-name-face nil
-                                :foreground "#98C379"
-                                :slant 'normal
-                                :weight 'normal)))
-
-;;; ============================================================
 ;;; BACKUP & AUTO-SAVE
 ;;; ============================================================
 
@@ -342,6 +318,8 @@
 
 ;; Essential
 
+(use-package magit)
+
 (use-package vterm)
 
 (use-package drag-stuff
@@ -370,8 +348,6 @@
   :custom
   (avy-all-windows nil))
 
-(use-package magit)
-
 
 ;; QOF
 
@@ -398,7 +374,15 @@
 
 ;; UI
 
-(use-package doom-themes)
+(use-package doom-themes
+  :custom
+        (doom-themes-enable-italic nil)
+  :config
+        (load-theme 'doom-gruvbox t)
+                (custom-set-faces
+                '(font-lock-preprocessor-face ((t (:foreground "#b16286")))))
+                '(font-lock-function-name-face ((t (:foreground "#98C379")))))
+
 
 (use-package nerd-icons
   :ensure t)
