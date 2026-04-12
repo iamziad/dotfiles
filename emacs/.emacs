@@ -371,6 +371,19 @@
   (completion-category-defaults  nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
+(use-package olivetti
+  :ensure t
+  :init
+  (setq olivetti-body-width 0.65)
+  (setq olivetti-margin-width 0)
+  (setq olivetti-recall-visual-line-mode-entry-state t)
+  :hook
+  ((org-mode . olivetti-mode)
+   (olivetti-mode . (lambda () (display-line-numbers-mode -1))))
+  :config
+  (add-hook 'olivetti-mode-on-hook  (lambda () (display-line-numbers-mode -1)))
+  (add-hook 'olivetti-mode-off-hook (lambda () (display-line-numbers-mode 1))))
+
 
 ;; UI
 
@@ -403,6 +416,18 @@
   (setq clang-format-style "file"))
 
 ;;; ============================================================
+;;; GRUVBOX
+;;; ============================================================
+
+(defun my-org-customization ()
+(set-face-attribute 'bold nil :foreground "#458588" :weight 'bold)
+(set-face-attribute 'italic nil :foreground "#b16286" :weight 'normal)
+)
+
+(add-hook 'org-mode-hook 'my-org-customization)
+
+
+;;; ============================================================
 ;;; KEYBINDINGS
 ;;; ============================================================
 
@@ -430,12 +455,12 @@
 (global-set-key (kbd "C-c F") #'ffap-other-window)
 (global-set-key (kbd "C-c gg") 'vc-git-grep)
 
-
 ;; Preventing deletion from overwriting kill-ring
 (global-set-key (kbd "DEL") 'my/delete-selected)
 (global-set-key (kbd "M-k") 'my/delete-smart-to-end)
 (global-set-key (kbd "<C-backspace>") 'my-backward-delete-word)
 (global-set-key (kbd "M-DEL") 'my-backward-delete-word)
+(global-set-key (kbd "M-d") 'my/forward-delete-word)
 
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
@@ -717,3 +742,8 @@
   (interactive)
   (delete-region (point) (progn (backward-word 1) (point))))
 
+(defun my/forward-delete-word ()
+  "Delete word forward without adding to kill-ring."
+  (interactive)
+  (delete-region (point)
+                 (progn (forward-word 1) (point))))
