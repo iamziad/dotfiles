@@ -416,16 +416,23 @@
   (setq clang-format-style "file"))
 
 ;;; ============================================================
-;;; GRUVBOX
+;;; ORG-MODE
 ;;; ============================================================
 
+;; GRUVBOX SPECIFIC
 (defun my-org-customization ()
 (set-face-attribute 'bold nil :foreground "#458588" :weight 'bold)
 (set-face-attribute 'italic nil :foreground "#b16286" :weight 'normal)
 )
-
 (add-hook 'org-mode-hook 'my-org-customization)
 
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "M-n") #'org-next-item)
+  (define-key org-mode-map (kbd "M-p") #'org-previous-item)
+
+  ;; (define-key org-mode-map (kbd "M-n") #'org-next-visible-heading)
+  ;; (define-key org-mode-map (kbd "M-p") #'org-previous-visible-heading)
+  )
 
 ;;; ============================================================
 ;;; KEYBINDINGS
@@ -462,6 +469,12 @@
 (global-set-key (kbd "M-DEL") 'my-backward-delete-word)
 (global-set-key (kbd "M-d") 'my/forward-delete-word)
 
+;; diff-hl
+(with-eval-after-load 'diff-hl
+  (with-eval-after-load 'prog-mode
+    (define-key prog-mode-map (kbd "M-n") #'diff-hl-next-hunk)
+    (define-key prog-mode-map (kbd "M-p") #'diff-hl-previous-hunk)))
+
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
 ;;; ============================================================
@@ -497,8 +510,6 @@
 
 ;; diff-hl
 (define-key my-leader-map (kbd "C-u") 'diff-hl-revert-hunk)
-(define-key my-leader-map (kbd "C-'") 'diff-hl-next-hunk)
-(define-key my-leader-map (kbd "C-;") 'diff-hl-previous-hunk)
 (define-key my-leader-map (kbd "C-s") 'diff-hl-show-hunk)
 
 ;;; ============================================================
@@ -540,8 +551,10 @@
   (define-key my-git-map (kbd "g") #'magit-refresh)
 
   ;; Navigation & Conflicts
-  (define-key my-leader-map (kbd "C-,") #'magit-section-backward)
-  (define-key my-leader-map (kbd "C-.") #'magit-section-forward)
+  (with-eval-after-load 'magit
+    (define-key magit-mode-map (kbd "M-n") #'magit-section-forward)
+    (define-key magit-mode-map (kbd "M-p") #'magit-section-backward))
+
   (define-key magit-mode-map (kbd "M-k") nil))
 
 (with-eval-after-load 'magit
