@@ -88,7 +88,7 @@
 ;;; ============================================================
 
 (global-whitespace-mode 1)
-(setq whitespace-style '(face trailing tabs))
+(setq whitespace-style '(face trailing tabs tab-mark))
 
 (dolist (hook '(dired-mode-hook
                 magit-mode-hook
@@ -415,6 +415,19 @@
   :config
   (setq clang-format-style "file"))
 
+
+;;; ============================================================
+;;; MAJOR MODES
+;;; ============================================================
+
+;; Make
+(dolist (hook '(makefile-mode-hook
+                makefile-ts-mode-hook))
+  (add-hook hook (lambda ()
+                   (setq indent-tabs-mode t)
+                   (setq tab-width 4))))
+
+
 ;;; ============================================================
 ;;; ORG-MODE
 ;;; ============================================================
@@ -427,11 +440,20 @@
 (add-hook 'org-mode-hook 'my-org-customization)
 
 (with-eval-after-load 'org
+  ;; Keybinds
   (define-key org-mode-map (kbd "M-n") #'org-next-item)
   (define-key org-mode-map (kbd "M-p") #'org-previous-item)
 
-  ;; (define-key org-mode-map (kbd "M-n") #'org-next-visible-heading)
-  ;; (define-key org-mode-map (kbd "M-p") #'org-previous-visible-heading)
+  ;; Fonts
+  (dolist (face '((org-level-1 . 1.4)
+                  (org-level-2 . 1.2)
+                  (org-level-3 . 1.1)
+                  (org-level-4 . 1.1)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil :font "JetBrains Mono" :weight 'bold :height (cdr face)))
   )
 
 ;;; ============================================================
@@ -585,7 +607,6 @@
 
 (my/require-directory (expand-file-name "modes" user-emacs-directory))
 (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/themes/"))
-
 
 ;;; ============================================================
 ;;; TREESITTER – CONFIGURATION & NAVIGATION (EMACS 30+)
