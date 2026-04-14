@@ -125,36 +125,21 @@
 ;;; ARABIC / BIDI SUPPORT
 ;;; ============================================================
 
-;; Enable bidirectional text support
-(setq-default bidi-display-reordering t)
-(setq-default bidi-paragraph-direction nil)   ; auto-detect per paragraph
+(defun my/set-font (&optional frame)
+  (with-selected-frame (or frame (selected-frame))
+    (set-face-attribute 'default nil
+                        :font   "JetBrainsMono Nerd Font Mono"
+                        :height 110)
 
-;; Avoid visual glitches with mixed RTL/LTR on long lines
-(setq bidi-inhibit-bpa nil)
+    (let ((arabic-font (font-spec :family "Noto Sans Arabic" :size 14)))
+      (set-fontset-font "fontset-default" 'arabic arabic-font frame)
+      (set-fontset-font "fontset-default" '(#x0600 . #x06FF) arabic-font frame)
+      (set-fontset-font "fontset-default" '(#xFB50 . #xFDFF) arabic-font frame)
+      (set-fontset-font "fontset-default" '(#xFE70 . #xFEFF) arabic-font frame))))
 
-;; Use Noto Naskh Arabic for Arabic characters
-(set-fontset-font "fontset-default"
-                  '(#x0600 . #x06FF)   ; Arabic block
-                  (font-spec :family "Noto Sans Arabic" :size 13))
-
-(set-fontset-font "fontset-default"
-                  '(#x0750 . #x077F)   ; Arabic Supplement
-                  (font-spec :family "Noto Sans Arabic" :size 13))
-
-(set-fontset-font "fontset-default"
-                  '(#xFB50 . #xFDFF)   ; Arabic Presentation Forms-A
-                  (font-spec :family "Noto Sans Arabic" :size 13))
-
-(set-fontset-font "fontset-default"
-                  '(#xFE70 . #xFEFF)   ; Arabic Presentation Forms-B
-                  (font-spec :family "Noto Sans Arabic" :size 13))
-
-;; Bump Arabic font size relative to Latin (optional — adjust ratio to taste)
-(defun my/arabic-font-rescale ()
-  (setf (alist-get "Noto Sans Arabic"
-                   face-font-rescale-alist nil nil #'equal)
-        1.2))
-(my/arabic-font-rescale)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'my/set-font)
+  (my/set-font))
 
 ;;; ---- org-mode specific ----------------------------------------
 
@@ -168,19 +153,6 @@
   )
 
 (add-hook 'org-mode-hook #'my/org-bidi-setup)
-
-;; Optional: default new org paragraphs to RTL when Arabic input is active
-(defun my/set-paragraph-direction-from-input ()
-  "Switch bidi base direction to match the active input method."
-  (when (derived-mode-p 'org-mode)
-    (setq bidi-paragraph-direction
-          (if (and current-input-method
-                   (string-match-p "arabic" current-input-method))
-              'right-to-left
-            nil))))
-
-(add-hook 'input-method-activate-hook   #'my/set-paragraph-direction-from-input)
-(add-hook 'input-method-deactivate-hook #'my/set-paragraph-direction-from-input)
 
 ;;; ============================================================
 ;;; LINE NUMBERS
@@ -371,30 +343,43 @@
   (completion-category-defaults  nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
+
+;; Org
+
 (use-package olivetti
   :ensure t
   :init
-  (setq olivetti-body-width 0.65)
-  (setq olivetti-margin-width 0)
+  (setq olivetti-body-width 90)
   (setq olivetti-recall-visual-line-mode-entry-state t)
   :hook
   ((org-mode . olivetti-mode)
-   (olivetti-mode . (lambda () (display-line-numbers-mode -1))))
+   (olivetti-mode . (lambda ()
+                      (visual-line-mode 1)
+                      (setq-local word-wrap t)
+                      (setq-local bidi-paragraph-direction nil)
+                      (setq org-modern-block-fringe t)
+                      ))))
+
+(use-package org-download
+  :ensure t
   :config
-  (add-hook 'olivetti-mode-on-hook  (lambda () (display-line-numbers-mode -1)))
-  (add-hook 'olivetti-mode-off-hook (lambda () (display-line-numbers-mode 1))))
+  (setq-default org-download-heading-lvl nil)
+  (setq-default org-download-image-dir "./images"))
+
+;; (use-package org-modern
+;;   :hook (org-mode . org-modern-mode))
 
 
 ;; UI
 
 (use-package doom-themes
   :custom
-        (doom-themes-enable-italic nil)
+  (doom-themes-enable-italic nil)
   :config
-        (load-theme 'doom-gruvbox t)
-                (custom-set-faces
-                '(font-lock-preprocessor-face ((t (:foreground "#b16286")))))
-                '(font-lock-function-name-face ((t (:foreground "#98C379")))))
+  (load-theme 'doom-gruvbox t)
+  (custom-set-faces
+   '(font-lock-preprocessor-face  ((t (:foreground "#b16286"))))
+   '(font-lock-function-name-face ((t (:foreground "#98C379"))))))
 
 
 (use-package nerd-icons
@@ -432,12 +417,27 @@
 ;;; ORG-MODE
 ;;; ============================================================
 
+;; Core
+(add-hook 'org-mode-hook (lambda ()
+                           (display-line-numbers-mode -1)
+                           (display-fill-column-indicator-mode -1)
+                           ))
+
+(add-hook 'org-mode-hook #'font-lock-mode)
+
+;; Code blocks
+(setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
+
+
 ;; GRUVBOX SPECIFIC
 (defun my-org-customization ()
 (set-face-attribute 'bold nil :foreground "#458588" :weight 'bold)
 (set-face-attribute 'italic nil :foreground "#b16286" :weight 'normal)
 )
 (add-hook 'org-mode-hook 'my-org-customization)
+
+
 
 (with-eval-after-load 'org
   ;; Keybinds
@@ -483,6 +483,7 @@
 (global-set-key (kbd "C-c f") #'find-file-at-point)
 (global-set-key (kbd "C-c F") #'ffap-other-window)
 (global-set-key (kbd "C-c gg") 'vc-git-grep)
+(define-key org-mode-map (kbd "C-c s") #'org-download-clipboard)
 
 ;; Preventing deletion from overwriting kill-ring
 (global-set-key (kbd "DEL") 'my/delete-selected)

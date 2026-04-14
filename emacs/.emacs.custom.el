@@ -6,13 +6,18 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(doom-gruvbox))
  '(custom-safe-themes
-   '("3613617b9953c22fe46ef2b593a2e5bc79ef3cc88770602e7e569bbd71de113b"
+   '("0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
+     "c34b1cd863f5249bfc3b86e0454368f9bb8d97ea0c5b760939933eee56ed4175"
+     "b1a691bb67bd8bd85b76998caf2386c9a7b2ac98a116534071364ed6489b695d"
+     "d2ab3d4f005a9ad4fb789a8f65606c72f30ce9d281a9e42da55f7f4b9ef5bfc6"
+     "3613617b9953c22fe46ef2b593a2e5bc79ef3cc88770602e7e569bbd71de113b"
      "9cd784dfeea58d9d852d52be9126c1fba2b890ed368245624dec1df165a4f6fd"
      "f1e8339b04aef8f145dd4782d03499d9d716fdc0361319411ac2efc603249326" default))
  '(org-agenda-files nil)
  '(package-selected-packages
    '(anzu avy clang-format diff-hl doom-themes drag-stuff expreg magit marginalia
-          markdown-mode nerd-icons olivetti orderless vertico vterm))
+          markdown-mode nerd-icons olivetti orderless org-download org-modern
+          vertico vterm))
  '(package-vc-selected-packages
    '((combobulate :url "https://github.com/mickeynp/combobulate"))))
 (custom-set-faces
@@ -20,6 +25,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(font-lock-function-name-face ((t (:foreground "#98C379"))))
  '(font-lock-preprocessor-face ((t (:foreground "#b16286"))))
  '(org-bold ((t (:foreground "#d79921" :weight bold))))
  '(org-italic ((t (:foreground "#b16286" :slant italic)))))
