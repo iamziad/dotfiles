@@ -195,7 +195,9 @@
         mode-line-buffer-identification
         "   "
         mode-line-position
-        (vc-mode vc-mode)
+
+        (:eval my/mode-line-git-branch)
+
         "  "
         mode-line-modes
         (:eval (if buffer-read-only (propertize " [hjkl]" 'face 'shadow) ""))
@@ -349,7 +351,7 @@
 (use-package olivetti
   :ensure t
   :init
-  (setq olivetti-body-width 90)
+  (setq olivetti-body-width 80)
   (setq olivetti-recall-visual-line-mode-entry-state t)
   :hook
   ((org-mode . olivetti-mode)
@@ -482,7 +484,7 @@
 ;; C-c
 (global-set-key (kbd "C-c f") #'find-file-at-point)
 (global-set-key (kbd "C-c F") #'ffap-other-window)
-(global-set-key (kbd "C-c gg") 'vc-git-grep)
+(global-set-key (kbd "C-c gg") #'project-find-regexp)
 (define-key org-mode-map (kbd "C-c s") #'org-download-clipboard)
 
 ;; Preventing deletion from overwriting kill-ring
@@ -539,6 +541,28 @@
 ;;; MAGIT
 ;;; ============================================================
 
+;; Disabling built-in VCS
+(setq vc-handled-backends '(Git))
+(setq vc-display-status nil)
+(setq vc-follow-symlinks t)
+
+;; Displaying branch name from Magit
+(defvar my/mode-line-git-branch ""
+  "Cached git branch for mode line.")
+
+(defun my/update-git-branch ()
+  "Update cached branch name via magit."
+  (setq my/mode-line-git-branch
+        (if-let ((branch (and (fboundp 'magit-get-current-branch)
+                              (magit-get-current-branch))))
+            (propertize (concat "  " branch) 'face '(:foreground "#b8bb26" :weight bold))
+          "")))
+
+(add-hook 'magit-post-checkout-hook  #'my/update-git-branch)
+(add-hook 'magit-post-refresh-hook   #'my/update-git-branch)
+
+
+;; Adjusting magit to my keybinds
 (define-prefix-command 'my-git-map)
 (define-key my-leader-map (kbd "g") 'my-git-map)
 
@@ -586,6 +610,7 @@
       (let ((default-directory (expand-file-name repo)))
         (project-current t))))
   (add-hook 'after-init-hook #'my/add-magit-repos-to-project))
+
 
 ;;; ============================================================
 ;;; LOAD PATH & LOCAL MODES
