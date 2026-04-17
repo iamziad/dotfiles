@@ -164,6 +164,7 @@
 (dolist (hook '(term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook
+                Man-mode-hook
                 vterm-mode-hook))
   (add-hook hook (lambda ()
                    (display-line-numbers-mode 0)
@@ -380,9 +381,20 @@
   :config
   (load-theme 'doom-gruvbox t)
   (custom-set-faces
-   '(font-lock-preprocessor-face  ((t (:foreground "#b16286"))))
-   '(font-lock-function-name-face ((t (:foreground "#98C379"))))))
-
+   '(font-lock-preprocessor-face  ((t (:foreground "#8ec07c" :weight semi-bold))))
+   '(font-lock-function-name-face ((t (:foreground "#8ec07c" :weight semi-bold))))
+   '(font-lock-punctuation-face ((t (:foreground "#8ec07c" :weight semi-bold))))
+   '(font-lock-escape-face  ((t (:foreground "#fe8019"))))
+   '(font-lock-keyword-face  ((t (:weight semi-bold))))
+   '(font-lock-type-face  ((t (:weight semi-bold))))
+   '(font-lock-operator-face  ((t (:weight semi-bold))))
+   '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
+   '(font-lock-delimiter-face ((t (:foreground "#ebdbb2"))))
+   '(font-lock-property-name-face ((t (:foreground "#83a598" :weight regular))))
+   '(font-lock-property-use-face ((t (:foreground "#83a598" :weight regular))))
+   '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
+   '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold)))))
+  )
 
 (use-package nerd-icons
   :ensure t)
@@ -450,7 +462,7 @@
   (dolist (face '((org-level-1 . 1.4)
                   (org-level-2 . 1.2)
                   (org-level-3 . 1.1)
-                  (org-level-4 . 1.1)
+                  (org-level-4 . 1.0)
                   (org-level-5 . 1.0)
                   (org-level-6 . 1.0)
                   (org-level-7 . 1.0)
@@ -462,80 +474,53 @@
 ;;; KEYBINDINGS
 ;;; ============================================================
 
-;; Editing
-(global-set-key (kbd "M-k")   'kill-line)
-(global-set-key (kbd "C-,")   'duplicate-line)
-(global-set-key (kbd "C-'")   'hippie-expand)
+(bind-keys
+ ("M-k" . my/delete-smart-to-end)
+ ("M-b" . my/man-at-point)
+ ("DEL" . my/delete-selected)
+ ("M-DEL" . my-backward-delete-word)
+ ("M-d" . my/forward-delete-word)
+ ("<C-backspace>" . my-backward-delete-word)
+ ("C-," . duplicate-line)
+ ("C-'" . hippie-expand)
+ ("M-?" . help-command)
+ ("M-l" . recenter-top-bottom)
+ ("s-\\" . toggle-input-method)
+ ("C-;" . read-only-mode)
 
-;; Display
-(global-set-key (kbd "M-l")   'recenter-top-bottom)
+ :map global-map
+ ("C-c f" . find-file-at-point)
+ ("C-c F" . ffap-other-window)
+ ("C-c gg" . project-find-regexp)
 
-;; Help
-(global-set-key (kbd "M-?")   'help-command)
-(global-set-key (kbd "C-c h") 'help-command)
+ :map org-mode-map
+ ("C-c s" . org-download-clipboard)
 
-;; Input method
-(global-set-key (kbd "s-\\")  'toggle-input-method)
-
-(global-set-key (kbd "C-;")   'read-only-mode)
-
-(global-set-key (kbd "M-b") 'my/man-at-point)
-
-;; C-c
-(global-set-key (kbd "C-c f") #'find-file-at-point)
-(global-set-key (kbd "C-c F") #'ffap-other-window)
-(global-set-key (kbd "C-c gg") #'project-find-regexp)
-(define-key org-mode-map (kbd "C-c s") #'org-download-clipboard)
-
-;; Preventing deletion from overwriting kill-ring
-(global-set-key (kbd "DEL") 'my/delete-selected)
-(global-set-key (kbd "M-k") 'my/delete-smart-to-end)
-(global-set-key (kbd "<C-backspace>") 'my-backward-delete-word)
-(global-set-key (kbd "M-DEL") 'my-backward-delete-word)
-(global-set-key (kbd "M-d") 'my/forward-delete-word)
-
-;; diff-hl
-(with-eval-after-load 'diff-hl
-  (with-eval-after-load 'prog-mode
-    (define-key prog-mode-map (kbd "M-n") #'diff-hl-next-hunk)
-    (define-key prog-mode-map (kbd "M-p") #'diff-hl-previous-hunk)))
+ :map prog-mode-map
+ ("M-n" . diff-hl-next-hunk)
+ ("M-p" . diff-hl-previous-hunk))
 
 ;;; ============================================================
 ;;; LEADER KEY  (C-z prefix)
 ;;; ============================================================
 
-(define-prefix-command 'my-leader-map)
-(global-set-key (kbd "C-z") 'my-leader-map)
-
-;; Files
-(define-key my-leader-map (kbd "r")   'recentf-open-files)
-
-;; Terminal
-(define-key my-leader-map (kbd "t h") #'my/vterm-horizontal)
-(define-key my-leader-map (kbd "t v") #'my/vterm-vertical)
-
-;; Compile
-(define-key my-leader-map (kbd "c c") #'compile)
-; (define-key my-leader-map (kbd "c r") #'my/compile-root)
-
-;; Window navigation
-(define-key my-leader-map (kbd "h") #'windmove-left)
-(define-key my-leader-map (kbd "j") #'windmove-down)
-(define-key my-leader-map (kbd "k") #'windmove-up)
-(define-key my-leader-map (kbd "l") #'windmove-right)
-
-;; Window swapping
-(define-key my-leader-map (kbd "H") #'windmove-swap-states-left)
-(define-key my-leader-map (kbd "J") #'windmove-swap-states-down)
-(define-key my-leader-map (kbd "K") #'windmove-swap-states-up)
-(define-key my-leader-map (kbd "L") #'windmove-swap-states-right)
-
-;; Magit
-(define-key my-leader-map (kbd "m l") 'magit-list-repositories)
-
-;; diff-hl
-(define-key my-leader-map (kbd "C-u") 'diff-hl-revert-hunk)
-(define-key my-leader-map (kbd "C-s") 'diff-hl-show-hunk)
+(bind-keys :prefix-map my-leader-map
+           :prefix "C-z"
+           ("r"   . recentf-open-files)
+           ("t h" . my/vterm-horizontal)
+           ("t v" . my/vterm-vertical)
+           ("c c" . compile)
+           ("h"   . windmove-left)
+           ("j"   . windmove-down)
+           ("k"   . windmove-up)
+           ("l"   . windmove-right)
+           ("H"   . windmove-swap-states-left)
+           ("J"   . windmove-swap-states-down)
+           ("K"   . windmove-swap-states-up)
+           ("L"   . windmove-swap-states-right)
+           ("m l" . magit-list-repositories)
+           ("C-u" . diff-hl-revert-hunk)
+           ("C-s" . diff-hl-show-hunk))
 
 ;;; ============================================================
 ;;; MAGIT
@@ -558,6 +543,7 @@
             (propertize (concat "  " branch) 'face '(:foreground "#b8bb26" :weight bold))
           "")))
 
+(add-hook 'find-file-hook #'my/update-git-branch)
 (add-hook 'magit-post-checkout-hook  #'my/update-git-branch)
 (add-hook 'magit-post-refresh-hook   #'my/update-git-branch)
 
@@ -772,17 +758,18 @@
   (beginning-of-line)
   (set-mark (line-beginning-position 2)))
 
-
 (defun my/man-at-point ()
-  "Look up the man page for the symbol at point and display it in the right window."
+  "Run man on the word under the cursor, displayed on the right."
   (interactive)
-  (let ((topic (thing-at-point 'symbol t)))
-    (if topic
-        (let ((new-window (split-window-right)))
-          (with-selected-window new-window
-            (man topic)))
-      (message "Nothing at point to look up."))))
-
+  (let ((word (thing-at-point 'word t)))
+    (if word
+        (let ((display-buffer-alist
+               '(("\\*Man .*\\*"
+                  (display-buffer-in-side-window)
+                  (side . right)
+                  (window-width . 0.5)))))
+          (man word))
+      (message "No word under cursor"))))
 
 (defun my/delete-selected ()
   "Delete selected region without adding to kill ring."

@@ -6,7 +6,9 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(doom-gruvbox))
  '(custom-safe-themes
-   '("0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
+   '("d5fd482fcb0fe42e849caba275a01d4925e422963d1cd165565b31d3f4189c87"
+     "18a1d83b4e16993189749494d75e6adb0e15452c80c431aca4a867bcc8890ca9"
+     "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
      "c34b1cd863f5249bfc3b86e0454368f9bb8d97ea0c5b760939933eee56ed4175"
      "b1a691bb67bd8bd85b76998caf2386c9a7b2ac98a116534071364ed6489b695d"
      "d2ab3d4f005a9ad4fb789a8f65606c72f30ce9d281a9e42da55f7f4b9ef5bfc6"
@@ -17,7 +19,7 @@
  '(package-selected-packages
    '(anzu avy clang-format diff-hl doom-themes drag-stuff expreg magit marginalia
           markdown-mode nerd-icons olivetti orderless org-download org-modern
-          vertico vterm))
+          popper vertico vterm))
  '(package-vc-selected-packages
    '((combobulate :url "https://github.com/mickeynp/combobulate"))))
 (custom-set-faces
