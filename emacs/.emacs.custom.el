@@ -17,9 +17,9 @@
      "f1e8339b04aef8f145dd4782d03499d9d716fdc0361319411ac2efc603249326" default))
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(anzu avy clang-format diff-hl doom-themes drag-stuff expreg magit marginalia
-          markdown-mode nerd-icons olivetti orderless org-download org-modern
-          popper vertico vterm))
+   '(anzu avy clang-format company corfu diff-hl doom-themes drag-stuff expreg
+          kind-icon magit marginalia markdown-mode nerd-icons olivetti orderless
+          org-download org-modern popper vertico vterm))
  '(package-vc-selected-packages
    '((combobulate :url "https://github.com/mickeynp/combobulate"))))
 (custom-set-faces
@@ -27,7 +27,23 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(corfu-annotations ((t (:foreground "#928374" :slant italic))))
+ '(corfu-bar ((t (:background "#928374"))))
+ '(corfu-border ((t (:background "#3c3836"))))
+ '(corfu-current ((t (:background "#458588" :foreground "#fbf1c7" :weight semi-bold))))
+ '(corfu-default ((t (:background "#282828" :foreground "#ebdbb2"))))
+ '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
+ '(font-lock-delimiter-face ((t (:foreground "#ebdbb2"))))
+ '(font-lock-escape-face ((t (:foreground "#fe8019"))))
  '(font-lock-function-name-face ((t (:foreground "#98C379"))))
+ '(font-lock-keyword-face ((t (:weight bold))))
+ '(font-lock-operator-face ((t (:weight semi-bold))))
  '(font-lock-preprocessor-face ((t (:foreground "#b16286"))))
+ '(font-lock-property-name-face ((t (:foreground "#83a598" :weight semi-bold))))
+ '(font-lock-property-use-face ((t (:foreground "#83a598" :weight semi-bold))))
+ '(font-lock-punctuation-face ((t (:foreground "#8ec07c" :weight semi-bold))))
+ '(font-lock-type-face ((t (:weight semi-bold))))
+ '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
+ '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
  '(org-bold ((t (:foreground "#d79921" :weight bold))))
  '(org-italic ((t (:foreground "#b16286" :slant italic)))))

@@ -30,6 +30,12 @@ interval=3
 #color=#8ba4b0
 color=#dddddd
 
+[cpu_temp]
+command=bash -c 't=$(cat /sys/class/hwmon/hwmon*/temp1_input | head -n 1); c=$((t/1000)); echo "$c°C"; [ $c -le 55 ] && echo "#00FF00" || ([ $c -le 80 ] && echo "#FFFF00" || echo "#FF0000")'
+interval=5
+markup=pango
+
+
 [cpu]
 label= 
 # We wrap it in a check to ensure it only runs on the 2-second interval, not on clicks

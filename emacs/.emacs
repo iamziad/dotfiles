@@ -28,6 +28,7 @@
 (delete-selection-mode)
 (column-number-mode)
 (setq Man-notify-method 'pushy)
+(global-company-mode 1)
 
 (setq duplicate-line-final-position 1)
 (setq isearch-allow-scroll 1)
@@ -346,6 +347,8 @@
   (completion-category-defaults  nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
+;; LSP
+
 
 ;; Org
 
@@ -385,15 +388,20 @@
    '(font-lock-function-name-face ((t (:foreground "#8ec07c" :weight semi-bold))))
    '(font-lock-punctuation-face ((t (:foreground "#8ec07c" :weight semi-bold))))
    '(font-lock-escape-face  ((t (:foreground "#fe8019"))))
-   '(font-lock-keyword-face  ((t (:weight semi-bold))))
+   '(font-lock-keyword-face  ((t (:weight bold))))
    '(font-lock-type-face  ((t (:weight semi-bold))))
    '(font-lock-operator-face  ((t (:weight semi-bold))))
    '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
    '(font-lock-delimiter-face ((t (:foreground "#ebdbb2"))))
-   '(font-lock-property-name-face ((t (:foreground "#83a598" :weight regular))))
-   '(font-lock-property-use-face ((t (:foreground "#83a598" :weight regular))))
+   '(font-lock-property-name-face ((t (:foreground "#83a598" :weight semi-bold))))
+   '(font-lock-property-use-face ((t (:foreground "#83a598" :weight semi-bold))))
    '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
-   '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold)))))
+   '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
+   '(corfu-default ((t (:background "#282828" :foreground "#ebdbb2"))))
+   '(corfu-current ((t (:background "#458588" :foreground "#fbf1c7" :weight semi-bold))))
+   '(corfu-border  ((t (:background "#3c3836"))))
+   '(corfu-bar     ((t (:background "#928374"))))
+   '(corfu-annotations ((t (:foreground "#928374" :slant italic)))))
   )
 
 (use-package nerd-icons
@@ -720,12 +728,12 @@
   "Non-nil while a vterm window is being opened, to suppress focus stealing.")
 
 (defun my/vterm-horizontal ()
-  "Open vterm in a horizontal split below, cd to current directory."
+  "Open vterm in a horizontal split above ALL open windows, cd to current directory."
   (interactive)
   (let ((dir default-directory)
         (my/opening-vterm t))
-    (split-window-below)
-    (windmove-down)
+    (select-window
+     (split-window (frame-root-window) 25 'down))
     (vterm)
     (vterm-send-string (concat "cd " (shell-quote-argument dir) " && clear"))
     (vterm-send-return)))
