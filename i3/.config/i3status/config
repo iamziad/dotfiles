@@ -1,33 +1,50 @@
 general {
-    colors = true
-    interval = 5
-    color_good = "#a6e3a1"
-    color_degraded = "#f9e2af"
-    color_bad = "#f38ba8"
+        colors = true
+        interval = 5
+         color_separator = "#FF0000"
 }
 
-order += "wireless _first_"
-order += "volume master"
-order += "battery 0"
+order += "ipv6"
+order += "cpu_usage"
+order += "cpu_temperature 0"
+order += "memory"
+order += "net_rate"
 order += "tztime local"
 
-volume master {
-    format = "  %volume"
-    format_muted = "  muted"
-    device = "default"
-    mixer = "Master"
+cpu_usage {
+        format = " CPU: %usage"
+        max_threshold = 75
+        degraded_threshold = 50
+        color_good = "#50FA7B"
+        color_degraded = "#FFB86C"
+        color_bad = "#FF5555"
 }
 
-battery 0 {
-    format = "%status %percentage"
-    format_down = ""
-    status_chr = " "
-    status_bat = " "
-    status_unk = " "
-    status_full = " "
-    low_threshold = 20
+cpu_temperature 0 {
+        format = " TEMP: %degrees°C"
+        path = "/sys/class/hwmon/hwmon0/temp1_input"
+        max_threshold = 80
+        color_good = "#50FA7B"
+        color_degraded = "#FFB86C"
+        color_bad = "#FF5555"
+}
+
+memory {
+        format = " RAM: %used : %total (%percentage_used)"
+        threshold_degraded = "20%"
+        threshold_critical = "10%"
+        color_good = "#50FA7B"
+        color_degraded = "#FFB86C"
+        color_bad = "#FF5555"
+ }
+
+volume master {
+        format = "♪: %volume"
+        format_muted = "♪: muted (%volume)"
+        device = "pulse:alsa_output.pci-0000_00_14.2.analog-stereo"
 }
 
 tztime local {
-    format = "  %a %d %b  %H:%M"
+        format = " %Y-%m-%d  %H:%M"
+        # color = "#BD93F9"
 }

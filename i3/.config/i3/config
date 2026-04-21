@@ -7,7 +7,7 @@ set $mod Mod4
 
 # exec --no-startup-id setxkbmap -layout us,ara -option "" -option grp:alt_shift_toggle
 # exec_always setxkbmap -option ctrl:nocaps
-exec_always --no-startup-id setxkbmap -layout us,ara -option "" -option grp:win_space_toggle
+exec_always --no-startup-id setxkbmap -layout us,ara -option "" -option grp:caps_toggle
 
 set $TERM /usr/bin/alacritty
 
@@ -28,14 +28,14 @@ hide_edge_borders both
 font pango:DejaVu Sans Mono 10
 
 bar {
-    position top
+    status_command SCRIPT_DIR=~/dotfiles/i3/.config/i3blocks/scripts i3blocks
 
+    position top
     # output $pri
     # height  25
     tray_output $pri
     tray_padding 4
     font pango:JetBrainsMono Nerd Font 10
-    status_command i3blocks
 
 # colors {
 #     background #1e1e2e
