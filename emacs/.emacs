@@ -28,7 +28,6 @@
 (delete-selection-mode)
 (column-number-mode)
 (setq Man-notify-method 'pushy)
-(global-company-mode 1)
 
 (setq duplicate-line-final-position 1)
 (setq isearch-allow-scroll 1)
@@ -151,7 +150,7 @@
   ;; Disable visual-line truncation quirks that break RTL display
   (setq-local word-wrap t)
   ;; Input method shortcut — toggle with s-\ (already bound globally)
-  )
+  (setq-local line-spacing 0.27))
 
 (add-hook 'org-mode-hook #'my/org-bidi-setup)
 
@@ -450,6 +449,17 @@
 
 
 ;;; ============================================================
+;;; AUTO COMPLETION
+;;; ============================================================
+
+(global-company-mode 1)
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "C-j") #'company-select-next)
+  (define-key company-active-map (kbd "C-k") #'company-select-previous))
+
+
+;;; ============================================================
 ;;; ORG-MODE
 ;;; ============================================================
 
@@ -518,7 +528,7 @@
  ("M-?" . help-command)
  ("M-l" . recenter-top-bottom)
  ("s-\\" . toggle-input-method)
- ("C-;" . read-only-mode)
+ ("<escape>" . read-only-mode)
 
  :map global-map
  ("C-c f" . find-file-at-point)

@@ -117,11 +117,11 @@ interval=30
 #command=$SCRIPT_DIR/brightness/bin/brightness
 interval=persist
 
-[redshift_service]
-command=UNIT_NAME=redshift.service USER_UNIT=true ACTIVE_COLOR="#09c609" INACTIVE_COLOR=orange FAILED_COLOR=red $SCRIPT_DIR/systemd_unit/systemd_unit
-markup=pango
-label=redshift:
-interval=30
+# [redshift_service]
+# command=UNIT_NAME=redshift.service USER_UNIT=true ACTIVE_COLOR="#09c609" INACTIVE_COLOR=orange FAILED_COLOR=red $SCRIPT_DIR/systemd_unit/systemd_unit
+# markup=pango
+# label=redshift:
+# interval=30
 
 
 [volume]
