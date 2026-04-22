@@ -19,7 +19,7 @@
  '(package-selected-packages
    '(anzu avy clang-format company corfu diff-hl doom-themes drag-stuff expreg
           kind-icon magit marginalia markdown-mode nerd-icons olivetti orderless
-          org-download org-modern popper vertico vterm))
+          org-bullets org-download org-modern popper vertico vterm web-mode))
  '(package-vc-selected-packages
    '((combobulate :url "https://github.com/mickeynp/combobulate"))))
 (custom-set-faces
@@ -32,7 +32,9 @@
  '(corfu-border ((t (:background "#3c3836"))))
  '(corfu-current ((t (:background "#458588" :foreground "#fbf1c7" :weight semi-bold))))
  '(corfu-default ((t (:background "#282828" :foreground "#ebdbb2"))))
+ '(css-property ((t (:foreground "#fe8019"))))
  '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
+ '(font-lock-css-property-face ((t (:weight semi-bold))))
  '(font-lock-delimiter-face ((t (:foreground "#ebdbb2"))))
  '(font-lock-escape-face ((t (:foreground "#fe8019"))))
  '(font-lock-function-name-face ((t (:foreground "#98C379"))))
@@ -46,4 +48,5 @@
  '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
  '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
  '(org-bold ((t (:foreground "#d79921" :weight bold))))
- '(org-italic ((t (:foreground "#b16286" :slant italic)))))
+ '(org-italic ((t (:foreground "#b16286" :slant italic))))
+ '(web-mode-html-attr-name-face ((t (:foreground "#fe8019")))))

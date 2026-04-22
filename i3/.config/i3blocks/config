@@ -87,7 +87,7 @@ separator=false
 # min_width=CPU 100.00%
 
 [cpu_usage]
-command=LABEL='CPU: ' T_WARN=55 T_CRIT=80 COLOR_NORMAL='#EBDBB2' COLOR_WARN='#FFFC00' COLOR_CRIT='#FF0000'  $SCRIPT_DIR/cpu_usage/cpu_usage
+command=LABEL='CPU: ' T_WARN=65 T_CRIT=80 COLOR_NORMAL='#EBDBB2' COLOR_WARN='#FFFC00' COLOR_CRIT='#FF0000'  $SCRIPT_DIR/cpu_usage/cpu_usage
 interval=10
 separator=false
 
@@ -135,8 +135,12 @@ signal=10
 
 # Date Time
 
+# [time]
+# command=TZONES=$DEFAULT_TZ,Africa/Cairo TZ_LABELS=,Cairo STRFTIME_FORMAT="%a, %d %b %H:%M" $SCRIPT_DIR/time/time
+# interval=5
+
 [time]
-command=STRFTIME_FORMAT="%a, %d %b %H:%M" TZONES=, $SCRIPT_DIR/time/time
+command=date '+%y/%m/%d, %a %H:%M'
 interval=5
 
 # [monitors]

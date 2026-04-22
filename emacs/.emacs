@@ -33,10 +33,10 @@
 (setq duplicate-line-final-position 1)
 (setq isearch-allow-scroll 1)
 
-(setq initial-buffer-choice
-      (lambda ()
-        (when (zerop (length command-line-args-left))
-          (recentf-open-files))))
+;; (setq initial-buffer-choice
+;;       (lambda ()
+;;         (when (zerop (length command-line-args-left))
+;;           (recentf-open-files))))
 
 ;; Open files in read-only mode by default
 (add-hook 'find-file-hook #'read-only-mode)
@@ -355,7 +355,7 @@
 (use-package olivetti
   :ensure t
   :init
-  (setq olivetti-body-width 80)
+  (setq olivetti-body-width 85)
   (setq olivetti-recall-visual-line-mode-entry-state t)
   :hook
   ((org-mode . olivetti-mode)
@@ -372,8 +372,9 @@
   (setq-default org-download-heading-lvl nil)
   (setq-default org-download-image-dir "./images"))
 
-;; (use-package org-modern
-;;   :hook (org-mode . org-modern-mode))
+(use-package org-bullets
+  :hook
+  (org-mode . org-bullets-mode))
 
 
 ;; UI
@@ -388,7 +389,7 @@
    '(font-lock-function-name-face ((t (:foreground "#8ec07c" :weight semi-bold))))
    '(font-lock-punctuation-face ((t (:foreground "#8ec07c" :weight semi-bold))))
    '(font-lock-escape-face  ((t (:foreground "#fe8019"))))
-   '(font-lock-keyword-face  ((t (:weight bold))))
+   '(font-lock-keyword-face  ((t (:weight semi-bold))))
    '(font-lock-type-face  ((t (:weight semi-bold))))
    '(font-lock-operator-face  ((t (:weight semi-bold))))
    '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
@@ -397,6 +398,7 @@
    '(font-lock-property-use-face ((t (:foreground "#83a598" :weight semi-bold))))
    '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
    '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
+   '(web-mode-html-attr-name-face ((t (:foreground "#fe8019"))))
    '(corfu-default ((t (:background "#282828" :foreground "#ebdbb2"))))
    '(corfu-current ((t (:background "#458588" :foreground "#fbf1c7" :weight semi-bold))))
    '(corfu-border  ((t (:background "#3c3836"))))
@@ -421,6 +423,18 @@
 (use-package clang-format
   :config
   (setq clang-format-style "file"))
+
+;; Modes
+
+(use-package web-mode
+  :ensure t
+  :mode ("\\.html\\'" "\\.phtml\\'" "\\.php\\'" "\\.jsp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'")
+  :config
+  (setq web-mode-markup-indent-offset 4)
+  (setq web-mode-css-indent-offset 4)
+  (setq web-mode-code-indent-offset 4)
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t))
 
 
 ;;; ============================================================
@@ -447,6 +461,16 @@
 
 (add-hook 'org-mode-hook #'font-lock-mode)
 
+;; Prettification
+(setq org-startup-indented t
+      org-ellipsis "  "
+      org-pretty-entities t
+      org-hide-emphasis-markers t
+      org-agenda-block-separator ""
+      org-fontify-whole-heading-line t
+      org-fontify-done-headline t
+      org-fontify-quote-and-verse-blocks t)
+
 ;; Code blocks
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
@@ -468,9 +492,9 @@
 
   ;; Fonts
   (dolist (face '((org-level-1 . 1.4)
-                  (org-level-2 . 1.2)
-                  (org-level-3 . 1.1)
-                  (org-level-4 . 1.0)
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.1)
                   (org-level-5 . 1.0)
                   (org-level-6 . 1.0)
                   (org-level-7 . 1.0)
