@@ -45,6 +45,13 @@
 
 (setq switch-to-buffer-obey-display-actions t)
 
+(global-set-key [remap dabbrev-expand] 'hippie-expand)
+
+;; Dired
+(setq dired-dwim-target t)
+(setq dired-recursive-copies 'always)
+(setq dired-recursive-deletes 'always)
+
 ;;; ============================================================
 ;;; BACKUP & AUTO-SAVE
 ;;; ============================================================
@@ -524,9 +531,8 @@
  ("M-d" . my/forward-delete-word)
  ("<C-backspace>" . my-backward-delete-word)
  ("C-," . duplicate-line)
- ("C-'" . hippie-expand)
  ("M-?" . help-command)
- ("M-l" . recenter-top-bottom)
+ ("M-m" . recenter-top-bottom)
  ("s-\\" . toggle-input-method)
  ("<escape>" . read-only-mode)
 
