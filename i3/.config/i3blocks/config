@@ -3,10 +3,16 @@ separator_block_width=15
 markup=none
 color=#e7feff
 
+[os]
+label=
+command=echo "  "
+color=#ff0000
+interval=once
+
 [mediaplayer]
 command=$SCRIPT_DIR/mediaplayer/mediaplayer
-label=♪
-color=#7fffd4
+label=󰝚
+color=#c0c0c0
 instance=spotify
 interval=5
 signal=10
@@ -23,7 +29,7 @@ command=$SCRIPT_DIR/memory/memory
 label= MEM:
 instance=mem
 separator=true
-interval=30
+interval=10
 
 [disk]
 label=HOME
@@ -73,7 +79,7 @@ signal=10
 #STEP=5%
 
 [time]
-command=date '+%y-%m-%d, %a %H:%M'
+command=date '+%a %d %b - %H:%M'
 interval=5
 
 [xkb_layout]

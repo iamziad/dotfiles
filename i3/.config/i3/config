@@ -2,14 +2,11 @@
 #  i3 Window Manager Configuration
 # ============================================================
 
-# Mod key (Super/Windows key)
+# Mod key
 set $mod Mod4
 
-# Xorg Keyboard Layout
-exec_always --no-startup-id setxkbmap -layout us,ara -option grp:win_space_toggle,caps:escape
-exec_always --no-startup-id setxkbmap -option caps:escape
-
 set $TERM /usr/bin/alacritty
+set $SCRIPTS_DIR ~/dotfiles/i3/.config/i3/scripts/
 
 # ============================================================
 #  Monitors
@@ -17,8 +14,6 @@ set $TERM /usr/bin/alacritty
 
 set $pri HDMI-A-0
 set $sec DisplayPort-0
-
-exec --no-startup-id xrandr --output $pri --right-of $sec
 
 # ============================================================
 #  Appearance
@@ -31,24 +26,9 @@ bar {
     status_command SCRIPT_DIR=~/dotfiles/i3/.config/i3blocks/scripts i3blocks
 
     position top
-    # output $pri
-    # height  25
     tray_output $pri
     tray_padding 4
     font pango:JetBrainsMono Nerd Font 9.8
-
-# colors {
-#     background #1e1e2e
-#     statusline #cdd6f4
-#     separator  #6c7086
-
-#     # class             border    background  text
-#     focused_workspace   #89b4fa   #89b4fa     #1e1e2e
-#     active_workspace    #313244   #313244     #cdd6f4
-#     inactive_workspace  #1e1e2e   #1e1e2e     #6c7086
-#     urgent_workspace    #f38ba8   #f38ba8     #1e1e2e
-#     binding_mode        #a6e3a1   #a6e3a1     #1e1e2e
-# }
 }
 
 # ============================================================
@@ -104,11 +84,8 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# App assignments (uncomment to enable)
-# assign [class="Google-chrome"] $ws1
-# assign [class="kitty"]         $ws2
-# assign [class="Spotify"]       $ws5
-
+# App assignments
+assign [class="Spotify"]       $ws5
 
 # ============================================================
 #  Autostart
@@ -116,27 +93,6 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # System
 exec --no-startup-id dex-autostart --autostart --environment i3
-exec --no-startup-id xss-lock --transfer-sleep-lock -- betterlockscreen -l dim
-exec --no-startup-id xidlehook --not-when-fullscreen --timer 1800 'systemctl suspend' ''
-# exec --no-startup-id emacs --daemon &
-exec --no-startup-id nm-apple
-exec --no-startup-id redshift-gtk
-exec --no-startup-id flameshot
-
-# Daemons & scripts
-exec --no-startup-id dunst &
-exec --no-startup-id gromit-mpx &
-
-# Apps
-exec no-startup-id btop
-
-# Wallpaper & keyboard layout (re-applied on restart)
-exec --no-startup-id feh --bg-scale Wallpapers/japan-artistic-5120x2880-25406.jpg
-
-
-# Compositor (uncomment to enable)
-# exec --no-startup-id picom -b --backend glx
-
 
 # ============================================================
 #  Window Rules
@@ -147,11 +103,12 @@ for_window [class="vlc"]          floating enable resize set 1000 800, move posi
 for_window [class="mpv"]          floating enable resize set 1000 800, move position center
 for_window [class="Blueman-manager"] floating enable, resize set 800 600, move position center
 for_window [class="gThumb"] floating enable, resize set 1200 800
+for_window [class="Anki"] floating enable, resize set 1200 800, move position center
 for_window [class="Qalculate"] floating enable, move position center
 for_window [class="org.gnome.clocks"] floating enable, resize set 800 370, move position center
+for_window [instance="Devtools"] floating enable, resize set 1200 800, move position center
 
 # Default scratch pads
-
 for_window [instance="spterm"] move scratchpad
 for_window [instance="spterm"] floating enable
 
@@ -161,7 +118,6 @@ for_window [instance="spterm"] floating enable
 
 floating_modifier $mod
 tiling_drag modifier titlebar
-
 
 # ============================================================
 #  Focus
@@ -177,9 +133,8 @@ bindsym Control+Mod1+Down  focus down
 bindsym Control+Mod1+Up    focus up
 bindsym Control+Mod1+Right focus right
 
-bindsym $mod+space  focus mode_toggle
-bindsym $mod+a      focus parent
-
+bindsym $mod+a  focus mode_toggle
+bindsym $mod+o move workspace to output left
 
 # ============================================================
 #  Window Movement
@@ -209,10 +164,10 @@ bindsym $mod+e           layout toggle split
 bindsym $mod+Shift+f     floating toggle
 
 mode "resize" {
-    bindsym j         resize shrink width  10 px or 10 ppt
-    bindsym k         resize grow   height 10 px or 10 ppt
-    bindsym l         resize shrink height 10 px or 10 ppt
-    bindsym semicolon resize grow   width  10 px or 10 ppt
+    bindsym h         resize shrink width  10 px or 10 ppt
+    bindsym j         resize grow   height 10 px or 10 ppt
+    bindsym k         resize shrink height 10 px or 10 ppt
+    bindsym l         resize grow   width  10 px or 10 ppt
 
     bindsym Left      resize shrink width  10 px or 10 ppt
     bindsym Down      resize grow   height 10 px or 10 ppt
@@ -231,35 +186,54 @@ bindsym $mod+r mode "resize"
 #  Audio & Media
 # ============================================================
 
+# Volume
 bindsym XF86AudioRaiseVolume exec amixer set Master 5%+    && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioLowerVolume exec amixer set Master 5%-    && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute        exec amixer set Master toggle && pkill -RTMIN+10 i3blocks
 
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+#Brightness - Samsung (Display 1)
 
-# bindsym $mod+Shift+\ exec sudo ddcutil setvcp 10 - 10
-# bindsym $mod+Shift+] exec sudo ddcutil setvcp 10 + 10
+bindsym $mod+F5 exec ddcutil --noverify --display 1 setvcp 10 - 10 && \
+  notify-send -h int:value:$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
+  "Samsung — Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
 
+bindsym $mod+F6 exec ddcutil --noverify --display 1 setvcp 10 + 10 && \
+  notify-send -h int:value:$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
+  "Samsung — Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
+
+
+#R Brightness - Dell (Display 2)
+
+bindsym $mod+F7 exec ddcutil --noverify --display 2 setvcp 10 - 10 && \
+  notify-send -h int:value:$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
+  "Dell — Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
+
+bindsym $mod+F8 exec ddcutil --noverify --display 2 setvcp 10 + 10 && \
+  notify-send -h int:value:$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
+  "Dell — Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
+
+# bindsym $mod+F9  exec ddcutil --noverify --display 1 setvcp 10 - 10 && notify-send "Samsung Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
+# bindsym $mod+F10 exec ddcutil --noverify --display 1 setvcp 10 + 10 && notify-send "Samsung Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
+
+# bindsym $mod+F11 exec ddcutil --noverify --display 2 setvcp 10 - 10 && notify-send "Dell Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
+# bindsym $mod+F12 exec ddcutil --noverify --display 2 setvcp 10 + 10 && notify-send "Dell Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
 
 # ============================================================
 #  Keybindings
 # ============================================================
 
 # Core
-bindsym $mod+Return      exec --no-startup-id $TERM
+bindsym $mod+Return      exec --no-startup-id $TERM || /usr/bin/i3-sensible-terminal
 bindsym $mod+d           exec --no-startup-id dmenu_run
 bindsym $mod+Shift+q     kill
 
 # i3 control
 bindsym $mod+Shift+c     reload
 bindsym $mod+Shift+r     restart
-bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # Session
-bindsym $mod+Shift+p     exec betterlockscreen -l dim
+bindsym $mod+l     exec $SCRIPTS_DIR/i3lock.sh
 bindsym $mod+Shift+z     exec systemctl suspend
 
 # Apps
@@ -267,6 +241,8 @@ bindsym $mod+m           exec --no-startup-id flatpak run com.spotify.Client
 bindsym $mod+t           exec --no-startup-id Thunar
 bindsym $mod+c           exec --no-startup-id qalculate
 bindsym $mod+z           exec --no-startup-id emacsclient -c
+bindsym $mod+Print       exec --no-startup-id flameshot screen
+bindsym Print            exec --no-startup-id flameshot gui
 
 
 # Theme
@@ -277,10 +253,6 @@ bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/i3/toggle-darkmode-manua
 bindsym $mod+Shift+minus mark "general", move scratchpad
 bindsym $mod+minus [con_mark="general"] scratchpad show
 
-bindsym $mod+l exec --no-startup-id \
-    i3-msg '[instance="spterm"] scratchpad show' || \
-    $TERM --class spterm
 
-
-# Rofi launcher (uncomment to enable)
-# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
+bindsym $mod+p exec --no-startup-id \
+i3-msg '[instance="spterm"] scratchpad show' || $TERM --class spterm
