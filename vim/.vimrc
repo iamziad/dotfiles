@@ -1,8 +1,10 @@
 call plug#begin()
+  Plug 'sheerun/vim-polyglot'
   Plug 'kien/ctrlp.vim'
   Plug 'tpope/vim-commentary'
   Plug 'jiangmiao/auto-pairs'
   Plug 'morhetz/gruvbox'
+  Plug 'sainnhe/gruvbox-material'
   Plug 'mhinz/vim-signify', { 'tag': 'legacy' }
   Plug 'itchyny/lightline.vim'
 call plug#end()
@@ -13,16 +15,30 @@ call plug#end()
 " ====================================================================
 
 " set visualbell
-set termguicolors
 colorscheme habamax
-colorscheme gruvbox
+
+" Important!!
+if has('termguicolors')
+    set termguicolors
+endif
 
 " lighline
 set laststatus=2
 set showmode!
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
+      \ 'colorscheme': 'gruvbox_material',
       \ }
+
+set background=dark
+
+let g:gruvbox_material_background = 'medium'
+let g:gruvbox_material_foreground = "mix"
+
+
+" For better performance
+let g:gruvbox_material_better_performance = 1
+
+colorscheme gruvbox-material
 
 " Misc
 "set cursorline

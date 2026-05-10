@@ -1,13 +1,18 @@
 command=$SCRIPT_DIR/$BLOCK_NAME
 separator_block_width=15
 markup=none
-color=#e7feff
+color=#f5f5f5
+
 
 [os]
 label=
 command=echo "  "
 color=#ff0000
 interval=once
+
+[org-timer]
+interval=1
+color=#d8a657
 
 [mediaplayer]
 command=$SCRIPT_DIR/mediaplayer/mediaplayer
@@ -18,7 +23,7 @@ interval=5
 signal=10
 
 [bandwidth]
-command=INLABEL=' ' OUTLABEL=' ' $SCRIPT_DIR/bandwidth/bandwidth
+command=INLABEL=' ' OUTLABEL=' ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
 markup=pango
 interval=5
 # INTERFACE=enp3s0

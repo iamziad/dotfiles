@@ -14,8 +14,41 @@
 (setq use-package-always-ensure t)
 
 ;;; ============================================================
+;;; LOAD PATH & LOCAL MODES
+;;; ============================================================
+
+(defun my/add-to-load-path (dir)
+  "Add DIR and all its subdirectories to `load-path'."
+  (add-to-list 'load-path dir)
+  (dolist (subdir (directory-files dir t "^[^.]"))
+    (when (file-directory-p subdir)
+      (add-to-list 'load-path subdir))))
+
+(defun my/require-directory (dir)
+  "Require all .el files in DIR."
+  (when (file-directory-p dir)
+    (my/add-to-load-path dir)
+    (dolist (file (directory-files dir t "\\.el$"))
+      (require (intern (file-name-sans-extension
+                        (file-name-nondirectory file)))))))
+
+(my/require-directory (expand-file-name "modes" user-emacs-directory))
+;; (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/themes/"))
+(mapc (lambda (dir)
+        (add-to-list 'custom-theme-load-path dir))
+      (directory-files-recursively
+       (expand-file-name "~/.emacs.d/themes/") "" t))
+
+;;; ============================================================
 ;;; CORE SETTINGS
 ;;; ============================================================
+
+(setq gruvbox-material-variant 'classic)
+(setq gruvbox-material-modeline 'material)
+(setq gruvbox-material-contrast 'medium)
+(setq gruvbox-material-org 'material)
+(setq gruvbox-material-diff-hl-style 'signs)
+(load-theme 'gruvbox-material t)
 
 (setq inhibit-startup-screen t)
 (setq custom-file "~/.emacs.custom.el")
@@ -32,13 +65,11 @@
 (setq duplicate-line-final-position 1)
 (setq isearch-allow-scroll 1)
 
-;; (setq initial-buffer-choice
-;;       (lambda ()
-;;         (when (zerop (length command-line-args-left))
-;;           (recentf-open-files))))
-
-;; Open files in read-only mode by default
+;; read-only apply
 (add-hook 'find-file-hook #'read-only-mode)
+
+(with-eval-after-load 'vterm
+  (define-key vterm-mode-map (kbd "<escape>") nil))
 
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)
@@ -46,11 +77,6 @@
 (setq switch-to-buffer-obey-display-actions t)
 
 (global-set-key [remap dabbrev-expand] 'hippie-expand)
-
-;; Dired
-(setq dired-dwim-target t)
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
 
 ;;; ============================================================
 ;;; BACKUP & AUTO-SAVE
@@ -148,6 +174,24 @@
     (add-hook 'after-make-frame-functions #'my/set-font)
   (my/set-font))
 
+(require 'quail)
+
+(defun my/toggle-arabic-digits ()
+  "Toggle Eastern Arabic numerals in arabic input method."
+  (interactive)
+  (with-temp-buffer
+    (activate-input-method "arabic")
+    (quail-defrule "0" ?٠)
+    (quail-defrule "1" ?١)
+    (quail-defrule "2" ?٢)
+    (quail-defrule "3" ?٣)
+    (quail-defrule "4" ?٤)
+    (quail-defrule "5" ?٥)
+    (quail-defrule "6" ?٦)
+    (quail-defrule "7" ?٧)
+    (quail-defrule "8" ?٨)
+    (quail-defrule "9" ?٩)))
+
 ;;; ---- org-mode specific ----------------------------------------
 
 (defun my/org-bidi-setup ()
@@ -162,8 +206,15 @@
 (add-hook 'org-mode-hook #'my/org-bidi-setup)
 
 ;;; ============================================================
-;;; LINE NUMBERS
+;;; LINE NUMBERS & COLUMN INDICATOR
 ;;; ============================================================
+
+(global-display-fill-column-indicator-mode 1)
+(setq-default fill-column 80)
+(setq display-fill-column-indicator-character ?\█)
+
+(setq display-line-numbers-width 2)
+(setq display-line-numbers-grow-only t)
 
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode t)
@@ -171,22 +222,13 @@
 (dolist (hook '(term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook
+                org-mode-hook
                 Man-mode-hook
+                markdown-mode-hook
                 vterm-mode-hook))
   (add-hook hook (lambda ()
                    (display-line-numbers-mode 0)
                    (display-fill-column-indicator-mode 0))))
-
-;;; ============================================================
-;;; COLUMN INDICATOR
-;;; ============================================================
-
-(setq-default fill-column 80)
-(setq display-fill-column-indicator-character ?│)
-(global-display-fill-column-indicator-mode 1)
-(set-face-attribute 'fill-column-indicator nil
-                    :foreground "#444444"
-                    :weight 'bold)
 
 ;;; ============================================================
 ;;; MODE LINE
@@ -260,14 +302,6 @@
 ;;; NAVIGATION — bare hjkl (read-only buffers only)
 ;;; ============================================================
 
-(defun my/gg-beginning-of-buffer ()
-  "Go to beginning of buffer on second g (vi-style gg)."
-  (interactive)
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "g")
-      (lambda () (interactive) (beginning-of-buffer)))
-    (set-transient-map map nil (lambda () (message nil)))))
-
 (define-minor-mode my-read-only-nav-mode
   "Bare hjkl navigation, active only when buffer is read-only."
   :global nil
@@ -276,14 +310,6 @@
             (define-key map (kbd "j") 'next-line)
             (define-key map (kbd "k") 'previous-line)
             (define-key map (kbd "l") 'forward-char)
-            (define-key map (kbd "w") 'forward-word)
-            (define-key map (kbd "b") 'backward-word)
-            (define-key map (kbd "C-p")
-              (lambda () (interactive) (previous-line 8) (recenter)))
-            (define-key map (kbd "C-n")
-              (lambda () (interactive) (next-line 8) (recenter)))
-            (define-key map (kbd "g") 'my/gg-beginning-of-buffer)
-            (define-key map (kbd "G") 'end-of-buffer)
             map))
 
 (defun my/read-only-nav-update ()
@@ -294,13 +320,27 @@
 
 (add-hook 'post-command-hook #'my/read-only-nav-update)
 
+
 ;;; ============================================================
 ;;; PACKAGES
 ;;; ============================================================
 
+;; Majro Modes
+
+(use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+              ("C-c C-e" . markdown-do)))
+
+;; (use-package doom-modeline
+;;   :hook (after-init . doom-modeline-mode))
+
 ;; Essential
 
 (use-package magit)
+
+(require 'dired-x)
 
 (use-package vterm)
 
@@ -339,6 +379,8 @@
   (vertico-resize t)
   (vertico-cycle  t))
 
+(use-package imenu-list)
+
 (use-package emacs
   :custom
   (enable-recursive-minibuffers    t)
@@ -353,76 +395,63 @@
   (completion-category-defaults  nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
-;; LSP
+(use-package ligature
+  :config
+  (ligature-set-ligatures 'prog-mode
+    '("==" "!=" "->" "=>" "<=" ">=" "&&" "||"))
+  (global-ligature-mode t))
 
+(use-package rainbow-mode
+  :hook (prog-mode web-mode text-mode)
+  :config
+  (setq rainbow-x-colors nil
+        rainbow-latex-colors nil
+        rainbow-html-colors nil
+        rainbow-ansi-colors nil))
 
 ;; Org
 
 (use-package olivetti
-  :ensure t
   :init
-  (setq olivetti-body-width 85)
+  (setq olivetti-body-width 90)
   (setq olivetti-recall-visual-line-mode-entry-state t)
   :hook
-  ((org-mode . olivetti-mode)
-   (olivetti-mode . (lambda ()
+  ((olivetti-mode . (lambda ()
                       (visual-line-mode 1)
                       (setq-local word-wrap t)
-                      (setq-local bidi-paragraph-direction nil)
-                      (setq org-modern-block-fringe t)
-                      ))))
+                      (setq-local bidi-paragraph-direction nil)))
+   (org-mode . (lambda ()
+                 (setq org-modern-block-fringe t)))))
 
 (use-package org-download
-  :ensure t
   :config
   (setq-default org-download-heading-lvl nil)
   (setq-default org-download-image-dir "./images"))
 
-(use-package org-bullets
-  :hook
-  (org-mode . org-bullets-mode))
+(use-package org-drill)
 
+(add-to-list 'load-path "./.emacs.d/plugins-source/markdown-to-org")
+(require 'markdown-to-org)
+(add-hook 'org-mode-hook #'markdown-to-org-mode)
+
+(use-package org-anki)
+
+;; (use-package anki-editor
+;;   :after org)
 
 ;; UI
 
-(use-package doom-themes
-  :custom
-  (doom-themes-enable-italic nil)
-  :config
-  (load-theme 'doom-gruvbox t)
-  (custom-set-faces
-   '(font-lock-preprocessor-face  ((t (:foreground "#8ec07c" :weight semi-bold))))
-   '(font-lock-function-name-face ((t (:foreground "#8ec07c" :weight semi-bold))))
-   '(font-lock-punctuation-face ((t (:foreground "#8ec07c" :weight semi-bold))))
-   '(font-lock-escape-face  ((t (:foreground "#fe8019"))))
-   '(font-lock-keyword-face  ((t (:weight semi-bold))))
-   '(font-lock-type-face  ((t (:weight semi-bold))))
-   '(font-lock-operator-face  ((t (:weight semi-bold))))
-   '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
-   '(font-lock-delimiter-face ((t (:foreground "#ebdbb2"))))
-   '(font-lock-property-name-face ((t (:foreground "#83a598" :weight semi-bold))))
-   '(font-lock-property-use-face ((t (:foreground "#83a598" :weight semi-bold))))
-   '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
-   '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
-   '(web-mode-html-attr-name-face ((t (:foreground "#fe8019"))))
-   '(corfu-default ((t (:background "#282828" :foreground "#ebdbb2"))))
-   '(corfu-current ((t (:background "#458588" :foreground "#fbf1c7" :weight semi-bold))))
-   '(corfu-border  ((t (:background "#3c3836"))))
-   '(corfu-bar     ((t (:background "#928374"))))
-   '(corfu-annotations ((t (:foreground "#928374" :slant italic)))))
-  )
-
-(use-package nerd-icons
-  :ensure t)
+(use-package nerd-icons)
 
 (use-package diff-hl
-  :ensure t
   :config
+  (setq diff-hl-fringe-bmp-function #'diff-hl-fringe-bmp-from-type)
   (global-diff-hl-mode 1)
+  (diff-hl-show-hunk-mouse-mode)
   (diff-hl-flydiff-mode 1)
   (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
-
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+(add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 ;; Formatters
 
@@ -433,7 +462,6 @@
 ;; Modes
 
 (use-package web-mode
-  :ensure t
   :mode ("\\.html\\'" "\\.phtml\\'" "\\.php\\'" "\\.jsp\\'" "\\.as[cp]x\\'" "\\.erb\\'" "\\.mustache\\'")
   :config
   (setq web-mode-markup-indent-offset 4)
@@ -448,12 +476,15 @@
 ;;; ============================================================
 
 ;; Make
+
 (dolist (hook '(makefile-mode-hook
                 makefile-ts-mode-hook))
   (add-hook hook (lambda ()
                    (setq indent-tabs-mode t)
                    (setq tab-width 4))))
 
+;; rc convention
+(add-to-list 'auto-mode-alist '("rc\\'" . sh-mode))
 
 ;;; ============================================================
 ;;; AUTO COMPLETION
@@ -471,12 +502,16 @@
 ;;; ============================================================
 
 ;; Core
-(add-hook 'org-mode-hook (lambda ()
-                           (display-line-numbers-mode -1)
-                           (display-fill-column-indicator-mode -1)
-                           ))
 
 (add-hook 'org-mode-hook #'font-lock-mode)
+(add-hook 'org-mode-hook #'auto-fill-mode)
+
+(setq org-file-apps
+      '((auto-mode . emacs)
+        ("\\.png\\'" . "gthumb %s")
+        ("\\.jpg\\'" . "gthumb %s")
+        ("\\.gif\\'" . "gthumb %s")
+        ("\\.jpeg\\'" . "gthumb %s")))
 
 ;; Prettification
 (setq org-startup-indented t
@@ -492,38 +527,24 @@
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 
-
-;; GRUVBOX SPECIFIC
-(defun my-org-customization ()
-(set-face-attribute 'bold nil :foreground "#458588" :weight 'bold)
-(set-face-attribute 'italic nil :foreground "#b16286" :weight 'normal)
-)
-(add-hook 'org-mode-hook 'my-org-customization)
-
-
-
 (with-eval-after-load 'org
   ;; Keybinds
   (define-key org-mode-map (kbd "M-n") #'org-next-item)
-  (define-key org-mode-map (kbd "M-p") #'org-previous-item)
+  (define-key org-mode-map (kbd "M-p") #'org-previous-item))
 
-  ;; Fonts
-  (dolist (face '((org-level-1 . 1.4)
-                  (org-level-2 . 1.3)
-                  (org-level-3 . 1.2)
-                  (org-level-4 . 1.1)
-                  (org-level-5 . 1.0)
-                  (org-level-6 . 1.0)
-                  (org-level-7 . 1.0)
-                  (org-level-8 . 1.0)))
-    (set-face-attribute (car face) nil :font "JetBrains Mono" :weight 'bold :height (cdr face)))
-  )
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((C . t)
+   (python . t)
+   (shell . t)
+   (emacs-lisp . t)))
 
 ;;; ============================================================
 ;;; KEYBINDINGS
 ;;; ============================================================
 
 (bind-keys
+ ("<f5>" . reload-init-file)
  ("M-k" . my/delete-smart-to-end)
  ("M-b" . my/man-at-point)
  ("DEL" . my/delete-selected)
@@ -535,11 +556,14 @@
  ("M-m" . recenter-top-bottom)
  ("s-\\" . toggle-input-method)
  ("<escape>" . read-only-mode)
+ ("C-<tab>" . mode-line-other-buffer)
+ ("C-c i" . imenu)
 
  :map global-map
  ("C-c f" . find-file-at-point)
- ("C-c F" . ffap-other-window)
  ("C-c gg" . project-find-regexp)
+ ("C-c h" . previous-buffer)
+ ("C-c l" . next-buffer)
 
  :map org-mode-map
  ("C-c s" . org-download-clipboard)
@@ -571,6 +595,16 @@
            ("C-s" . diff-hl-show-hunk))
 
 ;;; ============================================================
+;;; DIRED
+;;; ============================================================
+
+(setq dired-dwim-target t)
+(setq dired-recursive-copies 'always)
+(setq dired-recursive-deletes 'always)
+(setq dired-omit-files "^\\.[^\\.]\\|~$\\|^#.*#$")
+;; (add-hook 'dired-mode-hook #'dired-omit-mode)
+
+;;; ============================================================
 ;;; MAGIT
 ;;; ============================================================
 
@@ -588,7 +622,10 @@
   (setq my/mode-line-git-branch
         (if-let ((branch (and (fboundp 'magit-get-current-branch)
                               (magit-get-current-branch))))
-            (propertize (concat "  " branch) 'face '(:foreground "#b8bb26" :weight bold))
+            (concat
+             (propertize "Git: " 'face '(:foreground "#bdae93" :weight regular))
+             (propertize " " 'face '(:foreground "#b8bb26" :weight bold))
+             (propertize branch    'face '(:foreground "#b8bb26" :weight semi-bold)))
           "")))
 
 (add-hook 'find-file-hook #'my/update-git-branch)
@@ -601,7 +638,8 @@
 (define-key my-leader-map (kbd "g") 'my-git-map)
 
 (setq magit-repository-directories
-      '(("~/dotfiles" . 0)
+      '(("~/" . 1)
+        ("~/dotfiles" . 0)
         ("~/Programming" . 1)))
 
 
@@ -644,29 +682,6 @@
       (let ((default-directory (expand-file-name repo)))
         (project-current t))))
   (add-hook 'after-init-hook #'my/add-magit-repos-to-project))
-
-
-;;; ============================================================
-;;; LOAD PATH & LOCAL MODES
-;;; ============================================================
-
-(defun my/add-to-load-path (dir)
-  "Add DIR and all its subdirectories to `load-path'."
-  (add-to-list 'load-path dir)
-  (dolist (subdir (directory-files dir t "^[^.]"))
-    (when (file-directory-p subdir)
-      (add-to-list 'load-path subdir))))
-
-(defun my/require-directory (dir)
-  "Require all .el files in DIR."
-  (when (file-directory-p dir)
-    (my/add-to-load-path dir)
-    (dolist (file (directory-files dir t "\\.el$"))
-      (require (intern (file-name-sans-extension
-                        (file-name-nondirectory file)))))))
-
-(my/require-directory (expand-file-name "modes" user-emacs-directory))
-(add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/themes/"))
 
 ;;; ============================================================
 ;;; TREESITTER – CONFIGURATION & NAVIGATION (EMACS 30+)
@@ -731,8 +746,8 @@
     (go-mode         . go-ts-mode)
     (css-mode        . css-ts-mode)
     (sh-mode         . bash-ts-mode)
-    (makefile-mode   . makefile-ts-mode)
-    (asm-mode        . asm-ts-mode)
+    ;; (makefile-mode   . makefile-ts-mode)
+    ;; (asm-mode        . asm-ts-mode)
     (dockerfile-mode . dockerfile-ts-mode)
     (html-mode       . html-ts-mode)
     (markdown-mode   . markdown-ts-mode)))
@@ -800,12 +815,6 @@
 (advice-add 'split-window   :around #'my/focus-new-window)
 (advice-add 'display-buffer :around #'my/focus-new-window)
 
-(defun mark-whole-line ()
-  "Mark the entire current line."
-  (interactive)
-  (beginning-of-line)
-  (set-mark (line-beginning-position 2)))
-
 (defun my/man-at-point ()
   "Run man on the word under the cursor, displayed on the right."
   (interactive)
@@ -842,3 +851,16 @@
   (interactive)
   (delete-region (point)
                  (progn (forward-word 1) (point))))
+
+(defun reload-init-file ()
+  (interactive)
+  (load-file user-init-file))
+
+(defun my/org-open-image-in-separate-buffer ()
+  "Open the image at point in a full buffer using image-mode."
+  (interactive)
+  (let ((file (org-element-property :path (org-element-context))))
+    (find-file-other-window file)
+    (image-mode)))
+
+

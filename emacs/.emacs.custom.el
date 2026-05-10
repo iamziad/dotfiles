@@ -4,49 +4,39 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-gruvbox))
+ '(custom-enabled-themes '(gruvbox-material))
  '(custom-safe-themes
-   '("d5fd482fcb0fe42e849caba275a01d4925e422963d1cd165565b31d3f4189c87"
-     "18a1d83b4e16993189749494d75e6adb0e15452c80c431aca4a867bcc8890ca9"
-     "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
+   '("6adab727b9d6ba85fc75a609c6bf2869c0c37b2e43a32a88a6d047f2f4fc1d5a"
+     "0350116b92d2cbf55b48b9213d46e92ab41f168c04469ac4faa9a2f9742bc3ff"
      "c34b1cd863f5249bfc3b86e0454368f9bb8d97ea0c5b760939933eee56ed4175"
-     "b1a691bb67bd8bd85b76998caf2386c9a7b2ac98a116534071364ed6489b695d"
+     "b5fd9c7429d52190235f2383e47d340d7ff769f141cd8f9e7a4629a81abc6b19"
      "d2ab3d4f005a9ad4fb789a8f65606c72f30ce9d281a9e42da55f7f4b9ef5bfc6"
-     "3613617b9953c22fe46ef2b593a2e5bc79ef3cc88770602e7e569bbd71de113b"
-     "9cd784dfeea58d9d852d52be9126c1fba2b890ed368245624dec1df165a4f6fd"
+     "69f32e3810b46de12fb191cc14cf91a0c48886b6faf099c9f640fa702ce52204"
+     "be0849f8f87f4aedeacc24d9be014cb37047d375f070b4aea39f4b2c423cee17"
+     "0ff6922b0775c70531ce152d245965e91716e0720e47202a7e099aa8dc9f34af"
+     "5aedf993c7220cbbe66a410334239521d8ba91e1815f6ebde59cecc2355d7757"
+     "b7a09eb77a1e9b98cafba8ef1bd58871f91958538f6671b22976ea38c2580755"
+     "9f19443dc2862d4ce4228afaba7989652a91d998362263589d04751391b0a985"
+     "fa14ae9b82dc43c015d4ddc6df625f02c23f72f5ad6c48e623102bf821a391de"
+     "d5fd482fcb0fe42e849caba275a01d4925e422963d1cd165565b31d3f4189c87"
+     "b795b6b4623de3569bc756128562924813719d4473907ad3067963fae4eb46f4"
+     "19b96a91f04e36ba9a775d497c7e5a72d25ae46f7179bfd0742c15a8c66d7c32"
+     "06a758b66b9cd165308b5fe97e9c87416e574930e0b4cd0464bd42d8e3d889dc"
+     "db10044eb11a8f7765f49c52694bda451151bb62f0fa2404b77c237441075e47"
      "f1e8339b04aef8f145dd4782d03499d9d716fdc0361319411ac2efc603249326" default))
- '(org-agenda-files nil)
  '(package-selected-packages
-   '(anzu avy clang-format company corfu diff-hl doom-themes drag-stuff expreg
-          kind-icon magit marginalia markdown-mode nerd-icons olivetti orderless
-          org-bullets org-download org-modern popper vertico vterm web-mode))
- '(package-vc-selected-packages
-   '((combobulate :url "https://github.com/mickeynp/combobulate"))))
+   '(amaranth-dark-theme anki-editor anzu avy clang-format company consult corfu
+                         diff-hl doom-modeline doom-themes drag-stuff eat
+                         elisp-format expreg gruvbox-theme i3wm-config-mode
+                         imenu-list kanagawa-themes kaolin-themes kind-icon
+                         ligature magit marginalia markdown-mode modus-themes
+                         olivetti orderless org-anki org-bullets org-download
+                         org-drill org-modern pache-dark-theme popper
+                         rainbow-mode rg-themes solaire-mode treesit-auto
+                         vertico vterm web-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(corfu-annotations ((t (:foreground "#928374" :slant italic))))
- '(corfu-bar ((t (:background "#928374"))))
- '(corfu-border ((t (:background "#3c3836"))))
- '(corfu-current ((t (:background "#458588" :foreground "#fbf1c7" :weight semi-bold))))
- '(corfu-default ((t (:background "#282828" :foreground "#ebdbb2"))))
- '(css-property ((t (:foreground "#fe8019"))))
- '(font-lock-bracket-face ((t (:foreground "#ebdbb2"))))
- '(font-lock-css-property-face ((t (:weight semi-bold))))
- '(font-lock-delimiter-face ((t (:foreground "#ebdbb2"))))
- '(font-lock-escape-face ((t (:foreground "#fe8019"))))
- '(font-lock-function-name-face ((t (:foreground "#98C379"))))
- '(font-lock-keyword-face ((t (:weight bold))))
- '(font-lock-operator-face ((t (:weight semi-bold))))
- '(font-lock-preprocessor-face ((t (:foreground "#b16286"))))
- '(font-lock-property-name-face ((t (:foreground "#83a598" :weight semi-bold))))
- '(font-lock-property-use-face ((t (:foreground "#83a598" :weight semi-bold))))
- '(font-lock-punctuation-face ((t (:foreground "#8ec07c" :weight semi-bold))))
- '(font-lock-type-face ((t (:weight semi-bold))))
- '(font-lock-variable-name-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
- '(font-lock-variable-use-face ((t (:foreground "#d5c4a1" :weight semi-bold))))
- '(org-bold ((t (:foreground "#d79921" :weight bold))))
- '(org-italic ((t (:foreground "#b16286" :slant italic))))
- '(web-mode-html-attr-name-face ((t (:foreground "#fe8019")))))
+ )

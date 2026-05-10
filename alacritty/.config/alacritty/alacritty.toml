@@ -1,16 +1,16 @@
-# Alacritty Configuration — Kanagawa Dragon
-# Converted from Kitty config
-
 [general]
 live_config_reload = true
+import = [
+    "~/.config/alacritty/themes/gruvbox_dark.toml"
+]
 
 [env]
 TERM = "xterm-256color"
 
 [window]
-padding = { x = 2, y = 2 }
-opacity = 0.90
-# decorations = "None"  # Uncomment to hide window decorations
+padding = { x = 10, y = 10 }
+opacity = 1.0
+# decorations = "None"
 
 [scrolling]
 history = 5000
@@ -34,49 +34,11 @@ style = "Italic"
 family = "JetBrainsMono Nerd Font"
 style = "Bold Italic"
 
-# Note: Alacritty does not support ligatures natively.
-# For ligature support, consider using WezTerm or Kitty.
-
 [cursor]
 style = { shape = "Block", blinking = "On" }
 blink_interval = 500
 unfocused_hollow = true
 
-# Note: cursor_trail is not supported in Alacritty.
-
 [bell]
 animation = "EaseOutExpo"
 duration = 0
-
-# Gruvbox
-[colors.primary]
-foreground = "#ebdbb2"
-background = "#282828"
-
-[colors.cursor]
-text = "#282828"
-cursor = "#ebdbb2"
-
-[colors.selection]
-text = "#282828"
-background = "#ebdbb2"
-
-[colors.normal]
-black = "#282828"
-red = "#cc241d"
-green = "#98971a"
-yellow = "#d79921"
-blue = "#458588"
-magenta = "#b16286"
-cyan = "#689d6a"
-white = "#a89984"
-
-[colors.bright]
-black = "#928374"
-red = "#fb4934"
-green = "#b8bb26"
-yellow = "#fabd2f"
-blue = "#83a598"
-magenta = "#d3869b"
-cyan = "#8ec07c"
-white = "#ebdbb2"
