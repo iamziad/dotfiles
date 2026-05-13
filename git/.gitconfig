@@ -4,6 +4,7 @@
 	email = dev.ziadahmed@gmail.com
 [core]
 	editor = emacsclient -c -a vim
+    excludesfile = ~/.gitignore_global
 [init]
 	defaultBranch = main
 [alias]
