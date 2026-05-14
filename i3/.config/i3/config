@@ -213,32 +213,18 @@ bindsym XF86AudioRaiseVolume exec amixer set Master 5%+    && pkill -RTMIN+10 i3
 bindsym XF86AudioLowerVolume exec amixer set Master 5%-    && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute        exec amixer set Master toggle && pkill -RTMIN+10 i3blocks
 
-#Brightness - Samsung (Display 1)
-
-bindsym $mod+F5 exec ddcutil --noverify --display 1 setvcp 10 - 10 && \
-  notify-send -h int:value:$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
-  "Samsung — Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
-
-bindsym $mod+F6 exec ddcutil --noverify --display 1 setvcp 10 + 10 && \
-  notify-send -h int:value:$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
-  "Samsung — Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
 
 
-#R Brightness - Dell (Display 2)
+#Brightness
 
-bindsym $mod+F7 exec ddcutil --noverify --display 2 setvcp 10 - 10 && \
-  notify-send -h int:value:$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
-  "Dell — Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
+set $bus_pri 3
+set $bus_sec 5
 
-bindsym $mod+F8 exec ddcutil --noverify --display 2 setvcp 10 + 10 && \
-  notify-send -h int:value:$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+') \
-  "Dell — Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')%"
+bindsym $mod+F5 exec $SCRIPTS_DIR/brightness.sh 3 "Samsung" -
+bindsym $mod+F6 exec $SCRIPTS_DIR/brightness.sh 3 "Samsung" +
 
-# bindsym $mod+F9  exec ddcutil --noverify --display 1 setvcp 10 - 10 && notify-send "Samsung Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
-# bindsym $mod+F10 exec ddcutil --noverify --display 1 setvcp 10 + 10 && notify-send "Samsung Brightness" "$(ddcutil --display 1 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
-
-# bindsym $mod+F11 exec ddcutil --noverify --display 2 setvcp 10 - 10 && notify-send "Dell Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
-# bindsym $mod+F12 exec ddcutil --noverify --display 2 setvcp 10 + 10 && notify-send "Dell Brightness" "$(ddcutil --display 2 getvcp 10 | grep -oP 'current value =\s*\K[0-9]+')"
+bindsym $mod+F7 exec $SCRIPTS_DIR/brightness.sh $bus_sec "Dell" -
+bindsym $mod+F8 exec $SCRIPTS_DIR/brightness.sh $bus_sec "Dell" +
 
 # ============================================================
 #  Keybindings
