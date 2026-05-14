@@ -93,7 +93,6 @@
  ("C-n"           . (lambda () (interactive) (forward-line  5)))
  ("C-p"           . (lambda () (interactive) (forward-line -5)))
  ("M-n"           . recenter-top-bottom)
- ("<escape>"      . keyboard-escape-quit)
 
  ;; C-c prefix
  :map global-map
@@ -310,11 +309,12 @@
     				                  :type git
     				                  :files ("*.el"))
     :config
-    (setq gruvbox-material-variant             'classic)
-    (setq gruvbox-material-contrast            'medium)
-    (setq gruvbox-material-modeline            'material)
-    (setq gruvbox-material-org                 'material)
-    (setq gruvbox-material-org-scale-headings  nil)
+    (setq gruvbox-material-variant             'classic
+          gruvbox-material-contrast            'medium
+          gruvbox-material-modeline            'material
+          gruvbox-material-org                 'material
+          gruvbox-material-diff-hl-style       'signs
+          gruvbox-material-org-scale-headings   nil)
     (load-theme 'gruvbox-material t))
 #+end_src
 
@@ -489,6 +489,18 @@ Block Expansion
          (common-lisp-mode . rainbow-delimiters-mode)))
 #+end_src
 
+*** diff-hl
+#+begin_src emacs-lisp
+(use-package diff-hl
+    :config
+    (global-diff-hl-mode 1)
+    (setq diff-hl-fringe-bmp-function #'diff-hl-fringe-bmp-from-type)
+    (diff-hl-show-hunk-mouse-mode)
+    (diff-hl-flydiff-mode 1)
+    (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+#+end_src
 
 * Useful Utilities
 
