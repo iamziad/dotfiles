@@ -1,0 +1,508 @@
+#+TITLE: GNU Emacs Configuration
+#+AUTHOR: Ziad Ahmed
+#+STARTUP: showeverthing
+#+OPTIONS: toc: 2
+
+* Table Of Contents :toc:
+- [[#package-management][Package Management]]
+- [[#keybindings][Keybindings]]
+- [[#fonts][Fonts]]
+- [[#settings][Settings]]
+- [[#programming][Programming]]
+- [[#gruvbox][Gruvbox]]
+- [[#dired][Dired]]
+- [[#org][Org]]
+- [[#git][Git]]
+- [[#modes][Modes]]
+- [[#quality-of-life][Quality Of Life]]
+- [[#misc-packages][Misc Packages]]
+- [[#useful-utilities][Useful Utilities]]
+
+* Package Management
+
+*** Straight Package Manager
+
+#+BEGIN_SRC emacs-lisp
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+        (with-current-buffer
+                (url-retrieve-synchronously
+                 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+                 'silent 'inhibit-cookies)
+            (goto-char (point-max))
+            (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-vc-git-default-protocol 'https)
+(setq straight-use-package-by-default t)
+#+END_SRC
+
+* Keybindings
+
+*** Navigation
+
+#+BEGIN_SRC emacs-lisp
+(defvar my-nav-map (make-sparse-keymap))
+(define-key my-nav-map (kbd "C-h") #'backward-char)
+(define-key my-nav-map (kbd "C-j") #'next-line)
+(define-key my-nav-map (kbd "C-k") #'previous-line)
+(define-key my-nav-map (kbd "C-l") #'forward-char)
+(define-key my-nav-map (kbd "C-f") #'forward-word)
+(define-key my-nav-map (kbd "C-b") #'backward-word)
+
+(define-minor-mode my-nav-mode
+  "Custom navigation mode."
+  :lighter ""
+  :keymap my-nav-map)
+
+(defvar my-nav-excluded-modes
+  '(minibuffer-mode
+    term-mode
+    vterm-mode
+    eshell-mode
+    shell-mode
+    comint-mode
+    magit-mode)
+  "Modes where my-nav-mode should not activate.")
+
+(defun my-nav-mode--maybe-enable ()
+  (unless (apply #'derived-mode-p my-nav-excluded-modes)
+    (my-nav-mode 1)))
+
+(define-globalized-minor-mode global-my-nav-mode
+  my-nav-mode
+  my-nav-mode--maybe-enable)
+
+(global-my-nav-mode 1)
+#+END_SRC
+
+*** General Keybindings
+
+#+BEGIN_SRC emacs-lisp
+(bind-keys
+ ("<f5>"          . my/reload-init-file)
+ ("C-,"           . duplicate-line)
+ ("C-<tab>"       . mode-line-other-buffer)
+ ("C-n"           . (lambda () (interactive) (forward-line  5)))
+ ("C-p"           . (lambda () (interactive) (forward-line -5)))
+ ("M-n"           . recenter-top-bottom)
+ ("<escape>"      . keyboard-escape-quit)
+
+ ;; C-c prefix
+ :map global-map
+ ("C-c f" . find-file-at-point)
+ ("C-c h" . previous-buffer)
+ ("C-c l" . next-buffer)
+ ("C-c o c" . my/open-config)
+
+ :map org-mode-map
+ ("C-c s" . org-download-clipboard))
+#+END_SRC
+
+*** Leader General Keybindings
+
+#+BEGIN_SRC emacs-lisp
+(bind-keys :prefix-map my-leader-map
+           :prefix "C-z"
+           ("h"   . help-command))
+#+END_SRC
+
+* Fonts
+
+*** Essential Fonts
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil
+                    :font "JetBrainsMono Nerd Font Mono"
+                    :height 110
+                    :weight 'medium)
+
+(set-face-attribute 'variable-pitch nil
+                    :font "Ubuntu"
+                    :height 110
+                    :weight 'medium)
+
+(set-face-attribute 'fixed-pitch nil
+                    :font "JetBrainsMono Nerd Font Mono"
+                    :height 110
+                    :weight 'medium)
+
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
+
+(setq-default line-spacing 0.12)
+#+END_SRC
+
+* Settings
+
+*** General Settings
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen 1)
+(recentf-mode 1)
+(savehist-mode)
+(delete-selection-mode)
+(column-number-mode)
+(setq duplicate-line-final-position 1)
+(setq isearch-allow-scroll 1)
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers 1)
+(setq switch-to-buffer-obey-display-actions 1)
+(global-set-key [remap dabbrev-expand] 'hippie-expand)
+(setq scroll-preserve-screen-position t)
+(setq scroll-margin 5)
+(set-fringe-mode 10)
+(xterm-mouse-mode 1)
+(auto-save-visited-mode 1)
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Move customization settings out of init.el
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file t))
+
+#+END_SRC
+
+*** Frame tweaks
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode   0)
+(menu-bar-mode   0)
+(scroll-bar-mode 0)
+(column-number-mode)
+#+END_SRC
+
+*** Column Indicator & Line Numbers
+
+#+BEGIN_SRC emacs-lisp
+;; Column Indicator
+(global-display-fill-column-indicator-mode 1)
+(setq-default fill-column 80)
+
+;; Line Numbers
+(global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
+(global-visual-line-mode 1)
+
+(dolist (hook '(term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook
+                Man-mode-hook
+  	            olivetti-mode-hook
+                vterm-mode-hook))
+    (add-hook hook (lambda ()
+                       (display-line-numbers-mode 0)
+                       (display-fill-column-indicator-mode 0))))
+#+END_SRC
+
+*** Better Deletion
+
+#+BEGIN_SRC emacs-lisp
+(defun my/delete-selected ()
+    "Delete selected region without adding to kill ring."
+    (interactive)
+    (if (use-region-p)
+            (delete-region (region-beginning) (region-end))
+        (delete-char -1)))
+
+(defun my/delete-smart-to-end ()
+    "Delete to end of line, or delete newline if already at end of line."
+    (interactive)
+    (if (= (point) (line-end-position))
+            (unless (eobp)        (delete-char 1))
+        (delete-region (point) (line-end-position))))
+
+(defun my-backward-delete-word ()
+    (interactive)
+    (delete-region (point) (progn (backward-word 1) (point))))
+
+(defun my/forward-delete-word ()
+    "Delete word forward without adding to kill-ring."
+    (interactive)
+    (delete-region (point)
+                   (progn (forward-word 1) (point))))
+
+(bind-keys
+ ("M-k"           . my/delete-smart-to-end)
+ ("DEL"           . my/delete-selected)
+ ("M-DEL"         . my-backward-delete-word)
+ ("M-d"           . my/forward-delete-word)
+ ("<C-backspace>" . my-backward-delete-word))
+#+END_SRC
+
+*** Buffer Move
+
+#+BEGIN_SRC emacs-lisp
+(use-package buffer-move
+    :bind (:map my-leader-map
+  	            ("w k" . buf-move-up)
+  	            ("w j" . buf-move-down)
+  	            ("w h" . buf-move-left)
+  	            ("w l" . buf-move-right)))
+#+END_SRC
+
+
+* Programming
+
+*** Indentation
+
+*** General Settings
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq-default standard-indent 4)
+(electric-pair-mode 1)
+(global-set-key (kbd "RET") 'newline-and-indent)
+#+end_src
+
+*** Emacs Lisp
+#+begin_src emacs-lisp
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+              (setq lisp-body-indent 4)))
+#+end_src
+
+*** C/C++/Java
+#+begin_src emacs-lisp
+(add-hook 'c-mode-common-hook
+          (lambda ()
+              (c-set-style "k&r")
+              (setq c-basic-offset 4)
+              (setq indent-tabs-mode nil)))
+#+end_src
+
+*** Python
+#+begin_src emacs-lisp
+(setq python-indent-offset 4)
+
+(add-hook 'python-mode-hook
+          (lambda ()
+              (setq python-indent-offset 4)
+              (setq indent-tabs-mode nil)))
+#+end_src
+
+*** Make
+#+begin_src emacs-lisp
+(add-hook 'makefile-mode-hook
+          (lambda ()
+              (setq indent-tabs-mode t)
+              (setq tab-width 4)))
+#+end_src
+
+*** Bash
+#+begin_src emacs-lisp
+(setq sh-basic-offset 4)
+(setq sh-indentation 4)
+#+end_src
+
+* Gruvbox
+
+#+begin_src emacs-lisp
+(use-package gruvbox-material-theme
+    :straight (gruvbox-material-theme :local-repo "~/gruvbox-material-emacs"
+    				                  :type git
+    				                  :files ("*.el"))
+    :config
+    (setq gruvbox-material-variant             'classic)
+    (setq gruvbox-material-contrast            'medium)
+    (setq gruvbox-material-modeline            'material)
+    (setq gruvbox-material-org                 'material)
+    (setq gruvbox-material-org-scale-headings  nil)
+    (load-theme 'gruvbox-material t))
+#+end_src
+
+* Dired
+
+*** Enabling dired's extras
+#+begin_src emacs-lisp
+(require 'dired-x)
+(setq dired-dwim-target t)
+#+end_src
+
+* Org
+
+*** Babel
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (C . t)))
+
+(setq        org-src-tab-acts-natively t)
+(setq        org-src-fontify-natively t)
+(setq        org-confirm-babel-evaluate nil)
+(setq        org-src-preserve-indentation t)
+(setq        org-src-window-setup 'current-window)
+#+end_src
+
+*** toc-org
+Generates Table of Contents
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package toc-org
+;;   :ensure t
+;;   :commands toc-org-enable
+;;   :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+(use-package toc-org
+    :straight (:host github
+   		             :repo "iamziad/toc-org"
+   		             :branch "toc-side-window"
+   		             :files ("*.el"))
+    :commands toc-org-enable
+    :bind (:map my-leader-map
+  	            ("o" . toc-org-navigation-pane))
+    :config
+    (setq toc-org-side-window-side 'left)
+    :init
+    (add-hook 'markdown-mode-hook #'toc-org-enable)
+    (add-hook 'org-mode-hook #'toc-org-enable))
+#+END_SRC
+
+*** org-tempo
+Block Expansion
+
+#+begin_src emacs-lisp
+(require 'org-tempo)
+#+end_src
+
+*** Olivetti
+
+#+begin_src emacs-lisp
+(use-package olivetti
+    :init
+    (setq olivetti-body-width 90)
+    (setq olivetti-recall-visual-line-mode-entry-state t)
+    :hook
+    ((olivetti-mode . (lambda ()
+                          (visual-line-mode 1)
+                          (setq-local word-wrap t)
+                          (setq-local bidi-paragraph-direction nil)))
+     (org-mode . (lambda ()
+                     (setq org-modern-block-fringe t)))))
+#+end_src
+
+*** org-download
+
+#+begin_src emacs-lisp
+(use-package org-download
+    :config
+    (setq-default org-download-heading-lvl nil)
+    (setq-default org-download-image-dir "./images"))
+#+end_src
+
+* Git
+*** Magit
+
+* Modes
+
+*** Markdown
+#+begin_src emacs-lisp
+(use-package markdown-mode
+    :mode ("README\\.md\\'" . gfm-mode)
+    :init (setq markdown-command "multimarkdown")
+    :bind (:map markdown-mode-map
+                ("C-c C-e" . markdown-do)))
+#+end_src
+
+
+* Quality Of Life
+
+*** The Vertico Stack
+
+**** Vertico
+- Simple Vertical Completion
+- 'emacs' package for recursive and less bloated mini buffers
+**** Marginalia
+- Informative mini buffers
+**** Orderless
+- Fuzzy searching in mini buffers
+
+  #+begin_src emacs-lisp
+(use-package vertico
+    :init (vertico-mode)
+    :bind (:map vertico-map
+                ("C-j" . vertico-next)
+                ("C-k" . vertico-previous))
+    :custom
+    (vertico-resize t)
+    (vertico-cycle  t)
+    (vertico-scroll-margin 0))
+
+(use-package emacs
+    :custom
+    (context-menu-mode t)
+    (enable-recursive-minibuffers t)
+    (read-extended-command-predicate #'command-completion-default-include-p)
+    (minibuffer-prompt-properties
+     '(read-only t cursor-intangible t face minibuffer-prompt)))
+
+(use-package marginalia
+    :init (marginalia-mode))
+
+(use-package orderless
+    :custom
+    (completion-styles              '(orderless basic))
+    (completion-category-defaults  nil)
+    (completion-category-overrides '((file (styles partial-completion)))))
+  #+end_src
+
+* Misc Packages
+
+*** ace-window
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+    :ensure t
+    :bind ("M-o" . ace-window)
+    :config
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+END_SRC
+
+*** sudo-edit
+#+BEGIN_SRC emacs-lisp
+(use-package sudo-edit
+    :bind (:map my-leader-map
+                ("s f" . sudo-edit-find-file)
+                ("s F" . sudo-edit)))
+#+END_SRC
+
+*** anzu
+#+begin_src emacs-lisp
+(use-package anzu
+    :config
+    (global-anzu-mode 1))
+#+end_src
+
+*** rainbow-delimitters
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :ensure t
+  :hook ((emacs-lisp-mode . rainbow-delimiters-mode)
+         (lisp-mode . rainbow-delimiters-mode)
+         (common-lisp-mode . rainbow-delimiters-mode)))
+#+end_src
+
+
+* Useful Utilities
+
+*** Reload Config File
+#+BEGIN_SRC emacs-lisp
+(defun my/reload-init-file ()
+    (interactive)
+    (load-file user-init-file)
+    (message "Config reloaded!"))
+#+END_SRC
+
+*** Open Config File
+#+BEGIN_SRC emacs-lisp
+(defun my/open-config ()
+    (interactive)
+    (find-file (expand-file-name "config.org" user-emacs-directory)))
+#+END_SRC

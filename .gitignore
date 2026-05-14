@@ -1,6 +1,25 @@
-# Emacs runtime/backup files
-emacs/.emacs.d/
+# Emacs backup and temporary files
 *~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list/
+tramp
+elpa/
+straight/
+eln-cache/
+recentf
+history
+eshell/
+*-autoloads.el
+custom.el
+
+## Org-mode generated files
+config.el
+
+# Folder-specific ignore
+.DS_Store
 
 # Tmux plugins
 tmux/.tmux/plugins/
