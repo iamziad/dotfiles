@@ -31,7 +31,7 @@ interval=5
 
 [memory]
 command=$SCRIPT_DIR/memory/memory
-label= MEM:
+label=MEM:
 instance=mem
 separator=true
 interval=10
@@ -54,7 +54,7 @@ interval=10
 separator=false
 
 [cpu_usage]
-command=LABEL='  CPU: ' T_WARN=65 T_CRIT=80 COLOR_NORMAL='#EBDBB2' COLOR_WARN='#FFFC00' COLOR_CRIT='#FF0000' $SCRIPT_DIR/cpu_usage/cpu_usage
+command=LABEL='CPU: ' T_WARN=65 T_CRIT=80 COLOR_NORMAL='#EBDBB2' COLOR_WARN='#FFFC00' COLOR_CRIT='#FF0000' $SCRIPT_DIR/cpu_usage/cpu_usage
 interval=10
 separator=false
 

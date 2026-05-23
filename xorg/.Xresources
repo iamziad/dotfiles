@@ -1,0 +1,44 @@
+! xterm
+
+XTerm*termName:            xterm-256color
+
+XTerm*faceName:            JetBrainsMono Nerd Font
+XTerm*faceSize:            11.5
+XTerm*renderFont:          true
+XTerm*internalBorder:      10
+XTerm*scrollBar:           false
+XTerm*saveLines:           5000
+XTerm*cursorShape:         block
+XTerm*cursorBlink:         true
+XTerm*cursorOnTime:        500
+XTerm*cursorOffTime:       500
+XTerm*pointerColor:        gray
+XTerm*bellIsUrgent:        false
+XTerm*visualBell:          false
+
+XTerm*color0:              #282828
+XTerm*color1:              #CC241D
+XTerm*color2:              #98971A
+XTerm*color3:              #D79921
+XTerm*color4:              #458588
+XTerm*color5:              #B16286
+XTerm*color6:              #689D6A
+XTerm*color7:              #A89984
+XTerm*color8:              #928374
+XTerm*color9:              #FB4934
+XTerm*color10:             #B8BB26
+XTerm*color11:             #FABD2F
+XTerm*color12:             #83A598
+XTerm*color13:             #D3869B
+XTerm*color14:             #8EC07C
+XTerm*color15:             #EBDBB2
+XTerm*foreground:          #EBDBB2
+XTerm*background:          #282828
+XTerm*cursorColor:         #EBDBB2
+
+XTerm*decTerminalID:       vt340
+XTerm*numColorRegisters:   256
+XTerm*utf8:                1
+XTerm*locale:              true
+XTerm*selectToClipboard:   true
+XTerm*omitTranslation:     popup-menu

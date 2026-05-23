@@ -9,39 +9,27 @@ call plug#begin()
   Plug 'itchyny/lightline.vim'
 call plug#end()
 
-
 " ====================================================================
 " Options
 " ====================================================================
-
-" set visualbell
-colorscheme habamax
 
 " Important!!
 if has('termguicolors')
     set termguicolors
 endif
 
-" lighline
+" Colorscheme & Appearance Configuration
+colorscheme gruvbox
+set background=dark
+
+" lightline
 set laststatus=2
 set showmode!
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox_material',
+      \ 'colorscheme': 'gruvbox',
       \ }
 
-set background=dark
-
-let g:gruvbox_material_background = 'medium'
-let g:gruvbox_material_foreground = "mix"
-
-
-" For better performance
-let g:gruvbox_material_better_performance = 1
-
-colorscheme gruvbox-material
-
 " Misc
-"set cursorline
 syntax on
 set number
 set relativenumber
@@ -83,4 +71,3 @@ let g:netrw_liststyle = 3
 " Completion
 set completeopt=menu,menuone,noselect
 set pumheight=10
-

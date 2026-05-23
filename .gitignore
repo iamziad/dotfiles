@@ -4,19 +4,15 @@
 /.emacs.desktop
 /.emacs.desktop.lock
 *.elc
-auto-save-list/
-tramp
-elpa/
+cache/
 straight/
 eln-cache/
 recentf
-history
 eshell/
-*-autoloads.el
-custom.el
-
-## Org-mode generated files
+transient/
+tree-sitter/
 config.el
+custom.el
 
 # Folder-specific ignore
 .DS_Store

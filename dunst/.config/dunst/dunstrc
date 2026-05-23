@@ -1,0 +1,44 @@
+[global]
+    monitor = 0
+    follow = mouse
+
+    width = 340
+    height = 100
+    origin = top-right
+    offset = 16x16
+    gap_size = 8
+
+    frame_width = 1
+    frame_color = "#504945"
+    corner_radius = 10
+
+    font = JetBrainsMono Nerd Font 11
+    line_height = 4
+
+    padding = 14
+    horizontal_padding = 18
+
+    icon_position = left
+    min_icon_size = 36
+    max_icon_size = 36
+
+    timeout = 2
+
+    stack_duplicates = true
+    hide_duplicate_count = false
+
+[urgency_low]
+    background = "#282828"
+    foreground = "#ebdbb2"
+    timeout = 2
+
+[urgency_normal]
+    background = "#282828"
+    foreground = "#ebdbb2"
+    timeout = 2
+
+[urgency_critical]
+    background = "#282828"
+    foreground = "#cc241d"
+    timeout = 0
+

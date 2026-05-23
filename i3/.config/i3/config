@@ -8,6 +8,11 @@ set $mod Mod4
 set $TERM /usr/bin/alacritty
 set $SCRIPTS_DIR ~/dotfiles/i3/.config/i3/scripts/
 
+# XDG
+exec_always --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY
+exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY XAUTHORITY
+exec --no-startup-id /usr/libexec/xdg-desktop-portal
+
 # ============================================================
 #  Monitors
 # ============================================================
@@ -31,7 +36,7 @@ font pango:DejaVu Sans Mono 10
 bar {
     status_command SCRIPT_DIR=~/dotfiles/i3/.config/i3blocks/scripts i3blocks
 
-    position top
+    position bottom
     tray_output $pri
     tray_padding 4
     font pango:JetBrainsMono Nerd Font 9.8
@@ -103,9 +108,6 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# App assignments
-assign [class="Spotify"]       $ws5
-
 # ============================================================
 #  Autostart
 # ============================================================
@@ -117,23 +119,38 @@ exec --no-startup-id dex-autostart --autostart --environment i3
 #  Window Rules
 # ============================================================
 
-for_window [class="Thunar"]          floating enable resize set 1200 800, move position center
-for_window [class="Pcmanfm"]          floating enable resize set 1200 800, move position center
-for_window [class="vlc"]          floating enable resize set 1000 800, move position center
-for_window [class="mpv"]          floating enable resize set 1000 800, move position center
-for_window [class="Blueman-manager"] floating enable, resize set 800 600, move position center
-for_window [class="gThumb"] floating enable, resize set 1200 800
-for_window [class="Anki"] floating enable, resize set 1200 800, move position center
-for_window [class="Qalculate"] floating enable, move position center
-for_window [class="org.gnome.clocks"] floating enable, resize set 800 370, move position center
-for_window [instance="Devtools"] floating enable, resize set 1200 800, move position center
-for_window [instance="nitrogen"] floating enable, resize set 1200 800, move position center
-for_window [instance="virt-manager"] floating enable, resize set 1200 800, move position center
-for_window [class="Brave-browser" window_role="pop-up"] floating enable, resize set 1000 800, move position center
+set $FLOAT     floating enable
+set $CENTER    move position center
+set $SIZE_LG   resize set 1200 800
+set $SIZE_MD   resize set 1000 800
+set $SIZE_SM   resize set 800 600
+set $SIZE_XS   resize set 800 370
 
-# Default scratch pads
-for_window [instance="spterm"] move scratchpad
-for_window [instance="spterm"] floating enable
+# Windows
+for_window [class="Thunar"]                               $FLOAT, $SIZE_LG, $CENTER
+for_window [class="Pcmanfm"]                              $FLOAT, $SIZE_LG, $CENTER
+for_window [class="gThumb"]                               $FLOAT, $SIZE_LG
+for_window [class="Anki"]                                 $FLOAT, $SIZE_LG, $CENTER
+for_window [class="Lxappearance"]                         $FLOAT, $SIZE_LG, $CENTER
+for_window [instance="Devtools"]                          $FLOAT, $SIZE_LG, $CENTER
+for_window [instance="nitrogen"]                          $FLOAT, $SIZE_LG, $CENTER
+for_window [instance="virt-manager"]                      $FLOAT, $SIZE_LG, $CENTER
+for_window [class="vlc"]                                  $FLOAT, $SIZE_MD, $CENTER
+for_window [class="mpv"]                                  $FLOAT, $SIZE_MD, $CENTER
+for_window [class="Brave-browser" window_role="pop-up"]   $FLOAT, $SIZE_MD, $CENTER
+for_window [class="Blueman-manager"]                      $FLOAT, $SIZE_SM, $CENTER
+for_window [class="org.gnome.clocks"]                     $FLOAT, $SIZE_XS, $CENTER
+for_window [class="Qalculate"]                            $FLOAT, $CENTER
+
+# Scratchpads
+for_window [instance="spterm"]                            $FLOAT, move scratchpad
+
+# ============================================================
+#  App Assignments
+# ============================================================
+
+assign [class="Anki"]          $ws2
+assign [class="Spotify"]       $ws5
 
 # ============================================================
 #  Mouse Behavior
@@ -262,5 +279,5 @@ bindsym $mod+Shift+minus mark "general", move scratchpad
 bindsym $mod+minus [con_mark="general"] scratchpad show
 
 
-bindsym $mod+t exec --no-startup-id \
+bindsym $mod+k exec --no-startup-id \
 i3-msg '[instance="spterm"] scratchpad show' || $TERM -o "window.opacity=0.95" --class spterm

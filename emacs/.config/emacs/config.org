@@ -8,10 +8,13 @@
 - [[#keybindings][Keybindings]]
 - [[#fonts][Fonts]]
 - [[#settings][Settings]]
+- [[#treesitter][Treesitter]]
 - [[#programming][Programming]]
-- [[#gruvbox][Gruvbox]]
+  - [[#indentation][Indentation]]
+- [[#colors-and-ui][Colors and UI]]
 - [[#dired][Dired]]
 - [[#org][Org]]
+- [[#anki][Anki]]
 - [[#git][Git]]
 - [[#modes][Modes]]
 - [[#quality-of-life][Quality Of Life]]
@@ -23,31 +26,30 @@
 *** Straight Package Manager
 
 #+BEGIN_SRC emacs-lisp
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
     (unless (file-exists-p bootstrap-file)
-        (with-current-buffer
-                (url-retrieve-synchronously
-                 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-                 'silent 'inhibit-cookies)
-            (goto-char (point-max))
-            (eval-print-last-sexp)))
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 
-(straight-use-package 'use-package)
-(setq straight-vc-git-default-protocol 'https)
-(setq straight-use-package-by-default t)
+  (straight-use-package 'use-package)
+  (setq straight-vc-git-default-protocol 'https)
+  (setq straight-use-package-by-default t)
 #+END_SRC
 
 * Keybindings
 
 *** Navigation
-
 #+BEGIN_SRC emacs-lisp
 (defvar my-nav-map (make-sparse-keymap))
 (define-key my-nav-map (kbd "C-h") #'backward-char)
@@ -84,7 +86,6 @@
 #+END_SRC
 
 *** General Keybindings
-
 #+BEGIN_SRC emacs-lisp
 (bind-keys
  ("<f5>"          . my/reload-init-file)
@@ -93,6 +94,8 @@
  ("C-n"           . (lambda () (interactive) (forward-line  5)))
  ("C-p"           . (lambda () (interactive) (forward-line -5)))
  ("M-n"           . recenter-top-bottom)
+ ("C-x C-="       . (lambda () (interactive) (enlarge-window-horizontally 10)))
+ ("C-x C--"       . (lambda () (interactive) (shrink-window-horizontally 10)))
 
  ;; C-c prefix
  :map global-map
@@ -106,7 +109,6 @@
 #+END_SRC
 
 *** Leader General Keybindings
-
 #+BEGIN_SRC emacs-lisp
 (bind-keys :prefix-map my-leader-map
            :prefix "C-z"
@@ -116,37 +118,47 @@
 * Fonts
 
 *** Essential Fonts
-
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil
-                    :font "JetBrainsMono Nerd Font Mono"
-                    :height 110
-                    :weight 'medium)
+(defun my/setup-fonts ()
+  (set-face-attribute 'default nil
+                      :font "JetBrainsMono Nerd Font Mono"
+                      :height 110
+                      :weight 'medium)
+  (set-face-attribute 'variable-pitch nil
+                      :family "JetBrainsMono Nerd Font Mono"
+                      :height 115
+                      :weight 'normal)
+  (set-face-attribute 'fixed-pitch nil
+                      :font "JetBrainsMono Nerd Font Mono"
+                      :height 110
+                      :weight 'medium)
 
-(set-face-attribute 'variable-pitch nil
-                    :font "Ubuntu"
-                    :height 110
-                    :weight 'medium)
+  (set-fontset-font (frame-parameter nil 'font)
+                    'arabic
+                    (font-spec :family "Cairo" :weight 'regular)))
 
-(set-face-attribute 'fixed-pitch nil
-                    :font "JetBrainsMono Nerd Font Mono"
-                    :height 110
-                    :weight 'medium)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (with-selected-frame frame
+                  (my/setup-fonts))))
+
+  (my/setup-fonts))
 
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
-
 (setq-default line-spacing 0.12)
+(add-hook 'org-mode-hook 'variable-pitch-mode)
+
 #+END_SRC
 
 * Settings
 
-*** General Settings
-
+*** Defaults
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-screen 1)
 (recentf-mode 1)
-(savehist-mode)
-(delete-selection-mode)
+(savehist-mode 1)
+(delete-selection-mode 1)
 (column-number-mode)
 (setq duplicate-line-final-position 1)
 (setq isearch-allow-scroll 1)
@@ -159,6 +171,7 @@
 (set-fringe-mode 10)
 (xterm-mouse-mode 1)
 (auto-save-visited-mode 1)
+(global-visual-line-mode 1)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -167,10 +180,18 @@
 (when (file-exists-p custom-file)
   (load custom-file t))
 
+(electric-pair-mode 1)
+(electric-indent-mode -1)
+(add-hook 'org-mode-hook (lambda ()
+           (setq-local electric-pair-inhibit-predicate
+                   `(lambda (c)
+                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+
+
+(setq use-package-compute-statistics t)
 #+END_SRC
 
 *** Frame tweaks
-
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode   0)
 (menu-bar-mode   0)
@@ -179,7 +200,6 @@
 #+END_SRC
 
 *** Column Indicator & Line Numbers
-
 #+BEGIN_SRC emacs-lisp
 ;; Column Indicator
 (global-display-fill-column-indicator-mode 1)
@@ -188,7 +208,6 @@
 ;; Line Numbers
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
-(global-visual-line-mode 1)
 
 (dolist (hook '(term-mode-hook
                 shell-mode-hook
@@ -202,7 +221,6 @@
 #+END_SRC
 
 *** Better Deletion
-
 #+BEGIN_SRC emacs-lisp
 (defun my/delete-selected ()
     "Delete selected region without adding to kill ring."
@@ -218,9 +236,21 @@
             (unless (eobp)        (delete-char 1))
         (delete-region (point) (line-end-position))))
 
-(defun my-backward-delete-word ()
-    (interactive)
-    (delete-region (point) (progn (backward-word 1) (point))))
+(defun my/backward-delete-word ()
+    "Slow but respectful backward deletion"
+  (interactive)
+  (if (use-region-p)
+      (delete-region (region-beginning) (region-end))
+    (let ((pos (point)))
+      (save-excursion
+        (cond
+         ((looking-back "[[:space:]]+" (line-beginning-position))
+          (delete-region (match-beginning 0) pos))
+         ((looking-back "[[:punct:]]+" (line-beginning-position))
+          (delete-region (match-beginning 0) pos))
+         (t
+          (backward-word 1)
+          (delete-region (point) pos)))))))
 
 (defun my/forward-delete-word ()
     "Delete word forward without adding to kill-ring."
@@ -231,13 +261,12 @@
 (bind-keys
  ("M-k"           . my/delete-smart-to-end)
  ("DEL"           . my/delete-selected)
- ("M-DEL"         . my-backward-delete-word)
+ ("M-DEL"         . my/backward-delete-word)
  ("M-d"           . my/forward-delete-word)
- ("<C-backspace>" . my-backward-delete-word))
+ ("<C-backspace>" . my/backward-delete-word))
 #+END_SRC
 
 *** Buffer Move
-
 #+BEGIN_SRC emacs-lisp
 (use-package buffer-move
     :bind (:map my-leader-map
@@ -248,16 +277,28 @@
 #+END_SRC
 
 
+* Treesitter
+
+*** treesit-auto
+#+begin_src emacs-lisp
+;; (use-package treesit-auto
+;;   :custom
+;;   (treesit-auto-install 'prompt)
+;;   :config
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode))
+#+end_src
+
+
 * Programming
 
-*** Indentation
+** Indentation
 
 *** General Settings
 #+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default standard-indent 4)
-(electric-pair-mode 1)
 (global-set-key (kbd "RET") 'newline-and-indent)
 #+end_src
 
@@ -268,13 +309,24 @@
               (setq lisp-body-indent 4)))
 #+end_src
 
-*** C/C++/Java
+*** C/C++
 #+begin_src emacs-lisp
-(add-hook 'c-mode-common-hook
-          (lambda ()
-              (c-set-style "k&r")
-              (setq c-basic-offset 4)
-              (setq indent-tabs-mode nil)))
+(defun my/c-and-cpp-style ()
+  (c-set-style "k&r")
+  (setq c-basic-offset 4)
+  (setq indent-tabs-mode nil))
+
+(add-hook 'c-mode-hook 'my/c-and-cpp-style)
+(add-hook 'c++-mode-hook 'my/c-and-cpp-style)
+#+end_src
+
+*** Java
+#+begin_src emacs-lisp
+(defun my/java-ts-indents ()
+  (setq-local tab-width 4)
+  (setq-local indent-tabs-mode nil))
+
+(add-hook 'java-ts-mode-hook #'my/java-ts-indents)
 #+end_src
 
 *** Python
@@ -301,22 +353,79 @@
 (setq sh-indentation 4)
 #+end_src
 
-* Gruvbox
+* Colors and UI
 
+*** gruvbox-material-emacs
 #+begin_src emacs-lisp
-(use-package gruvbox-material-theme
-    :straight (gruvbox-material-theme :local-repo "~/gruvbox-material-emacs"
-    				                  :type git
-    				                  :files ("*.el"))
+(use-package gruvbox-material-emacs
+    :straight (gruvbox-material-emacs
+               :local-repo "~/gruvbox-material-emacs"
+               :type git
+               :files ("*.el"))
+    :init
+    (setq gm-dark-variant             'classic
+          gm-dark-modeline            'material
+          gm-org                      'material
+          gm-diff-hl-style            'signs
+          gm-org-scale-headings       'conservative
+          gm-syntax-keywords          'semi-bold
+          gm-light-contrast  'hard)
     :config
-    (setq gruvbox-material-variant             'classic
-          gruvbox-material-contrast            'medium
-          gruvbox-material-modeline            'material
-          gruvbox-material-org                 'material
-          gruvbox-material-diff-hl-style       'signs
-          gruvbox-material-org-scale-headings   nil)
-    (load-theme 'gruvbox-material t))
+    (load-theme 'gruvbox-material-dark t))
+
+(straight-use-package
+ '(ember-theme
+   :host github
+   :repo "ember-theme/emacs"))
 #+end_src
+
+*** ef-themes
+#+begin_src emacs-lisp
+(use-package ef-themes
+  :ensure t
+  :init
+  ;; This makes the Modus commands listed below consider only the Ef
+  ;; themes.  For an alternative that includes Modus and all
+  ;; derivative themes (like Ef), enable the
+  ;; `modus-themes-include-derivatives-mode' instead.  The manual of
+  ;; the Ef themes has a section that explains all the possibilities:
+  ;;
+  ;; - Evaluate `(info "(ef-themes) Working with other Modus themes or taking over Modus")'
+  ;; - Visit <https://protesilaos.com/emacs/ef-themes#h:6585235a-5219-4f78-9dd5-6a64d87d1b6e>
+  (ef-themes-take-over-modus-themes-mode 1)
+  :bind
+  (("<f6>" . modus-themes-rotate)
+   ("C-<f6>" . modus-themes-select)
+   ("M-<f6>" . modus-themes-load-random))
+  :config
+  ;; All customisations here.
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-italic-constructs t))
+#+end_src
+
+*** minions
+#+begin_src emacs-lisp
+(use-package minions
+  :ensure t
+  :config
+  (setq minions-prominent-modes
+        '(olivetti-mode))
+  (minions-mode 1))
+#+end_src
+
+*** diff-hl
+#+begin_src emacs-lisp
+(use-package diff-hl
+    :config
+    (global-diff-hl-mode 1)
+    (setq diff-hl-fringe-bmp-function #'diff-hl-fringe-bmp-from-type)
+    (diff-hl-show-hunk-mouse-mode)
+    (diff-hl-flydiff-mode 1)
+    (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+#+end_src
+
 
 * Dired
 
@@ -326,7 +435,39 @@
 (setq dired-dwim-target t)
 #+end_src
 
+
 * Org
+
+*** org-capture
+#+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+             '("\\*Org Select\\*\\|CAPTURE"
+               (display-buffer-below-selected)
+               (window-height . 0.6)))
+
+(setq org-directory "~/Documents/org")
+
+(setq org-capture-templates
+      `(("a" "Anki Card" entry
+         (file+headline "/tmp/anki.org" "Anki flashcards for today")
+         "* \n:PROPERTIES:\n:ANKI_DECK:\n:ANKI_NOTE_TYPE: Basic\n:END:\n\n** Front\n\n** Back\n")
+
+        ("d" "Deadline Task" entry
+         (file+headline "~/Documents/org/tasks.org" "Deadlines")
+         "* TODO %?\n DEADLINE: %^{Deadline}t\n %a\n")
+
+        ("i" "Idea" entry
+         (file "~/Documents/org/ideas.org")
+         "* TODO %?\n %a %U\n\n")
+
+        ("s" "Scheduled Task" entry
+         (file+headline "~/Documents/org/tasks.org" "Schedules")
+         "* TODO %?\n SCHEDULED: %^{Date}t\n %a\n")
+
+        ("t" "Todo Inbox" entry
+         (file "~/Documents/org/inbox.org")
+         "* TODO %?\n %a %U\n\n")))
+#+end_src
 
 *** Babel
 #+begin_src emacs-lisp
@@ -343,14 +484,7 @@
 #+end_src
 
 *** toc-org
-Generates Table of Contents
-
 #+BEGIN_SRC emacs-lisp
-;; (use-package toc-org
-;;   :ensure t
-;;   :commands toc-org-enable
-;;   :init (add-hook 'org-mode-hook 'toc-org-enable))
-
 (use-package toc-org
     :straight (:host github
    		             :repo "iamziad/toc-org"
@@ -361,22 +495,21 @@ Generates Table of Contents
   	            ("o" . toc-org-navigation-pane))
     :config
     (setq toc-org-side-window-side 'left)
+    (setq toc-org-side-window-size '40)
     :init
     (add-hook 'markdown-mode-hook #'toc-org-enable)
     (add-hook 'org-mode-hook #'toc-org-enable))
 #+END_SRC
 
 *** org-tempo
-Block Expansion
-
 #+begin_src emacs-lisp
 (require 'org-tempo)
 #+end_src
 
 *** Olivetti
-
 #+begin_src emacs-lisp
 (use-package olivetti
+    :defer t
     :init
     (setq olivetti-body-width 90)
     (setq olivetti-recall-visual-line-mode-entry-state t)
@@ -393,19 +526,52 @@ Block Expansion
 
 #+begin_src emacs-lisp
 (use-package org-download
+    :defer t
     :config
     (setq-default org-download-heading-lvl nil)
     (setq-default org-download-image-dir "./images"))
 #+end_src
 
+
+* Anki
+
+*** anki-editor
+#+begin_src emacs-lisp
+(use-package anki-editor
+  :ensure t)
+#+end_src
+
+*** Upload to anki via org-capture
+#+begin_src emacs-lisp
+(defun my/anki-push-after-capture ()
+  (let ((file (expand-file-name "/tmp/anki.org")))
+    (when (file-exists-p file)
+      (with-current-buffer (find-file-noselect file)
+        (condition-case err
+            (progn
+              (anki-editor-push-notes)
+              (message "Anki: flashcard pushed successfully!"))
+          (error
+           (message "Anki: failed to push — %s" (error-message-string err))))))))
+
+(add-hook 'org-capture-after-finalize-hook #'my/anki-push-after-capture)
+#+end_src
+
 * Git
+
 *** Magit
+#+begin_src emacs-lisp
+(use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status))
+#+end_src
 
 * Modes
 
 *** Markdown
 #+begin_src emacs-lisp
 (use-package markdown-mode
+    :defer t
     :mode ("README\\.md\\'" . gfm-mode)
     :init (setq markdown-command "multimarkdown")
     :bind (:map markdown-mode-map
@@ -425,7 +591,7 @@ Block Expansion
 **** Orderless
 - Fuzzy searching in mini buffers
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (use-package vertico
     :init (vertico-mode)
     :bind (:map vertico-map
@@ -452,7 +618,7 @@ Block Expansion
     (completion-styles              '(orderless basic))
     (completion-category-defaults  nil)
     (completion-category-overrides '((file (styles partial-completion)))))
-  #+end_src
+#+end_src
 
 * Misc Packages
 
@@ -468,6 +634,7 @@ Block Expansion
 *** sudo-edit
 #+BEGIN_SRC emacs-lisp
 (use-package sudo-edit
+    :defer t
     :bind (:map my-leader-map
                 ("s f" . sudo-edit-find-file)
                 ("s F" . sudo-edit)))
@@ -489,17 +656,51 @@ Block Expansion
          (common-lisp-mode . rainbow-delimiters-mode)))
 #+end_src
 
-*** diff-hl
+*** rainbow-mode
 #+begin_src emacs-lisp
-(use-package diff-hl
+;; (use-package rainbow-mode
+;;   :diminish
+;;   :hook org-mode prog-mode)
+#+end_src
+
+*** expand-region
+#+begin_src emacs-lisp
+(use-package expand-region
+    :bind ("C-=" . er/expand-region)
+          ("C--" . er/contract-region))
+#+end_src
+
+*** aggressive-indent
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+    :ensure t
     :config
-    (global-diff-hl-mode 1)
-    (setq diff-hl-fringe-bmp-function #'diff-hl-fringe-bmp-from-type)
-    (diff-hl-show-hunk-mouse-mode)
-    (diff-hl-flydiff-mode 1)
-    (add-hook 'magit-pre-refresh-hook  'diff-hl-magit-pre-refresh)
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+    (global-aggressive-indent-mode 1)
+    (add-to-list 'aggressive-indent-excluded-modes 'python-mode)
+    (add-to-list 'aggressive-indent-excluded-modes 'yaml-mode)
+    (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+#+end_src
+
+*** hl-todo
+#+begin_src emacs-lisp
+(use-package hl-todo
+  :hook ((org-mode . hl-todo-mode)
+         (prog-mode . hl-todo-mode))
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        `(("TODO"       warning bold)
+          ("FIXME"      error bold)
+          ("HACK"       font-lock-constant-face bold)
+          ("REVIEW"     font-lock-keyword-face bold)
+          ("NOTE"       success bold)
+          ("DEPRECATED" font-lock-doc-face bold))))
+
+(with-eval-after-load 'magit
+  (add-hook 'magit-log-wash-summary-hook
+            #'hl-todo-search-and-highlight t)
+  (add-hook 'magit-revision-wash-message-hook
+            #'hl-todo-search-and-highlight t))
 #+end_src
 
 * Useful Utilities
