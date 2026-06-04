@@ -1,0 +1,24 @@
+configuration {
+    display-drun: "Applications";
+    display-window: "Windows";
+    show-icons: true;
+    icon-theme: "Papirus";
+    font: "JetBrainsMono Nerd Font Medium 12";
+
+    kb-row-up: "Up,Control+k";
+    kb-row-down: "Down,Control+j";
+    kb-accept-entry: "Return,Control+m";
+    kb-remove-to-eol: "";
+}
+
+@theme "gruvbox-dark"
+
+window {
+    padding: 15px;
+	border-radius: 4px;
+}
+
+element-icon {
+    size: 24px;
+    margin: 0 10px 0 0;
+}

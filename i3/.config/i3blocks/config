@@ -88,6 +88,7 @@ command=date '+%a %d %b - %H:%M'
 interval=5
 
 [xkb_layout]
-command=font=monospace font_weight=regular $SCRIPT_DIR/xkb_layout/xkb_layout
+command=font=monospace font_weight=bold $SCRIPT_DIR/xkb_layout/xkb_layout
 interval=persist
 markup=pango
+color=#0492c2

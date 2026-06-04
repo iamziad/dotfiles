@@ -1,16 +1,25 @@
 #!/usr/bin/env sh
-# This script is supposed to be used as an i3blocks persistent blocklet.
-# It outputs current keyboard layout, then waits for it to change in an infinite loop.
-# Requires `xkb-switch` utility. Should work in any *sh.
-# Written by skidnik <skidnik@gmail.com>
-#
-# Defaults:
+# i3blocks persistent blocklet for keyboard layout display
+# Requires: xkb-switch
+
 font=${font:-monospace}
 font_weight=${font_weight:-bold}
+
 while :
 do
-# Output current layout:
-    xkb-switch -p | awk -v font="$font" -v font_weight="$font_weight" '{print "<span font_family=\""font"\"  font_weight=\""font_weight"\">"toupper($0)"</span>"}' || sleep 1
-# Wait for layout change:
+    # Output current layout
+    xkb-switch -p | awk -v font="$font" -v font_weight="$font_weight" '
+    {
+        layout = toupper($0)
+
+        sub(/\(.*/, "", layout)
+
+        if (layout == "ARA")
+            layout = "AR"
+
+        print "<span font_family=\"" font "\" font_weight=\"" font_weight "\">" layout "</span>"
+    }' || sleep 1
+
+    # Wait for layout change
     xkb-switch -w
 done

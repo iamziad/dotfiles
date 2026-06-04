@@ -1,25 +1,60 @@
-#
-# wm independent hotkeys
-#
-
-super + shift + z
-    systemctl suspend
+################### WM agnostic hotkeys ###################
 
 # terminal emulator
 super + Return
 	alacritty
 
 # program launcher
-super + @d
+super + d
 	dmenu_run
 
 # make sxhkd reload its configuration files:
-super + k
+super + {alt,mod1} + k
 	pkill -USR1 -x sxhkd
 
-#
-# bspwm hotkeys
-#
+
+# Audio (PipeWire)
+XF86AudioRaiseVolume
+	wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+XF86AudioLowerVolume
+	wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+XF86AudioMute
+	wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+# Brightness
+super + F5
+	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 3 "Samsung" -
+super + F6
+	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 3 "Samsung" +
+super + F7
+	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 5 "Dell" -
+super + F8
+	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 5 "Dell" +
+
+# Apps
+super + m
+	  flatpak run com.spotify.Client
+super + p
+	  pcmanfm
+super + c
+	  qalculate
+super + z
+	  emacsclient -c
+super + Print
+	  flameshot screen
+Print
+	flameshot gui
+
+# Session & Theme
+super + l
+	  ~/dotfiles/i3/.config/i3/scripts/i3lock.sh
+super + Shift + z
+	  systemctl suspend
+super + Shift + d
+	  ~/Scripts/i3/toggle-darkmode-manual-gtk.sh
+
+
+################### bspwm hotkeys ###################
 
 # quit/restart bspwm
 super + shift + {e, r}

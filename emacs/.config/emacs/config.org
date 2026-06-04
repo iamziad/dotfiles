@@ -189,14 +189,8 @@
 
 
 (setq use-package-compute-statistics t)
-#+END_SRC
 
-*** Frame tweaks
-#+BEGIN_SRC emacs-lisp
-(tool-bar-mode   0)
-(menu-bar-mode   0)
-(scroll-bar-mode 0)
-(column-number-mode)
+(setq default-input-method "arabic")
 #+END_SRC
 
 *** Column Indicator & Line Numbers
@@ -360,10 +354,12 @@
 (use-package gruvbox-material-emacs
     :straight (gruvbox-material-emacs
                :local-repo "~/gruvbox-material-emacs"
+               :branch "perf"
                :type git
                :files ("*.el"))
     :init
-    (setq gm-dark-variant             'classic
+    (setq gm-background               'dark
+          gm-dark-variant             'classic
           gm-dark-modeline            'material
           gm-org                      'material
           gm-diff-hl-style            'signs
@@ -371,12 +367,7 @@
           gm-syntax-keywords          'semi-bold
           gm-light-contrast  'hard)
     :config
-    (load-theme 'gruvbox-material-dark t))
-
-(straight-use-package
- '(ember-theme
-   :host github
-   :repo "ember-theme/emacs"))
+    (gruvbox-material-load))
 #+end_src
 
 *** ef-themes
@@ -466,7 +457,11 @@
 
         ("t" "Todo Inbox" entry
          (file "~/Documents/org/inbox.org")
-         "* TODO %?\n %a %U\n\n")))
+         "* TODO %?\n %a %U\n\n")
+
+        ("w" "Watch/Read Later" entry
+         (file+headline "~/Documents/org/later.org" "Watch/Read Later")
+         "* TODO %^{Title}\n [[%x][Link]]\n :PROPERTIES:\n :TYPE: %^{Type|Video|Article|Tutorial|Lecture/Conference}\n :END:\n\n %?\n %U\n")))
 #+end_src
 
 *** Babel
@@ -651,16 +646,13 @@
 #+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :ensure t
-  :hook ((emacs-lisp-mode . rainbow-delimiters-mode)
-         (lisp-mode . rainbow-delimiters-mode)
-         (common-lisp-mode . rainbow-delimiters-mode)))
+  :hook ((emacs-lisp-mode lisp-mode common-lisp-mode) . rainbow-delimiters-mode))
 #+end_src
 
 *** rainbow-mode
 #+begin_src emacs-lisp
-;; (use-package rainbow-mode
-;;   :diminish
-;;   :hook org-mode prog-mode)
+(use-package highlight-numbers
+  :hook (prog-mode . highlight-numbers-mode))
 #+end_src
 
 *** expand-region

@@ -41,8 +41,7 @@ vim.pack.add({
 	"https://github.com/rebelot/kanagawa.nvim",
 	"https://github.com/nvim-tree/nvim-web-devicons",
 	"https://github.com/rose-pine/neovim",
-	"https://github.com/morhetz/gruvbox.git",
-    "https://github.com/ellisonleao/gruvbox.nvim",
+	"https://github.com/ellisonleao/gruvbox.nvim",
 
 	"https://www.github.com/echasnovski/mini.nvim",
 	"https://www.github.com/ibhagwan/fzf-lua",

@@ -13,6 +13,8 @@ exec_always --no-startup-id systemctl --user import-environment DISPLAY XAUTHORI
 exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY XAUTHORITY
 exec --no-startup-id /usr/libexec/xdg-desktop-portal
 
+# exec_always --no-startup-id sxhkd
+
 # ============================================================
 #  Monitors
 # ============================================================
@@ -42,7 +44,7 @@ bar {
     font pango:JetBrainsMono Nerd Font 9.8
 
     colors {
-        background #191919
+        background #222222
         statusline #DDC7A1
         separator  #928374
 
@@ -143,7 +145,7 @@ for_window [class="org.gnome.clocks"]                     $FLOAT, $SIZE_XS, $CEN
 for_window [class="Qalculate"]                            $FLOAT, $CENTER
 
 # Scratchpads
-for_window [instance="spterm"]                            $FLOAT, move scratchpad
+for_window [instance="spterm"]                            $FLOAT, move scratchpad, border pixel 3
 
 # ============================================================
 #  App Assignments
@@ -226,10 +228,10 @@ bindsym $mod+r mode "resize"
 # ============================================================
 
 # Volume
-bindsym XF86AudioRaiseVolume exec amixer set Master 5%+    && pkill -RTMIN+10 i3blocks
-bindsym XF86AudioLowerVolume exec amixer set Master 5%-    && pkill -RTMIN+10 i3blocks
-bindsym XF86AudioMute        exec amixer set Master toggle && pkill -RTMIN+10 i3blocks
 
+bindsym XF86AudioRaiseVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+    && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioLowerVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-    && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioMute         exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle   && pkill -RTMIN+10 i3blocks
 
 
 #Brightness
@@ -249,19 +251,19 @@ bindsym $mod+F8 exec $SCRIPTS_DIR/brightness.sh $bus_sec "Dell" +
 
 # Core
 bindsym $mod+Return      exec --no-startup-id $TERM || /usr/bin/i3-sensible-terminal
-bindsym $mod+d           exec --no-startup-id dmenu_run
+bindsym $mod+d           exec --no-startup-id rofi -show drun
 bindsym $mod+q     kill
 
-# i3 control
+# # i3 control
 bindsym $mod+Shift+c     reload
 bindsym $mod+Shift+r     restart
 bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 
-# Session
+# # Session
 bindsym $mod+l     exec $SCRIPTS_DIR/i3lock.sh
 bindsym $mod+Shift+z     exec systemctl suspend
 
-# Apps
+# # Apps
 bindsym $mod+m           exec --no-startup-id flatpak run com.spotify.Client
 bindsym $mod+p           exec --no-startup-id pcmanfm
 bindsym $mod+c           exec --no-startup-id qalculate
@@ -269,15 +271,13 @@ bindsym $mod+z           exec --no-startup-id emacsclient -c
 bindsym $mod+Print       exec --no-startup-id flameshot screen
 bindsym Print            exec --no-startup-id flameshot gui
 
-
-# Theme
+# # Theme
 bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/i3/toggle-darkmode-manual-gtk.sh
 
 # Scratch Pads
 
 bindsym $mod+Shift+minus mark "general", move scratchpad
 bindsym $mod+minus [con_mark="general"] scratchpad show
-
 
 bindsym $mod+k exec --no-startup-id \
 i3-msg '[instance="spterm"] scratchpad show' || $TERM -o "window.opacity=0.95" --class spterm
