@@ -17,6 +17,9 @@ do
         if (layout == "ARA")
             layout = "AR"
 
+        if (layout == "US")
+            layout = "EN"
+
         print "<span font_family=\"" font "\" font_weight=\"" font_weight "\">" layout "</span>"
     }' || sleep 1
 
