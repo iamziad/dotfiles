@@ -5,8 +5,11 @@
 # Mod key
 set $mod Mod4
 
+set $SCRIPTS_GLOBAL ~/Dotfiles/i3/.config/i3/scripts/
+set $SCRIPTS_GLOBALGLOBAL ~/Scripts/
+
 set $TERM /usr/bin/alacritty
-set $SCRIPTS_DIR ~/dotfiles/i3/.config/i3/scripts/
+set $LAUNCHER rofi -show drun
 
 # XDG
 exec_always --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY
@@ -36,7 +39,7 @@ font pango:DejaVu Sans Mono 10
 # client.urgent           #EA6962  #402120     #EA6962  #EA6962    #EA6962
 
 bar {
-    status_command SCRIPT_DIR=~/dotfiles/i3/.config/i3blocks/scripts i3blocks
+    status_command SCRIPT_DIR=~/Dotfiles/i3/.config/i3blocks/scripts i3blocks
 
     position bottom
     tray_output $pri
@@ -239,11 +242,11 @@ bindsym XF86AudioMute         exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle   
 set $bus_pri 3
 set $bus_sec 5
 
-bindsym $mod+F5 exec $SCRIPTS_DIR/brightness.sh 3 "Samsung" -
-bindsym $mod+F6 exec $SCRIPTS_DIR/brightness.sh 3 "Samsung" +
+bindsym $mod+F5 exec $SCRIPTS_GLOBAL/brightness.sh $bus_pri "Samsung" -
+bindsym $mod+F6 exec $SCRIPTS_GLOBAL/brightness.sh $bus_pri "Samsung" +
 
-bindsym $mod+F7 exec $SCRIPTS_DIR/brightness.sh $bus_sec "Dell" -
-bindsym $mod+F8 exec $SCRIPTS_DIR/brightness.sh $bus_sec "Dell" +
+bindsym $mod+F7 exec $SCRIPTS_GLOBAL/brightness.sh $bus_sec "Dell" -
+bindsym $mod+F8 exec $SCRIPTS_GLOBAL/brightness.sh $bus_sec "Dell" +
 
 # ============================================================
 #  Keybindings
@@ -251,8 +254,8 @@ bindsym $mod+F8 exec $SCRIPTS_DIR/brightness.sh $bus_sec "Dell" +
 
 # Core
 bindsym $mod+Return      exec --no-startup-id $TERM || /usr/bin/i3-sensible-terminal
-bindsym $mod+d           exec --no-startup-id rofi -show drun
-bindsym $mod+q     kill
+bindsym $mod+d           exec --no-startup-id $LAUNCHER
+bindsym $mod+q           kill
 
 # # i3 control
 bindsym $mod+Shift+c     reload
@@ -260,7 +263,7 @@ bindsym $mod+Shift+r     restart
 bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # # Session
-bindsym $mod+l     exec $SCRIPTS_DIR/i3lock.sh
+bindsym $mod+l     exec $SCRIPTS_GLOBAL/i3lock.sh
 bindsym $mod+Shift+z     exec systemctl suspend
 
 # # Apps

@@ -8,7 +8,7 @@ DESKTOP_I3=("${DESKTOP_GUI[@]}" i3 rofi redshift dunst xorg Scripts)
 if [ "$PROFILE" = "desktop-gui" ]; then
     echo "$0: deploying $1.."
     stow -v "${DESKTOP_GUI[@]}"
-    
+
     echo -e "$0: deploying system.."
     sudo stow -v -t / system
 

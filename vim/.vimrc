@@ -4,7 +4,6 @@ call plug#begin()
   Plug 'tpope/vim-commentary'
   Plug 'jiangmiao/auto-pairs'
   Plug 'morhetz/gruvbox'
-  Plug 'sainnhe/gruvbox-material'
   Plug 'mhinz/vim-signify', { 'tag': 'legacy' }
   Plug 'itchyny/lightline.vim'
 call plug#end()
