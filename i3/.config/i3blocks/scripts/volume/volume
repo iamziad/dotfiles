@@ -70,22 +70,22 @@ volume() {
 }
 
 format() {
-  
-  perl_filter='if (/.*\[(\d+%)\] (\[(-?\d+.\d+dB)\] )?\[(on|off)\]/)'
-  perl_filter+='{CORE::say $4 eq "off" ? "MUTE" : "'
-  # If dB was selected, print that instead
-  perl_filter+=$([[ $STEP = *dB ]] && echo '$3' || echo '$1')
-  perl_filter+='"; exit}'
-  output=$(perl -ne "$perl_filter")
-  echo "$LABEL$output"
+    volume_raw=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+    if echo "$volume_raw" | grep -q "MUTED"; then
+        echo "${LABEL}MUTE"
+    else
+        volume_float=$(echo "$volume_raw" | awk '{print $2}')
+        volume_percent=$(echo "$volume_float" | awk '{printf "%d%%", $1 * 100}')
+        echo "${LABEL}${volume_percent}"
+    fi
 }
 
 #------------------------------------------------------------------------
 
 case $BLOCK_BUTTON in
-  3) amixer $AMIXER_PARAMS -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
-  4) amixer $AMIXER_PARAMS -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute ;; # scroll up, increase
-  5) amixer $AMIXER_PARAMS -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute ;; # scroll down, decrease
+    3) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+    4) wpctl set-volume --limit 1.5 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+    5) wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
 esac
 
 volume | format

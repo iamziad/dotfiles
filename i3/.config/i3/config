@@ -5,25 +5,20 @@
 # Mod key
 set $mod Mod4
 
-set $SCRIPTS_GLOBAL ~/Dotfiles/i3/.config/i3/scripts/
-set $SCRIPTS_GLOBALGLOBAL ~/Scripts/
-
+set $SCRIPTS_LOCAL ~/.config/i3/scripts/
+set $SCRIPTS_GLOBAL ~/Scripts/
 set $TERM /usr/bin/alacritty
-set $LAUNCHER rofi -show drun
-
-# XDG
-exec_always --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY
-exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY XAUTHORITY
-exec --no-startup-id /usr/libexec/xdg-desktop-portal
-
-# exec_always --no-startup-id sxhkd
+set $LAUNCHER i3-dmenu-desktop --dmenu="dmenu -i"
+# set $LAUNCHER rofi -show drun
 
 # ============================================================
 #  Monitors
 # ============================================================
 
-set $pri HDMI-A-0
-set $sec DisplayPort-0
+set $pri HDMI-1
+set $sec DP-1
+
+exec_always --no-startup-id i3-msg 'workspace $ws6; workspace $ws1'
 
 # ============================================================
 #  Appearance
@@ -31,6 +26,12 @@ set $sec DisplayPort-0
 
 hide_edge_borders both
 font pango:DejaVu Sans Mono 10
+
+# Gaps
+gaps outer 0px
+gaps inner 12px
+smart_gaps on
+smart_borders on
 
 # class                 border   background  text     indicator  child_border
 # client.focused          #3A3735  #3A3735     #DDC7A1  #D8A657    #444444
@@ -114,11 +115,21 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
 # ============================================================
-#  Autostart
+#  Startup
 # ============================================================
 
-# System
 exec --no-startup-id dex-autostart --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+exec --no-startup-id emacs --daemon
+exec --no-startup-id picom --backend glx -b --deamon
+exec --no-startup-id dunst
+exec --no-startup-id gromit-mpx
+exec --no-startup-id flameshot
+exec --no-startup-id nm-applet
+exec --no-startup-id redshift-gtk
+exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
+# exec_always --no-startup-id sxhkd
 
 # ============================================================
 #  Window Rules
@@ -142,7 +153,7 @@ for_window [instance="nitrogen"]                          $FLOAT, $SIZE_LG, $CEN
 for_window [instance="virt-manager"]                      $FLOAT, $SIZE_LG, $CENTER
 for_window [class="vlc"]                                  $FLOAT, $SIZE_MD, $CENTER
 for_window [class="mpv"]                                  $FLOAT, $SIZE_MD, $CENTER
-for_window [class="Brave-browser" window_role="pop-up"]   $FLOAT, $SIZE_MD, $CENTER
+for_window [class="Brave-browser" window_role="pop-up"]   $FLOAT, $SIZE_SM, $CENTER
 for_window [class="Blueman-manager"]                      $FLOAT, $SIZE_SM, $CENTER
 for_window [class="org.gnome.clocks"]                     $FLOAT, $SIZE_XS, $CENTER
 for_window [class="Qalculate"]                            $FLOAT, $CENTER
@@ -232,21 +243,17 @@ bindsym $mod+r mode "resize"
 
 # Volume
 
-bindsym XF86AudioRaiseVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+    && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume  exec wpctl set-volume --limit 1.5 @DEFAULT_AUDIO_SINK@ 5%+    && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioLowerVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-    && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute         exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle   && pkill -RTMIN+10 i3blocks
 
-
 #Brightness
 
-set $bus_pri 3
-set $bus_sec 5
+bindsym $mod+F5 exec $SCRIPTS_GLOBAL/brightness.sh Samsung -
+bindsym $mod+F6 exec $SCRIPTS_GLOBAL/brightness.sh Samsung +
 
-bindsym $mod+F5 exec $SCRIPTS_GLOBAL/brightness.sh $bus_pri "Samsung" -
-bindsym $mod+F6 exec $SCRIPTS_GLOBAL/brightness.sh $bus_pri "Samsung" +
-
-bindsym $mod+F7 exec $SCRIPTS_GLOBAL/brightness.sh $bus_sec "Dell" -
-bindsym $mod+F8 exec $SCRIPTS_GLOBAL/brightness.sh $bus_sec "Dell" +
+bindsym $mod+F7 exec $SCRIPTS_GLOBAL/brightness.sh Dell -
+bindsym $mod+F8 exec $SCRIPTS_GLOBAL/brightness.sh Dell +
 
 # ============================================================
 #  Keybindings
@@ -257,16 +264,18 @@ bindsym $mod+Return      exec --no-startup-id $TERM || /usr/bin/i3-sensible-term
 bindsym $mod+d           exec --no-startup-id $LAUNCHER
 bindsym $mod+q           kill
 
-# # i3 control
+# i3 control
 bindsym $mod+Shift+c     reload
 bindsym $mod+Shift+r     restart
 bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 
-# # Session
-bindsym $mod+l     exec $SCRIPTS_GLOBAL/i3lock.sh
-bindsym $mod+Shift+z     exec systemctl suspend
+# Session
+bindsym $mod+l     exec $SCRIPTS_LOCAL/i3lock.sh
 
-# # Apps
+# Dmenu Scripting
+bindsym $mod+Shift+p           exec --no-startup-id $SCRIPTS_GLOBAL/dmenu/poweroptions.sh
+
+# Apps
 bindsym $mod+m           exec --no-startup-id flatpak run com.spotify.Client
 bindsym $mod+p           exec --no-startup-id pcmanfm
 bindsym $mod+c           exec --no-startup-id qalculate
@@ -274,8 +283,8 @@ bindsym $mod+z           exec --no-startup-id emacsclient -c
 bindsym $mod+Print       exec --no-startup-id flameshot screen
 bindsym Print            exec --no-startup-id flameshot gui
 
-# # Theme
-bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/i3/toggle-darkmode-manual-gtk.sh
+# Theme
+bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/toggle-darkmode-manual-gtk.sh
 
 # Scratch Pads
 

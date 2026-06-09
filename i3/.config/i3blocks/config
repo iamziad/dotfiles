@@ -4,12 +4,6 @@ markup=none
 color=#f5f5f5
 
 
-[os]
-label=
-command=echo "  "
-color=#ff0000
-interval=once
-
 [org-timer]
 interval=1
 color=#d8a657

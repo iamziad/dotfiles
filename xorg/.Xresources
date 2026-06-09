@@ -1,3 +1,11 @@
+! dmenu
+
+dmenu.font:         JetBrainsMono Nerd Font:size=10
+dmenu.background:   #282828
+dmenu.foreground:   #ebdbb2
+dmenu.selBackground: #458588
+dmenu.selForeground: #fbf1c7
+
 ! xterm
 
 XTerm*termName:            xterm-256color

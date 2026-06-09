@@ -3,9 +3,6 @@
 # alias la='ls -A'
 # alias l='ls -CF'
 
-alias vim="nvim"
-alias vi="/usr/bin/vim"
-
 # tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session -t"
