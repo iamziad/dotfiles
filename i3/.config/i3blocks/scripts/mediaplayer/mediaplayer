@@ -122,6 +122,7 @@ sub mpd {
 sub playerctl {
     buttons('playerctl');
 
+    my $icon = "󰝚"; # Font Awesome music icon
     my $artist = qx(playerctl $player_arg metadata artist 2>/dev/null);
     chomp $artist;
     # exit status will be nonzero when playerctl cannot find your player
@@ -134,7 +135,7 @@ sub playerctl {
 
     push(@metadata, $title) if $title;
 
-    print(join(" - ", @metadata)) if @metadata;
+    print("$icon " . join(" - ", @metadata)) if @metadata;
 }
 
 sub rhythmbox {

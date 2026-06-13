@@ -3,7 +3,7 @@
 PROFILE=$1
 
 DESKTOP_GUI=(git alacritty vim tmux bash)
-DESKTOP_I3=("${DESKTOP_GUI[@]}" i3 rofi redshift dunst xorg Scripts)
+DESKTOP_I3=("${DESKTOP_GUI[@]}" i3 redshift dunst xorg Scripts)
 
 if [ "$PROFILE" = "desktop-gui" ]; then
     echo "$0: deploying $1.."

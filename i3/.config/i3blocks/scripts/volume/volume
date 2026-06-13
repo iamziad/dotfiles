@@ -70,12 +70,17 @@ volume() {
 }
 
 format() {
-    volume_raw=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+    for i in {1..10}; do
+        volume_raw=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)
+        [ -n "$volume_raw" ] && break
+        sleep 0.2
+    done
+
     if echo "$volume_raw" | grep -q "MUTED"; then
         echo "${LABEL}MUTE"
     else
         volume_float=$(echo "$volume_raw" | awk '{print $2}')
-        volume_percent=$(echo "$volume_float" | awk '{printf "%d%%", $1 * 100}')
+        volume_percent=$(awk "BEGIN {printf \"%d%%\", $volume_float * 100}")
         echo "${LABEL}${volume_percent}"
     fi
 }

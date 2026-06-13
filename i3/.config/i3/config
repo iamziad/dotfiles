@@ -8,8 +8,8 @@ set $mod Mod4
 set $SCRIPTS_LOCAL ~/.config/i3/scripts/
 set $SCRIPTS_GLOBAL ~/Scripts/
 set $TERM /usr/bin/alacritty
-set $LAUNCHER i3-dmenu-desktop --dmenu="dmenu -i"
-# set $LAUNCHER rofi -show drun
+# set $LAUNCHER i3-dmenu-desktop --dmenu="dmenu -i"
+set $LAUNCHER rofi -show drun
 
 # ============================================================
 #  Monitors
@@ -40,7 +40,7 @@ smart_borders on
 # client.urgent           #EA6962  #402120     #EA6962  #EA6962    #EA6962
 
 bar {
-    status_command SCRIPT_DIR=~/Dotfiles/i3/.config/i3blocks/scripts i3blocks
+    status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
 
     position bottom
     tray_output $pri
@@ -121,13 +121,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 exec --no-startup-id dex-autostart --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-exec --no-startup-id emacs --daemon
-exec --no-startup-id picom --backend glx -b --deamon
-exec --no-startup-id dunst
 exec --no-startup-id gromit-mpx
-exec --no-startup-id flameshot
-exec --no-startup-id nm-applet
-exec --no-startup-id redshift-gtk
 exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
 # exec_always --no-startup-id sxhkd
 
@@ -157,6 +151,17 @@ for_window [class="Brave-browser" window_role="pop-up"]   $FLOAT, $SIZE_SM, $CEN
 for_window [class="Blueman-manager"]                      $FLOAT, $SIZE_SM, $CENTER
 for_window [class="org.gnome.clocks"]                     $FLOAT, $SIZE_XS, $CENTER
 for_window [class="Qalculate"]                            $FLOAT, $CENTER
+
+## Firefox
+for_window [class="firefox" title="(?i).*(login|log in|sign in|signin).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title="(?i).*(signup|sign up|register|registration|create account).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title="(?i).*(account|accounts|authentication|authenticate|authorize|authorization|permission|permissions).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title="(?i).*(google.*sign in|google.*login|google accounts|accounts.google).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title="(?i).*(microsoft.*sign in|microsoft account|live.com).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title="(?i).*(oauth|sso|single sign-on|single sign on).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title=".*(تسجيل الدخول|تسجيل دخول|إنشاء حساب|انشاء حساب|حسابات|الحساب).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [class="firefox" title="(?i).*(verify|verification|confirm|confirmation|continue).*"] $FLOAT, $SIZE_SM, $CENTER
+for_window [window_role="alert"] floating enable
 
 # Scratchpads
 for_window [instance="spterm"]                            $FLOAT, move scratchpad, border pixel 3
@@ -272,11 +277,13 @@ bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes
 # Session
 bindsym $mod+l     exec $SCRIPTS_LOCAL/i3lock.sh
 
-# Dmenu Scripting
-bindsym $mod+Shift+p           exec --no-startup-id $SCRIPTS_GLOBAL/dmenu/poweroptions.sh
+# Rofi Scripting
+bindsym $mod+Shift+p           exec --no-startup-id $SCRIPTS_GLOBAL/rofi/poweroptions.sh
+bindsym $mod+Shift+b           exec --no-startup-id $SCRIPTS_GLOBAL/rofi/config_launcher.sh
+bindsym $mod+Shift+n           exec --no-startup-id networkmanager_dmenu
 
 # Apps
-bindsym $mod+m           exec --no-startup-id flatpak run com.spotify.Client
+bindsym $mod+m           exec --no-startup-id spotify
 bindsym $mod+p           exec --no-startup-id pcmanfm
 bindsym $mod+c           exec --no-startup-id qalculate
 bindsym $mod+z           exec --no-startup-id emacsclient -c

@@ -12,8 +12,10 @@ alias tk="tmux kill-session -t"
 # emacs
 alias ecf="emacsclient -c"
 alias ect="emacsclient -t"
+alias et="emacs -nw"
+alias ed="ect ."
 alias emacs-kill='emacsclient -e "(kill-emacs)"'
-alias emacs-start="systemctl --user enable --now emacs"
+alias emacs-start="emacs --daemon"
 
 function ecw() {
     emacsclient -e "(find-file-other-window \"$1\")"
