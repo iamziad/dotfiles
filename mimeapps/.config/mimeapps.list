@@ -1,0 +1,25 @@
+[Default Applications]
+image/jpeg=imv-dir.desktop
+image/png=imv-dir.desktop
+image/gif=imv-dir.desktop
+image/webp=imv-dir.desktop
+image/bmp=imv-dir.desktop
+image/tiff=imv-dir.desktop
+image/svg+xml=imv-dir.desktop
+
+video/mp4=mpv.desktop
+video/mkv=mpv.desktop
+video/webm=mpv.desktop
+video/x-matroska=mpv.desktop
+video/avi=mpv.desktop
+video/quicktime=mpv.desktop
+video/x-flv=mpv.desktop
+
+text/plain=emacsclient.desktop
+text/x-csrc=emacsclient.desktop
+text/x-python=emacsclient.desktop
+text/x-java=emacsclient.desktop
+text/x-shellscript=emacsclient.desktop
+text/html=emacsclient.desktop
+text/css=emacsclient.desktop
+text/x-makefile=emacsclient.desktop

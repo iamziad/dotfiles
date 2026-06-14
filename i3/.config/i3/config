@@ -33,12 +33,6 @@ gaps inner 12px
 smart_gaps on
 smart_borders on
 
-# class                 border   background  text     indicator  child_border
-# client.focused          #3A3735  #3A3735     #DDC7A1  #D8A657    #444444
-# client.focused_inactive #3C3836  #32302F     #928374  #3C3836    #3C3836
-# client.unfocused        #32302F  #282828     #928374  #32302F    #32302F
-# client.urgent           #EA6962  #402120     #EA6962  #EA6962    #EA6962
-
 bar {
     status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
 
@@ -51,13 +45,6 @@ bar {
         background #222222
         statusline #DDC7A1
         separator  #928374
-
-        # workspace buttons
-        #                    border   background  text
-        # focused_workspace    #D8A657  #D8A657     #282828
-        # active_workspace     #3C3836  #3C3836     #DDC7A1
-        # inactive_workspace   #32302F  #32302F     #928374
-        # urgent_workspace     #EA6962  #EA6962     #282828
     }
 }
 
@@ -139,7 +126,8 @@ set $SIZE_XS   resize set 800 370
 # Windows
 for_window [class="Thunar"]                               $FLOAT, $SIZE_LG, $CENTER
 for_window [class="Pcmanfm"]                              $FLOAT, $SIZE_LG, $CENTER
-for_window [class="gThumb"]                               $FLOAT, $SIZE_LG
+for_window [class="gThumb"]                               $FLOAT, $SIZE_LG, $CENTER
+for_window [class="imv"]                                  $FLOAT, $SIZE_LG, $CENTER
 for_window [class="Anki"]                                 $FLOAT, $SIZE_LG, $CENTER
 for_window [class="Lxappearance"]                         $FLOAT, $SIZE_LG, $CENTER
 for_window [instance="Devtools"]                          $FLOAT, $SIZE_LG, $CENTER
@@ -152,7 +140,7 @@ for_window [class="Blueman-manager"]                      $FLOAT, $SIZE_SM, $CEN
 for_window [class="org.gnome.clocks"]                     $FLOAT, $SIZE_XS, $CENTER
 for_window [class="Qalculate"]                            $FLOAT, $CENTER
 
-## Firefox
+## Firefox Attention Windows
 for_window [class="firefox" title="(?i).*(login|log in|sign in|signin).*"] $FLOAT, $SIZE_SM, $CENTER
 for_window [class="firefox" title="(?i).*(signup|sign up|register|registration|create account).*"] $FLOAT, $SIZE_SM, $CENTER
 for_window [class="firefox" title="(?i).*(account|accounts|authentication|authenticate|authorize|authorization|permission|permissions).*"] $FLOAT, $SIZE_SM, $CENTER

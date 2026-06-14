@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+AUR_HELPER="yay"
+ICON=" :"
+URGENT_AT=20
+
+COLOR_ICON="#5294e2"
+COLOR_TEXT="#00ff00"
+
+if [[ -z "$AUR_HELPER" ]]; then
+    command -v paru &>/dev/null && AUR_HELPER="paru"
+    command -v yay  &>/dev/null && AUR_HELPER="${AUR_HELPER:-yay}"
+fi
+
+pacman_updates=$(checkupdates 2>/dev/null | wc -l)
+
+aur_updates=0
+if [[ -n "$AUR_HELPER" ]]; then
+    aur_updates=$("$AUR_HELPER" -Qua 2>/dev/null | wc -l)
+fi
+
+total=$((pacman_updates + aur_updates))
+
+(( total == 0 )) && exit 33
+
+if (( aur_updates > 0 )); then
+    num_str="${pacman_updates}+${aur_updates}"
+else
+    num_str="${pacman_updates}"
+fi
+
+full_text="<span color='${COLOR_ICON}'>${ICON}</span> <span color='${COLOR_TEXT}'>${num_str} updates</span>"
+short_text="<span color='${COLOR_TEXT}'>${total} upd</span>"
+
+echo "$full_text"
+echo "$short_text"
+echo ""
+
+(( total >= URGENT_AT )) && exit 33
+exit 0

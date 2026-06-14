@@ -3,29 +3,6 @@ separator_block_width=15
 markup=none
 color=#f5f5f5
 
-# [shutdown_menu]
-# full_text="  "
-# color=#1793D1
-# command=$SCRIPT_DIR/shutdown_menu/shutdown_menu
-# ROFI_TEXT=Power Options
-# ROFI_OPTIONS=-width 11 -location 3 -hide-scrollbar -bw 2
-# ENABLE_CONFIRMATIONS=true
-# LAUNCHER=rofi
-# LOCKSCRIPT=i3lock --color=${BG_COLOR#"#"}
-
-[arch-update]
-command=$SCRIPT_DIR/arch-update/arch-update.py
-interval=3600
-markup=pango
-LABEL= :
-UPDATE_COLOR=#5fff5f
-QUIET=true
-color=#5294e2
-
-[org-timer]
-interval=1
-color=#d8a657
-
 [mediaplayer]
 command=$SCRIPT_DIR/mediaplayer/mediaplayer
 # label=󰝚
@@ -33,6 +10,15 @@ color=#c0c0c0
 instance=spotify
 interval=5
 signal=10
+
+[arch_update]
+command=$SCRIPT_DIR/arch_update/arch_update
+interval=1800
+markup=pango
+
+[org-timer]
+interval=1
+color=#d8a657
 
 [bandwidth]
 command=INLABEL=' ' OUTLABEL=' ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
@@ -103,4 +89,5 @@ interval=5
 command=font=monospace font_weight=bold $SCRIPT_DIR/xkb_layout/xkb_layout
 interval=persist
 markup=pango
-color=#0492c2
+color=#c0c0c0
+# color=#0492c2
