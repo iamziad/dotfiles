@@ -20,12 +20,19 @@ markup=pango
 interval=1
 color=#d8a657
 
+# [bandwidth3]
+# command=$SCRIPT_DIR/bandwidth3/bandwidth3
+# interval=persist
+# markup=pango
+# LABEL=<span font='FontAwesome'>  </span>
+# PRINTF_COMMAND=printf "%-5.1f/%5.1f %s/s\n", rx, wx, unit;
+
 [bandwidth]
-command=INLABEL=' ' OUTLABEL=' ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
+command=INLABEL=' ' OUTLABEL='- ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
 markup=pango
 interval=5
-# INTERFACE=enp3s0
-# TREAT_UNKNOWN_AS_UP=0
+INTERFACE=enp3s0
+TREAT_UNKNOWN_AS_UP=0
 
 [memory]
 command=$SCRIPT_DIR/memory/memory
@@ -39,14 +46,8 @@ label=HOME
 #DIR=/mnt/data
 interval=30
 
-[iface]
-#IFACE=wlan0
-color=#00FF00
-interval=10
-separator=false
-
 [wifi]
-#INTERFACE=wlp3s0
+INTERFACE=wlp3s0
 label=wifi:
 interval=10
 separator=false
@@ -66,7 +67,7 @@ interval=10
 
 [battery]
 label=BAT
-#label=⚡
+label=⚡
 interval=30
 
 # [redshift_service]
@@ -81,6 +82,11 @@ interval=once
 signal=10
 #STEP=5%
 
+[mic]
+command=$SCRIPT_DIR/mic
+interval=2
+signal=10
+
 [time]
 command=date '+%a %d %b - %H:%M'
 interval=5
@@ -89,5 +95,5 @@ interval=5
 command=font=monospace font_weight=bold $SCRIPT_DIR/xkb_layout/xkb_layout
 interval=persist
 markup=pango
-color=#c0c0c0
-# color=#0492c2
+# color=#c0c0c0
+color=#0492c2

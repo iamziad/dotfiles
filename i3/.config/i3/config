@@ -31,7 +31,6 @@ font pango:DejaVu Sans Mono 10
 gaps outer 0px
 gaps inner 12px
 smart_gaps on
-smart_borders on
 
 bar {
     status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
@@ -240,6 +239,10 @@ bindsym XF86AudioRaiseVolume  exec wpctl set-volume --limit 1.5 @DEFAULT_AUDIO_S
 bindsym XF86AudioLowerVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-    && pkill -RTMIN+10 i3blocks
 bindsym XF86AudioMute         exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle   && pkill -RTMIN+10 i3blocks
 
+# Mic
+
+bindsym $mod+i exec --no-startup-id sh -c 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+10 i3blocks'
+
 #Brightness
 
 bindsym $mod+F5 exec $SCRIPTS_GLOBAL/brightness.sh Samsung -
@@ -275,10 +278,10 @@ bindsym $mod+m           exec --no-startup-id spotify
 bindsym $mod+p           exec --no-startup-id pcmanfm
 bindsym $mod+c           exec --no-startup-id qalculate
 bindsym $mod+z           exec --no-startup-id emacsclient -c
-bindsym $mod+Print       exec --no-startup-id flameshot screen
-bindsym Print            exec --no-startup-id flameshot gui
-
-# Theme
+bindsym Print         exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh full clip
+bindsym $mod+Print    exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh full save
+bindsym $mod+shift+Print exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh select clip
+bindsym $mod+ctrl+Print  exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh select save
 bindsym $mod+Shift+d     exec --no-startup-id ~/Scripts/toggle-darkmode-manual-gtk.sh
 
 # Scratch Pads

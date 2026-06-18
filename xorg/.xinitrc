@@ -1,17 +1,15 @@
 #!/bin/bash
 
+export XDG_SESSION_TYPE=x11
+
 # Xresources
 xrdb -merge "$HOME/.Xresources"
 
 # Monitors
-MONITOR_PRIMARY=$(xrandr | awk '/ connected/ {print $1; exit}')
-MONITOR_SECONDARY=$(xrandr | awk '/ connected/ {found++; if(found==2) {print $1; exit}}')
-if [ -n "$MONITOR_SECONDARY" ]; then
-    xrandr --output "$MONITOR_PRIMARY" --right-of "$MONITOR_SECONDARY"
-fi
+~/Scripts/screenlayout.sh
 
 # Keyboard
-setxkbmap -layout us,ara -variant ,digits -option grp:win_space_toggle,caps:ctrl_modifier
+setxkbmap -layout us,ara -variant ,digits -option grp:win_space_toggle
 xset r rate 300 50
 
 # Daemons
@@ -23,7 +21,6 @@ picom --backend glx \
 dunst &
 nm-applet --indicator &
 redshift-gtk &
-flameshot &
 emacs --daemon &
 
 exec i3

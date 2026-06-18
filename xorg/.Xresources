@@ -6,47 +6,45 @@ dmenu.foreground:   #ebdbb2
 dmenu.selBackground: #458588
 dmenu.selForeground: #fbf1c7
 
-! xterm
+! urxvt
 
-XTerm*termName:            xterm-256color
+URxvt.termName:            rxvt-256color
+URxvt.font:                xft:JetBrainsMono Nerd Font:size=11.5:antialias=true
+URxvt.boldFont:            xft:JetBrainsMono Nerd Font:size=11.5:bold:antialias=true
+URxvt.letterSpace:         0
+URxvt.lineSpace:           0
+URxvt.internalBorder:      10
+URxvt.scrollBar:           false
+URxvt.saveLines:           5000
+URxvt.cursorBlink:         true
+URxvt.cursorUnderline:     false
+URxvt.pointerBlank:        true
+URxvt.visualBell:          false
+URxvt.urgentOnBell:        false
 
-XTerm*faceName:            JetBrainsMono Nerd Font
-XTerm*faceSize:            11.5
-XTerm*renderFont:          true
-XTerm*internalBorder:      10
-XTerm*scrollBar:           false
-XTerm*saveLines:           5000
-XTerm*cursorShape:         block
-XTerm*cursorBlink:         true
-XTerm*cursorOnTime:        500
-XTerm*cursorOffTime:       500
-XTerm*pointerColor:        gray
-XTerm*bellIsUrgent:        false
-XTerm*visualBell:          false
+URxvt.color0:              #282828
+URxvt.color1:              #CC241D
+URxvt.color2:              #98971A
+URxvt.color3:              #D79921
+URxvt.color4:              #458588
+URxvt.color5:              #B16286
+URxvt.color6:              #689D6A
+URxvt.color7:              #A89984
+URxvt.color8:              #928374
+URxvt.color9:              #FB4934
+URxvt.color10:             #B8BB26
+URxvt.color11:             #FABD2F
+URxvt.color12:             #83A598
+URxvt.color13:             #D3869B
+URxvt.color14:             #8EC07C
+URxvt.color15:             #EBDBB2
+URxvt.foreground:          #EBDBB2
+URxvt.background:          #282828
+URxvt.cursorColor:         #EBDBB2
+URxvt.cursorColor2:        #282828
 
-XTerm*color0:              #282828
-XTerm*color1:              #CC241D
-XTerm*color2:              #98971A
-XTerm*color3:              #D79921
-XTerm*color4:              #458588
-XTerm*color5:              #B16286
-XTerm*color6:              #689D6A
-XTerm*color7:              #A89984
-XTerm*color8:              #928374
-XTerm*color9:              #FB4934
-XTerm*color10:             #B8BB26
-XTerm*color11:             #FABD2F
-XTerm*color12:             #83A598
-XTerm*color13:             #D3869B
-XTerm*color14:             #8EC07C
-XTerm*color15:             #EBDBB2
-XTerm*foreground:          #EBDBB2
-XTerm*background:          #282828
-XTerm*cursorColor:         #EBDBB2
-
-XTerm*decTerminalID:       vt340
-XTerm*numColorRegisters:   256
-XTerm*utf8:                1
-XTerm*locale:              true
-XTerm*selectToClipboard:   true
-XTerm*omitTranslation:     popup-menu
+URxvt.perl-ext-common:     default,clipboard,url-select,keyboard-select
+URxvt.copyCommand:         xclip -i -selection clipboard
+URxvt.pasteCommand:        xclip -o -selection clipboard
+URxvt.keysym.M-c:          perl:clipboard:copy
+URxvt.keysym.M-v:          perl:clipboard:paste
