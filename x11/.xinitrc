@@ -14,15 +14,22 @@ xrdb -merge "$HOME/.Xresources" || true
 setxkbmap -layout us,ara -variant ,digits -option grp:win_space_toggle -option ctrl:nocaps
 xset r rate 300 50
 xcape -e 'Caps_Lock=Escape' &
-#pkill xcape
-#xcape &
+pkill xcape
+xcape &
 
 # Daemons
 #/usr/libexec/polkit-gnome-authentication-agent-1 &
 #xsettingsd &
 #pipewire &
 lxsession &
-picom --backend glx --vsync --fading --fade-delta=4 --fade-in-step=0.03 --fade-out-step=0.03 &
+picom \
+  -b \
+  --backend glx \
+  --vsync \
+  --no-fading-openclose \
+  --fade-in-step 0 \
+  --fade-out-step 0 \
+  --fade-delta 0 &
 dunst &
 nm-applet --indicator &
 redshift-gtk &
