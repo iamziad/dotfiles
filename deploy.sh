@@ -2,8 +2,18 @@
 
 PROFILE=$1
 
+mkdir -p \
+      "$HOME/.config" \
+      "$HOME/.local/share" \
+      "$HOME/.cache" \
+      "$HOME/.local/state"
+
+rm -f \
+   "$HOME/.bash_profile" \
+   "$HOME/.profile"
+
 DESKTOP_GUI=(git alacritty vim tmux bash)
-DESKTOP_I3=("${DESKTOP_GUI[@]}" i3 redshift dunst xorg Scripts)
+DESKTOP_I3=("${DESKTOP_GUI[@]}" i3 xorg redshift dunst rofi Scripts)
 
 if [ "$PROFILE" = "desktop-gui" ]; then
     echo "$0: deploying $1.."

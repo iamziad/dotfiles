@@ -3,6 +3,9 @@
 # alias la='ls -A'
 # alias l='ls -CF'
 
+# general
+alias c="xclip -selection clipboard"
+
 # tmux
 alias tl="tmux list-sessions"
 alias ta="tmux attach-session -t"

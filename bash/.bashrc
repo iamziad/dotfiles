@@ -1,0 +1,31 @@
+# .bashrc
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+
+# Gruvbox truecolor PS1
+GB_RED='\[\e[38;2;251;73;52m\]'
+GB_YELLOW='\[\e[38;2;250;189;47m\]'
+GB_GREEN='\[\e[38;2;184;187;38m\]'
+GB_BLUE='\[\e[38;2;131;165;152m\]'
+GB_PURPLE='\[\e[38;2;211;134;155m\]'
+GB_RESET='\[\e[0m\]'
+
+git_branch() {
+    local branch
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null) || \
+    branch=$(git rev-parse --short HEAD 2>/dev/null)
+    [ -n "$branch" ] && echo " $branch"
+}
+
+PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\w${GB_RESET}${GB_PURPLE}\$(git_branch)${GB_RESET}${GB_RED}]${GB_RESET}\$ "
+
+# Aliases
+[ -f $HOME/dotfiles/bash/.bash_aliases ] && . $HOME/dotfiles/bash/.bash_aliases
+
+# ZVM
+export ZVM_INSTALL="$HOME/.zvm/self"
+export PATH="$PATH:$HOME/.zvm/bin"
+export PATH="$PATH:$ZVM_INSTALL/"

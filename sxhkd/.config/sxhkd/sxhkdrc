@@ -23,13 +23,13 @@ XF86AudioMute
 
 # Brightness
 super + F5
-	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 3 "Samsung" -
+	  ~/scripts/brightness.sh 3 "Samsung" -
 super + F6
-	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 3 "Samsung" +
+	  ~/scripts/brightness.sh 3 "Samsung" +
 super + F7
-	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 5 "Dell" -
+	  ~/scripts/brightness.sh 5 "Dell" -
 super + F8
-	  ~/dotfiles/i3/.config/i3/scripts/brightness.sh 5 "Dell" +
+	  ~/scripts/brightness.sh 5 "Dell" +
 
 # Apps
 super + m
@@ -46,12 +46,10 @@ Print
 	flameshot gui
 
 # Session & Theme
-super + l
-	  ~/dotfiles/i3/.config/i3/scripts/i3lock.sh
 super + Shift + z
 	  systemctl suspend
 super + Shift + d
-	  ~/Scripts/i3/toggle-darkmode-manual-gtk.sh
+	  ~/scripts/toggle-darkmode-manual-gtk.sh
 
 
 ################### bspwm hotkeys ###################

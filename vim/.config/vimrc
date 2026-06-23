@@ -1,32 +1,13 @@
-call plug#begin()
-  Plug 'sheerun/vim-polyglot'
-  Plug 'kien/ctrlp.vim'
-  Plug 'tpope/vim-commentary'
-  Plug 'jiangmiao/auto-pairs'
-  Plug 'morhetz/gruvbox'
-  Plug 'mhinz/vim-signify', { 'tag': 'legacy' }
-  Plug 'itchyny/lightline.vim'
-call plug#end()
-
 " ====================================================================
 " Options
 " ====================================================================
 
-" Important!!
 if has('termguicolors')
     set termguicolors
 endif
 
-" Colorscheme & Appearance Configuration
-colorscheme gruvbox
+colorscheme habamax
 set background=dark
-
-" lightline
-set laststatus=2
-set showmode!
-let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
-      \ }
 
 " Misc
 syntax on

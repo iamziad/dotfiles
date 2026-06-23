@@ -11,8 +11,8 @@ instance=spotify
 interval=5
 signal=10
 
-[arch_update]
-command=$SCRIPT_DIR/arch_update/arch_update
+[void_update]
+command=$SCRIPT_DIR/void_update
 interval=1800
 markup=pango
 
