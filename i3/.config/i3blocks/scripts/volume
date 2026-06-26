@@ -1,0 +1,34 @@
+#!/bin/bash
+
+SINK="@DEFAULT_AUDIO_SINK@"
+STEP="5%"
+
+case "$BLOCK_BUTTON" in
+    1) pavucontrol ;;
+    3) wpctl set-mute "$SINK" toggle ;;
+    4) wpctl set-volume "$SINK" "${STEP}+" -l 1.5 ;;
+    5) wpctl set-volume "$SINK" "${STEP}-" ;;
+esac
+
+vol_raw=$(wpctl get-volume "$SINK")
+percent=$(printf '%s' "$vol_raw" | awk '{printf "%d", $2*100}')
+
+if printf '%s' "$vol_raw" | grep -q MUTED; then
+    icon=" "
+    color="#928374"
+elif [ "$percent" -eq 0 ]; then
+    icon=" "
+    color="#928374"
+elif [ "$percent" -lt 35 ]; then
+    icon=" "
+    color="#eeeeee"
+elif [ "$percent" -lt 70 ]; then
+    icon=" "
+    color="#eeeeee"
+else
+    icon=" "
+    color="#eeeeee"
+fi
+
+echo "<span color='$color'>$icon $percent%</span>"
+echo "$icon $percent%"

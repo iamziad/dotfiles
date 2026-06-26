@@ -1,3 +1,6 @@
+Xcursor.theme: Adwaita
+Xcursor.size: 24
+
 ! dmenu
 
 dmenu.font:         JetBrainsMono Nerd Font:size=10

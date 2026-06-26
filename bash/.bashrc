@@ -6,6 +6,7 @@ export HISTFILE="$HOME/.local/state/bash/history"
 [[ $- != *i* ]] && return
 
 alias ls='ls --color=auto'
+alias grep='grep --color'
 
 # Gruvbox truecolor PS1
 GB_RED='\[\e[38;2;251;73;52m\]'
@@ -26,3 +27,7 @@ PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\w${
 
 # Aliases
 [ -f $HOME/dotfiles/bash/.bash_aliases ] && . $HOME/dotfiles/bash/.bash_aliases
+
+# ZVM
+export PATH="$PATH:${XDG_DATA_HOME:-$HOME/.local/share}/zvm/bin"
+eval "$(zvm completion bash)"

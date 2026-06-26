@@ -70,14 +70,9 @@ label=BAT
 label=⚡
 interval=30
 
-# [redshift_service]
-# command=UNIT_NAME=redshift.service USER_UNIT=true ACTIVE_COLOR="#09c609" INACTIVE_COLOR=orange FAILED_COLOR=red $SCRIPT_DIR/systemd_unit/systemd_unit
-# markup=pango
-# label=redshift:
-# interval=30
-
 [volume]
-command=LABEL='  ' $SCRIPT_DIR/volume/volume
+command=$SCRIPT_DIR/volume
+markup=pango
 interval=once
 signal=10
 #STEP=5%
@@ -90,6 +85,13 @@ signal=10
 [time]
 command=date '+%a %d %b - %H:%M'
 interval=5
+
+# [gtk-theme]
+# command=$SCRIPT_DIR/theme-block
+# interval=once
+# signal=10
+# ICON_DARK=
+# ICON_LIGHT=
 
 [xkb_layout]
 command=font=monospace font_weight=bold $SCRIPT_DIR/xkb_layout/xkb_layout

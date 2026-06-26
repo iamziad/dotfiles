@@ -3,11 +3,15 @@
 # Get default microphone info
 status=$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null)
 
+case "$BLOCK_BUTTON" in
+    1) pavucontrol ;;
+esac
+
 # No microphone found
 if [[ -z "$status" ]]; then
     echo " "
     echo " "
-    echo "#928374"
+    echo "#fb4934"
     exit 0
 fi
 
@@ -15,7 +19,7 @@ fi
 if [[ "$status" == *"[MUTED]"* ]]; then
     echo " "
     echo " "
-    echo "#fb4934"
+    echo "#928374"
 else
     echo ""
     echo ""

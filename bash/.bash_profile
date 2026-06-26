@@ -9,10 +9,8 @@ export BASH_ENV="$HOME/.config/bash/rc"
 export EDITOR=emacsclient
 export TERMINAL=alacritty
 
-if [ -n "$BASH_VERSION" ]; then
-    if [ -f "$HOME/.config/bash/rc" ]; then
-        . "$HOME/.config/bash/rc"
-    fi
+if [ -f "$HOME/.bashrc" ]; then
+    . "$HOME/.bashrc"
 fi
 
 if [ -z "$DISPLAY" ] && [ -f ~/.xinitrc ] && [ "$(tty)" = "/dev/tty1" ]; then

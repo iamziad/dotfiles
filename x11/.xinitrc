@@ -1,38 +1,26 @@
 #!/bin/bash
 
-#export XDG_SESSION_TYPE=x11
-#export XDG_CURRENT_DESKTOP=i3
-# export LIBVA_DRIVER_NAME=radeonsi
+export XDG_SESSION_TYPE=x11
+export XDG_CURRENT_DESKTOP=i3
+export XDG_SESSION_DESKTOP=i3
+export DESKTOP_SESSION=i3
 
-# Xresources
 xrdb -merge "$HOME/.Xresources" || true
 
-# Monitors
 ~/scripts/screenlayout.sh || echo "screenlayout failed"
 
-# Keyboard
 setxkbmap -layout us,ara -variant ,digits -option grp:win_space_toggle -option ctrl:nocaps
-xset r rate 300 50
-xcape -e 'Caps_Lock=Escape' &
-pkill xcape
-xcape &
+xset r rate 250 35 &
 
-# Daemons
-#/usr/libexec/polkit-gnome-authentication-agent-1 &
-#xsettingsd &
-#pipewire &
-lxsession &
-picom \
-  -b \
-  --backend glx \
-  --vsync \
-  --no-fading-openclose \
-  --fade-in-step 0 \
-  --fade-out-step 0 \
-  --fade-delta 0 &
-dunst &
-nm-applet --indicator &
-redshift-gtk &
+/usr/libexec/xfce-polkit &
+pipewire &
+xsettingsd &
 emacs --daemon &
 
-exec i3
+sleep 0.5
+
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    exec dbus-run-session i3
+else
+    exec i3
+fi
