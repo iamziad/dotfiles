@@ -10,15 +10,16 @@ application/xhtml+xml=userapp-Firefox-AVS8Q3.desktop
 application/x-extension-xhtml=userapp-Firefox-AVS8Q3.desktop
 application/x-extension-xht=userapp-Firefox-AVS8Q3.desktop
 
-image/jpeg=imv-dir.desktop
-image/png=imv-dir.desktop
-image/gif=imv-dir.desktop
-image/webp=imv-dir.desktop
-image/bmp=imv-dir.desktop
-image/tiff=imv-dir.desktop
-image/svg+xml=imv-dir.desktop
+image/jpeg=vimiv.desktop
+image/png=vimiv.desktop
+image/gif=vimiv.desktop
+image/webp=vimiv.desktop
+image/bmp=vimiv.desktop
+image/tiff=vimiv.desktop
+image/svg+xml=vimiv.desktop
 
 video/mp4=mpv.desktop
+video/mpeg-4=mpv.desktop
 video/mkv=mpv.desktop
 video/webm=mpv.desktop
 video/x-matroska=mpv.desktop

@@ -9,7 +9,7 @@ if has('termguicolors')
     set termguicolors
 endif
 
-colorscheme unokai
+colorscheme catppuccin
 set background=dark
 
 " Misc

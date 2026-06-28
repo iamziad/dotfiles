@@ -5,10 +5,15 @@
 set $mod Mod4
 
 set $SCRIPTS_LOCAL ~/.config/i3/scripts/
-set $SCRIPTS_GLOBAL ~/scripts/
+set $SCRIPTS_GLOBAL ~/.local/bin
 set $TERM /usr/bin/alacritty
-# set $LAUNCHER i3-dmenu-desktop --dmenu="dmenu -i -l 15 -fn DejavuSans:size=12"
-set $LAUNCHER rofi -show drun
+# set $LAUNCHER i3-dmenu-desktop --dmenu="dmenu -i -l 10 -fn monospace:size=12"
+set $LAUNCHER i3-dmenu-desktop --dmenu="dmenu -i"
+# set $LAUNCHER rofi -show drun
+
+bindsym $mod+l exec ~/scripts/open-dired-home.sh
+# bindsym $mod+shift+d exec --no-startup-id i3-msg "workspace current; focus latest"
+
 
 # ============================================================
 #  Power Management
@@ -111,13 +116,13 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 #  Startup
 # ============================================================
 
-# exec --no-startup-id dex-autostart --autostart --environment i3
+# exec      --no-startup-id dex-autostart --autostart --environment i3
 exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
-exec --no-startup-id picom --config ~/.config/picom/.picom.conf -b
-exec --no-startup-id dunst
-exec --no-startup-id nm-applet --indicator
-exec --no-startup-id redshift-gtk
-exec --no-startup-id gromit-mpx
+exec        --no-startup-id picom --config ~/.config/picom/.picom.conf -b
+exec        --no-startup-id dunst
+exec        --no-startup-id nm-applet --indicator
+exec        --no-startup-id redshift-gtk
+exec        --no-startup-id gromit-mpx
 
 # ============================================================
 #  Window Rules
@@ -132,9 +137,9 @@ set $SIZE_XS   resize set 800 370
 
 # Windows
 for_window [class="Thunar"]                               $FLOAT, $SIZE_LG, $CENTER
-for_window [class="Pcmanfm"]                              $FLOAT, $SIZE_LG, $CENTER
-for_window [class="gThumb"]                               $FLOAT, $SIZE_LG, $CENTER
+for_window [class="Pcmanfm"]                              $FLOAT, $SIZE_MD, $CENTER
 for_window [class="imv"]                                  $FLOAT, $SIZE_LG, $CENTER
+for_window [class="Vimiv"]                                $FLOAT, $SIZE_MD, $CENTER
 for_window [class="Anki"]                                 $FLOAT, $SIZE_LG, $CENTER
 for_window [class="Lxappearance"]                         $FLOAT, $SIZE_LG, $CENTER
 for_window [instance="Devtools"]                          $FLOAT, $SIZE_LG, $CENTER
@@ -145,9 +150,10 @@ for_window [class="mpv"]                                  $FLOAT, $SIZE_MD, $CEN
 for_window [class="pavucontrol"]                          $FLOAT, $SIZE_SM, $CENTER
 for_window [class="Brave-browser" window_role="pop-up"]   $FLOAT, $SIZE_SM, $CENTER
 for_window [class="Blueman-manager"]                      $FLOAT, $SIZE_SM, $CENTER
-for_window [class="org.gnome.clocks"]                     $FLOAT, $SIZE_XS, $CENTER
 for_window [class="Qalculate"]                            $FLOAT, $CENTER
-for_window [window_role="alert"] floating enable
+for_window [window_role="alert"]                          $FLOAT
+for_window [window_role="dialog"]                         $FLOAT
+for_window [window_type="dialog"]                         $FLOAT
 
 # Scratchpads
 for_window [instance="spterm"]                            $FLOAT, move scratchpad, border pixel 3
@@ -200,12 +206,16 @@ bindsym $mod+v           split v
 bindsym $mod+f           fullscreen toggle
 bindsym $mod+s           layout stacking
 bindsym $mod+w           layout tabbed
-bindsym $mod+t           layout toggle split
+bindsym $mod+e           layout toggle split
 bindsym $mod+Shift+f     floating toggle
 bindsym $mod+Shift+m     focus parent
 bindsym $mod+Shift+x     focus child
 
-# Resize
+# ============================================================
+#  Modes
+# ============================================================
+
+# Resize mode
 mode "resize" {
     bindsym h         resize shrink width  10 px or 10 ppt
     bindsym j         resize grow   height 10 px or 10 ppt
@@ -225,34 +235,31 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # ============================================================
-#  Audio & Media
+#  Media Controls
 # ============================================================
 
 # Volume
-
-bindsym XF86AudioRaiseVolume  exec wpctl set-volume --limit 1.5 @DEFAULT_AUDIO_SINK@ 5%+    && pkill -RTMIN+10 i3blocks
-bindsym XF86AudioLowerVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-    && pkill -RTMIN+10 i3blocks
-bindsym XF86AudioMute         exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle   && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume  exec --no-startup-id wpctl set-volume --limit 1.5 @DEFAULT_AUDIO_SINK@ 5%+    && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioLowerVolume  exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-    && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioMute         exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle   && pkill -RTMIN+10 i3blocks
 
 # Mic
-
 bindsym $mod+i exec --no-startup-id sh -c 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+10 i3blocks'
 
 #Brightness
+bindsym $mod+F5 exec --no-startup-id $SCRIPTS_GLOBAL/brightness.sh Samsung -
+bindsym $mod+F6 exec --no-startup-id $SCRIPTS_GLOBAL/brightness.sh Samsung +
 
-bindsym $mod+F5 exec $SCRIPTS_GLOBAL/brightness.sh Samsung -
-bindsym $mod+F6 exec $SCRIPTS_GLOBAL/brightness.sh Samsung +
-
-bindsym $mod+F7 exec $SCRIPTS_GLOBAL/brightness.sh Dell -
-bindsym $mod+F8 exec $SCRIPTS_GLOBAL/brightness.sh Dell +
+bindsym $mod+F7 exec --no-startup-id $SCRIPTS_GLOBAL/brightness.sh Dell -
+bindsym $mod+F8 exec --no-startup-id $SCRIPTS_GLOBAL/brightness.sh Dell +
 
 # ============================================================
 #  Keybindings
 # ============================================================
 
 # Core
-bindsym $mod+Return      exec --no-startup-id $TERM || /usr/bin/i3-sensible-terminal
-bindsym $mod+d           exec --no-startup-id $LAUNCHER
+bindsym $mod+Return      exec $TERM || /usr/bin/i3-sensible-terminal
+bindsym $mod+d           exec $LAUNCHER
 bindsym $mod+q           kill
 
 # i3 control
@@ -260,20 +267,19 @@ bindsym $mod+Shift+c     reload
 bindsym $mod+Shift+r     restart
 bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 
-# Rofi Scripts
-bindsym $mod+Shift+p           exec --no-startup-id $SCRIPTS_GLOBAL/rofi/poweroptions.sh
-# bindsym $mod+Shift+n           exec --no-startup-id networkmanager_dmenu
+# Dmenu scripts
+bindsym $mod+Shift+p           exec --no-startup-id $SCRIPTS_GLOBAL/dmenu/poweroptions.sh
 
 # Apps
-bindsym $mod+m           exec --no-startup-id spotify
-bindsym $mod+p           exec --no-startup-id pcmanfm
-bindsym $mod+c           exec --no-startup-id qalculate-gtk
-bindsym $mod+e           exec --no-startup-id emacsclient -c
+bindsym $mod+m           exec spotify
+bindsym $mod+p           exec pcmanfm
+bindsym $mod+c           exec qalculate-gtk
+bindsym $mod+z           exec emacsclient -c
 bindsym Print            exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh full clip
 bindsym $mod+Print       exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh full save
 bindsym $mod+shift+Print exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh select clip
 bindsym $mod+ctrl+Print  exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh select save
-bindsym $mod+Shift+d     exec --no-startup-id $SCRIPTS_GLOBAL/toggle-darkmode.sh
+bindsym $mod+Shift+g     exec --no-startup-id $SCRIPTS_GLOBAL/toggle-darkmode.sh
 bindsym $mod+Shift+o     exec --no-startup-id xcolor -s clipboard
 
 # Scratch Pads
@@ -281,5 +287,5 @@ bindsym $mod+Shift+o     exec --no-startup-id xcolor -s clipboard
 bindsym $mod+Shift+minus mark "general", move scratchpad
 bindsym $mod+minus [con_mark="general"] scratchpad show
 
-bindsym $mod+k exec --no-startup-id \
+bindsym $mod+k exec \
 i3-msg '[instance="spterm"] scratchpad show' || $TERM -o "window.opacity=0.90" --class spterm
