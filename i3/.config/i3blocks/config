@@ -11,21 +11,9 @@ instance=spotify
 interval=5
 signal=10
 
-[void_update]
-command=$SCRIPT_DIR/void_update
-interval=1800
-markup=pango
-
 [org-timer]
 interval=1
 color=#d8a657
-
-# [bandwidth3]
-# command=$SCRIPT_DIR/bandwidth3/bandwidth3
-# interval=persist
-# markup=pango
-# LABEL=<span font='FontAwesome'>  </span>
-# PRINTF_COMMAND=printf "%-5.1f/%5.1f %s/s\n", rx, wx, unit;
 
 [bandwidth]
 command=INLABEL=' ' OUTLABEL='- ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
@@ -41,33 +29,32 @@ instance=mem
 separator=true
 interval=10
 
-[disk]
-label=HOME
-#DIR=/mnt/data
-interval=30
+# [cpu_usage]
+# command=LABEL='CPU: ' T_WARN=65 T_CRIT=80 COLOR_NORMAL='#EBDBB2' COLOR_WARN='#FFFC00' COLOR_CRIT='#FF0000' $SCRIPT_DIR/cpu_usage/cpu_usage
+# interval=10
+# separator=false
 
-[wifi]
-INTERFACE=wlp3s0
-label=wifi:
-interval=10
-separator=false
-
-[cpu_usage]
-command=LABEL='CPU: ' T_WARN=65 T_CRIT=80 COLOR_NORMAL='#EBDBB2' COLOR_WARN='#FFFC00' COLOR_CRIT='#FF0000' $SCRIPT_DIR/cpu_usage/cpu_usage
-interval=10
+[load]
+command=$SCRIPT_DIR/load
+interval=5
 separator=false
 
 [temperature]
 command=T_WARN=60 T_CRIT=70 $SCRIPT_DIR/temperature/temperature
 interval=10
 
-[load_average]
-label=LOAD
-interval=10
+# [cpu_temperature]
+# label=Tea:
+# command=echo "$(( $(cat /sys/class/hwmon/hwmon1/temp1_input) / 1000 ))°C"
+# interval=5
 
-[battery]
-label=BAT
-label=⚡
+
+[ethernet]
+command=$SCRIPT_DIR/ethernet.sh
+interval=5
+
+[disk]
+command=df -B1 / | awk 'NR==2 {printf "Main: %.1f GB\n", $4/1024/1024/1024}'
 interval=30
 
 [volume]
@@ -97,5 +84,4 @@ interval=5
 command=font=monospace font_weight=bold $SCRIPT_DIR/xkb_layout/xkb_layout
 interval=persist
 markup=pango
-# color=#c0c0c0
 color=#0492c2

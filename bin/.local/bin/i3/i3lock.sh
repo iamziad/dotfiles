@@ -1,8 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+pgrep -x i3lock >/dev/null && exit 0
+xkb-switch -s us
+
+(
+    sleep 120
+    pgrep -x i3lock >/dev/null && xset dpms force off
+) &
+
+dunstctl set-paused true
+
+LOCK_IMAGE="$HOME/Pictures/wallpapers/bliss-1080p.jpg"
 
 i3lock \
     -n \
-    --blur 7 \
+    --image="$LOCK_IMAGE" \
     --tiling \
     --clock \
     --indicator \
@@ -29,3 +41,5 @@ i3lock \
     --ring-color=ffffff44 \
     --keyhl-color=00ff00ff \
     --wrong-color=ff0000ff
+
+dunstctl set-paused false

@@ -9,7 +9,7 @@ if has('termguicolors')
     set termguicolors
 endif
 
-colorscheme catppuccin
+colorscheme habamax
 set background=dark
 
 " Misc

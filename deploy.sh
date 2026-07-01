@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Hardware Specific Config
+# - i3blocks
+#  - CPU load
+#  - CPU temp
+
 PROFILE=$1
 
 if ! command -v stow &> /dev/null; then
@@ -13,12 +18,8 @@ mkdir -p \
       "$HOME/.cache" \
       "$HOME/.local/state"
 
-rm -f \
-   "$HOME/.bash_profile" \
-   "$HOME/.profile"
-
 DESKTOP_GUI=(git alacritty vim tmux bash)
-DESKTOP_I3=("${DESKTOP_GUI[@]}" i3 x11 redshift dunst rofi mimeapps gtk)
+DESKTOP_I3=("${DESKTOP_GUI[@]}" bin i3 x11 redshift dunst picom mimeapps gtk)
 
 if [ "$PROFILE" = "desktop-gui" ]; then
     echo "$0: deploying $1.."

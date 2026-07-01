@@ -4,6 +4,8 @@
 # alias l='ls -CF'
 
 # general
+alias sudo="sudo "
+alias rm="rm -i"
 alias c="xclip -selection clipboard"
 
 # tmux
