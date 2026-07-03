@@ -4,13 +4,13 @@ pgrep -x i3lock >/dev/null && exit 0
 xkb-switch -s us
 
 (
-    sleep 120
+    sleep 60
     pgrep -x i3lock >/dev/null && xset dpms force off
 ) &
 
 dunstctl set-paused true
 
-LOCK_IMAGE="$HOME/Pictures/wallpapers/bliss-1080p.jpg"
+LOCK_IMAGE="$HOME/Pictures/wallpapers/thumb-1920-1410361.jpg"
 
 i3lock \
     -n \

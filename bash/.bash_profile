@@ -11,5 +11,5 @@ if [ -f "$HOME/.bashrc" ]; then
 fi
 
 if [ -z "$DISPLAY" ] && [ -f "$XDG_CONFIG_HOME/x11/xinitrc" ] && [ "$(tty)" = "/dev/tty1" ]; then
-    startx "$XDG_CONFIG_HOME/x11/xinitrc" --
+    dbus-run-session startx "$XDG_CONFIG_HOME/x11/xinitrc" --
 fi

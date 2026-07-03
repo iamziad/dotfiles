@@ -11,8 +11,8 @@ set $TERM            /usr/bin/alacritty
 set $LAUNCHER        i3-dmenu-desktop --dmenu="dmenu -i -fn monospace:size=11"
 
 # Monitors
-set $pri HDMI-1
-set $sec DP-1
+set $pri HDMI-A-0
+set $sec DisplayPort-0
 
 # Workspaces
 set $ws1  "1"
@@ -110,14 +110,11 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 # exec --no-startup-id xautolock -time 10 -locker "$SCRIPTS_GLOBAL/i3/i3lock.sh" \
 #                                 -detectsleep -killtime 10 -killer "loginctl suspend"
 
-
+exec        --no-startup-id runsvdir ~/.config/service
 exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- $SCRIPTS_GLOBAL/i3/i3lock.sh
-exec        --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 exec        --no-startup-id picom --config ~/.config/picom/.picom.conf -b
-exec        --no-startup-id dunst
 exec        --no-startup-id redshift-gtk
 exec        --no-startup-id gromit-mpx
-exec        --no-startup-id xsettingsd
 exec        --no-startup-id emacs --daemon
 
 exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
@@ -219,9 +216,9 @@ set $mode_system Power Options: Lock(l) Exit(e) Suspend(s) Reboot(r) Poweroff(o)
 mode "$mode_system" {
     bindsym l      exec --no-startup-id $SCRIPTS_GLOBAL/i3/i3lock.sh, mode "default"
     bindsym e      exec --no-startup-id i3-msg exit,         mode "default"
-    bindsym s      exec --no-startup-id systemctl suspend,   mode "default"
-    bindsym r      exec --no-startup-id systemctl reboot,    mode "default"
-    bindsym o      exec --no-startup-id systemctl poweroff,  mode "default"
+    bindsym s      exec --no-startup-id loginctl suspend,   mode "default"
+    bindsym r      exec --no-startup-id loginctl reboot,    mode "default"
+    bindsym o      exec --no-startup-id loginctl poweroff,  mode "default"
     bindsym Escape mode "default"
 }
 bindsym $mod+Shift+q mode "$mode_system"

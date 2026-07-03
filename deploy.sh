@@ -12,13 +12,8 @@ if ! command -v stow &> /dev/null; then
     exit 1
 fi
 
-mkdir -p \
-      "$HOME/.config" \
-      "$HOME/.local/share" \
-      "$HOME/.cache" \
-      "$HOME/.local/state"
 
-DESKTOP_GUI=(git alacritty vim tmux bash)
+DESKTOP_GUI=(runit git alacritty vim tmux bash)
 DESKTOP_I3=("${DESKTOP_GUI[@]}" bin i3 x11 redshift dunst picom mimeapps gtk)
 
 if [ "$PROFILE" = "desktop-gui" ]; then
@@ -26,6 +21,14 @@ if [ "$PROFILE" = "desktop-gui" ]; then
     stow -v "${DESKTOP_GUI[@]}"
 else
     echo "$0: deploying i3 profile.."
+
+    mkdir -p \
+	    "$HOME/.config" \
+	    "$HOME/.local/share" \
+	    "$HOME/.cache" \
+	    "$HOME/.local/state"
+
+    echo "$0: Created home skeleton"
     stow -v "${DESKTOP_I3[@]}"
 fi
 
