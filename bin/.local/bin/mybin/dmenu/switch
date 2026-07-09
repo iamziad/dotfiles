@@ -29,7 +29,7 @@ done < <(wmctrl -lx)
 
 formatted=$(printf "%s\n" "${display[@]}")
 
-choice=$(printf "%s" "$formatted" | dmenu -l 10 -i -p "switch:")
+choice=$(printf "%s" "$formatted" | dmenu -l 10 -i -p "Windows:")
 
 if [[ -n $choice ]]; then
     for i in "${!display[@]}"; do

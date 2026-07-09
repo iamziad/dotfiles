@@ -1,7 +1,5 @@
 # .bashrc
 
-export HISTFILE="$HOME/.local/state/bash/history"
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -28,3 +26,15 @@ PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\w${
 
 # Aliases
 [ -f $HOME/dotfiles/bash/.bash_aliases ] && . $HOME/dotfiles/bash/.bash_aliases
+
+
+################################################################################
+
+# PATH
+
+## .local
+export PATH="$HOME/.local/bin:$PATH"
+## nvm
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

@@ -6,7 +6,7 @@
 set $mod Mod4
 
 # Paths
-set $SCRIPTS_GLOBAL  /home/ziad/.local/bin
+set $SCRIPTS_GLOBAL  /home/ziad/.local/bin/mybin
 set $TERM            /usr/bin/alacritty
 set $LAUNCHER        i3-dmenu-desktop --dmenu="dmenu -i -fn monospace:size=11"
 
@@ -43,8 +43,8 @@ smart_gaps on
 
 bar {
     status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
-
     font pango:JetBrainsMono Nerd Font 9
+
     position     bottom
     tray_output  $pri
 
@@ -106,19 +106,16 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 #  Startup
 # ============================================================
 
-# exec --no-startup-id xss-lock -l --transfer-sleep-lock -- $SCRIPTS_GLOBAL/i3/i3lock.sh
-# exec --no-startup-id xautolock -time 10 -locker "$SCRIPTS_GLOBAL/i3/i3lock.sh" \
-#                                 -detectsleep -killtime 10 -killer "loginctl suspend"
-
+exec_always --no-startup-id i3-msg 'workspace $ws6; workspace $ws1'
 exec        --no-startup-id runsvdir ~/.config/service
 exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- $SCRIPTS_GLOBAL/i3/i3lock.sh
+
 exec        --no-startup-id picom --config ~/.config/picom/.picom.conf -b
 exec        --no-startup-id redshift-gtk
 exec        --no-startup-id gromit-mpx
 exec        --no-startup-id emacs --daemon
 
 exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
-exec_always --no-startup-id i3-msg 'workspace $ws6; workspace $ws1'
 
 # ============================================================
 #  Window Rules
@@ -212,10 +209,10 @@ bindsym $mod+Shift+x focus child
 # ============================================================
 
 # Power mode
-set $mode_system Power Options: Lock(l) Exit(e) Suspend(s) Reboot(r) Poweroff(o) Cancel(Esc)
+set $mode_system Power Options: Lock(l) - Exit(e) - Suspend(s) - Reboot(r) - Poweroff(o) - Cancel(Esc)
 mode "$mode_system" {
     bindsym l      exec --no-startup-id $SCRIPTS_GLOBAL/i3/i3lock.sh, mode "default"
-    bindsym e      exec --no-startup-id i3-msg exit,         mode "default"
+    bindsym e      exec --no-startup-id i3-msg exit,        mode "default"
     bindsym s      exec --no-startup-id loginctl suspend,   mode "default"
     bindsym r      exec --no-startup-id loginctl reboot,    mode "default"
     bindsym o      exec --no-startup-id loginctl poweroff,  mode "default"
@@ -240,6 +237,26 @@ mode "resize" {
     bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
+
+# Gaps mode
+set $mode_gaps Gaps: Inner(+/-) - Outer(shift +/-) - No gaps(0) - Resotre(r) - Cancel(Esc)
+mode "$mode_gaps" {
+    bindsym plus gaps inner current plus 5
+    bindsym minus gaps inner current minus 5
+
+    bindsym shift+plus gaps outer current plus 5
+    bindsym shift+minus gaps outer current minus 5
+
+    bindsym r gaps inner current set 8
+    bindsym r gaps outer current set 0
+
+    bindsym 0 gaps inner current set 0
+    bindsym 0 gaps outer current set 0
+
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+}
+bindsym $mod+g mode "$mode_gaps"
 
 # ============================================================
 #  Media Controls
@@ -274,7 +291,6 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # Dmenu
-bindsym $mod+Shift+w exec $SCRIPTS_GLOBAL/dmenu/switch
 
 # Applications
 bindsym F1           exec pcmanfm
@@ -295,8 +311,8 @@ bindsym $mod+ctrl+Print  exec --no-startup-id $SCRIPTS_GLOBAL/screenshot.sh sele
 #  Scratchpads
 # ============================================================
 
-bindsym $mod+Shift+minus mark "general", move scratchpad
-bindsym $mod+minus       [con_mark="general"] scratchpad show
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus [class="^(?!spterm$).*"] scratchpad show
 
-bindsym $mod+k exec \
-    i3-msg '[instance="spterm"] scratchpad show' || $TERM -o "window.opacity=0.90" --class spterm
+bindsym $mod+k exec i3-msg '[class="spterm"] scratchpad show' || exec $TERM -o "window.opacity=0.90" --class spterm
+for_window [class="spterm"] floating enable, move scratchpad

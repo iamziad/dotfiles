@@ -4,12 +4,16 @@ set directory=$XDG_STATE_HOME/vim/swap//   | call mkdir(&directory, 'p', 0700)
 set backupdir=$XDG_STATE_HOME/vim/backup// | call mkdir(&backupdir, 'p', 0700)
 set undodir=$XDG_STATE_HOME/vim/undo//     | call mkdir(&undodir, 'p', 0700)
 
+call plug#begin()
+Plug 'morhetz/gruvbox'
+call plug#end()
+
 " Colors
 if has('termguicolors')
     set termguicolors
 endif
 
-colorscheme habamax
+colorscheme gruvbox
 set background=dark
 
 " Misc

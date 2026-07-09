@@ -3,6 +3,10 @@ separator_block_width=15
 markup=none
 color=#f5f5f5
 
+[void_update]
+markup=pango
+interval=43200
+
 [mediaplayer]
 command=$SCRIPT_DIR/mediaplayer/mediaplayer
 # label=󰝚
@@ -15,12 +19,12 @@ signal=10
 interval=1
 color=#d8a657
 
-[bandwidth]
-command=INLABEL=' ' OUTLABEL='- ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
-markup=pango
-interval=5
-INTERFACE=enp3s0
-TREAT_UNKNOWN_AS_UP=0
+# [bandwidth]
+# command=INLABEL=' ' OUTLABEL='- ' TREAT_UNKNOWN_AS_UP=0 $SCRIPT_DIR/bandwidth/bandwidth
+# markup=pango
+# interval=5
+# INTERFACE=enp3s0
+# TREAT_UNKNOWN_AS_UP=0
 
 [memory]
 command=$SCRIPT_DIR/memory/memory
@@ -35,7 +39,6 @@ interval=10
 # separator=false
 
 [load]
-command=$SCRIPT_DIR/load
 interval=5
 separator=false
 
@@ -44,28 +47,24 @@ command=T_WARN=60 T_CRIT=70 $SCRIPT_DIR/temperature/temperature
 interval=10
 
 # [cpu_temperature]
-# label=Tea:
+# label=
 # command=echo "$(( $(cat /sys/class/hwmon/hwmon1/temp1_input) / 1000 ))°C"
 # interval=5
 
-
-[ethernet]
-command=$SCRIPT_DIR/ethernet.sh
+[ethernet.sh]
 interval=5
 
 [disk]
-command=df -B1 / | awk 'NR==2 {printf "Main: %.1f GB\n", $4/1024/1024/1024}'
+command=df -B1 / | awk 'NR==2 {printf "Main: %.1fG\n", $4/1024/1024/1024}'
 interval=30
 
 [volume]
-command=$SCRIPT_DIR/volume
 markup=pango
 interval=once
 signal=10
-#STEP=5%
+# STEP=5%
 
 [mic]
-command=$SCRIPT_DIR/mic
 interval=2
 signal=10
 
@@ -73,8 +72,7 @@ signal=10
 command=date '+%a %d %b - %H:%M'
 interval=5
 
-# [gtk-theme]
-# command=$SCRIPT_DIR/theme-block
+# [theme-block]
 # interval=once
 # signal=10
 # ICON_DARK=

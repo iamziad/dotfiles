@@ -7,6 +7,7 @@
 alias sudo="sudo "
 alias rm="rm -i"
 alias c="xclip -selection clipboard"
+alias deb="distrobox enter debian"
 
 # tmux
 alias tl="tmux list-sessions"
@@ -21,6 +22,7 @@ alias et="emacs -nw"
 alias ed="ect ."
 alias emacs-kill='emacsclient -e "(kill-emacs)"'
 alias emacs-start="emacs --daemon"
+alias emacs-reload='emacsclient -e "(kill-emacs)" 2>/dev/null; sleep 0.3; emacs --daemon'
 
 function ecw() {
     emacsclient -e "(find-file-other-window \"$1\")"

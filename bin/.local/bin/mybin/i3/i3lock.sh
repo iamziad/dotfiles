@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 pgrep -x i3lock >/dev/null && exit 0
+
+cleanup() {
+    dunstctl set-paused false
+}
+
+trap cleanup EXIT
+
 xkb-switch -s us
+dunstctl set-paused true
 
 (
     sleep 60
     pgrep -x i3lock >/dev/null && xset dpms force off
 ) &
 
-dunstctl set-paused true
 
 LOCK_IMAGE="$HOME/Pictures/wallpapers/thumb-1920-1410361.jpg"
 
