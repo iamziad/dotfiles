@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: File description
+# key: \file
+# group: doxygen
+# --
+/**
+ *   \file ${1:`(file-name-nondirectory(buffer-file-name))`}
+ *   \brief ${2:A Documented file.}
+ ${3:*
+ *  ${4:Detailed description}
+ *
+}*/

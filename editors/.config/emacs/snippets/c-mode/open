@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: open
+# key: open
+# --
+int ${1:fd} = open(${2});

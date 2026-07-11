@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for_enhanced
+# key: fore
+# --
+for (${1:Object el} : ${2:iterator}) {
+    $0
+}
