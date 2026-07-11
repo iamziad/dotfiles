@@ -1,18 +1,14 @@
 # Emacs backup and temporary files
 *~
 \#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
 *.elc
-cache/
-straight/
-eln-cache/
-recentf
-eshell/
-transient/
-tree-sitter/
-config.el
-custom.el
+emacs/var/
+emacs/cache/
+emacs/straight/
+emacs/eln-cache/
+emacs/recentf
+emacs/transient/
+emacs/tree-sitter/
 
 # Folder-specific ignore
 .DS_Store
