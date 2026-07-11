@@ -42,6 +42,10 @@ style = { shape = "Block", blinking = "On" }
 blink_interval = 500
 unfocused_hollow = true
 
+[colors.cursor]
+cursor = "#ebdbb2"
+text = "#282828"
+
 [bell]
 animation = "EaseOutExpo"
 duration = 0

@@ -25,7 +25,7 @@ git_branch() {
 PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\w${GB_RESET}${GB_PURPLE}\$(git_branch)${GB_RESET}${GB_RED}]${GB_RESET}\$ "
 
 # Aliases
-[ -f $HOME/dotfiles/bash/.bash_aliases ] && . $HOME/dotfiles/bash/.bash_aliases
+[ -f $HOME/dotfiles/shell/.bash_aliases ] && . $HOME/dotfiles/shell/.bash_aliases
 
 
 ################################################################################

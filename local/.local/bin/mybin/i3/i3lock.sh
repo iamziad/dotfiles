@@ -19,7 +19,7 @@ dunstctl set-paused true
 ) &
 
 
-LOCK_IMAGE="$HOME/Pictures/wallpapers/thumb-1920-1410361.jpg"
+LOCK_IMAGE="$HOME/Pictures/wallpapers/dark.jpg"
 
 i3lock \
     -n \

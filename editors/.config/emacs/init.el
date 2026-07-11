@@ -810,7 +810,7 @@
               ("C-c p d" . pdf-view-midnight-minor-mode)
               ("=" . pdf-view-enlarge)
               ("-" . pdf-view-shrink))
-  :hook (after-init . pdf-tools-install)
+  :hook (pdf-tools-install)
   :config
   (setq pdf-view-use-scaling t)
   (setq pdf-view-midnight-colors '("#ebdbb2" . "#282828")))
