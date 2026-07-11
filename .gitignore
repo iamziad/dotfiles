@@ -2,13 +2,14 @@
 *~
 \#*\#
 *.elc
-emacs/var/
-emacs/cache/
-emacs/straight/
-emacs/eln-cache/
-emacs/recentf
-emacs/transient/
-emacs/tree-sitter/
+editor/.config/emacs/etc/
+editor/.config/emacs/var/
+editor/.config/emacs/cache/
+editor/.config/emacs/straight/
+editor/.config/emacs/eln-cache/
+editor/.config/emacs/recentf
+editor/.config/emacs/transient/
+editor/.config/emacs/tree-sitter/
 
 # Folder-specific ignore
 .DS_Store
