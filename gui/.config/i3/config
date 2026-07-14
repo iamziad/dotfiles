@@ -30,11 +30,12 @@ set $ws10 "10"
 #  Appearance
 # ============================================================
 
+# font pango:JetBrainsMono Nerd Font 10
 font pango:JetBrainsMono Nerd Font 10
 hide_edge_borders both
 
 gaps outer 0px
-gaps inner 8px
+gaps inner 6px
 smart_gaps on
 
 # ============================================================
@@ -44,6 +45,7 @@ smart_gaps on
 bar {
     status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
     font pango:JetBrainsMono Nerd Font 9
+    # status_command i3status
 
     position     bottom
     tray_output  $pri

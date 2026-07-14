@@ -15,10 +15,10 @@ do
         sub(/\(.*/, "", layout)
 
         if (layout == "ARA")
-            layout = "AR"
+            layout = "ar"
 
         if (layout == "US")
-            layout = "EN"
+            layout = "en"
 
         print "<span font_family=\"" font "\" font_weight=\"" font_weight "\">" layout "</span>"
     }' || sleep 1

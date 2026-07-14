@@ -4,8 +4,8 @@ AUR_HELPER="yay"
 ICON=" :"
 URGENT_AT=20
 
-COLOR_ICON="#5294e2"
-COLOR_TEXT="#00ff00"
+COLOR_ICON="#999999"
+COLOR_TEXT="#999999"
 
 if [[ -z "$AUR_HELPER" ]]; then
     command -v paru &>/dev/null && AUR_HELPER="paru"

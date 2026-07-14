@@ -22,7 +22,16 @@ git_branch() {
     [ -n "$branch" ] && echo " $branch"
 }
 
-PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\w${GB_RESET}${GB_PURPLE}\$(git_branch)${GB_RESET}${GB_RED}]${GB_RESET}\$ "
+get_trimmed_pwd() {
+    local current_pwd="${PWD/#$HOME/\~}"
+    if [[ "$current_pwd" == "/" ]]; then
+        echo "/"
+    else
+        echo "$current_pwd" | awk -F/ '{if (NF>2) print $(NF-1)"/"$NF; else print $0}'
+    fi
+}
+
+PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\$(get_trimmed_pwd)${GB_RESET}${GB_PURPLE}\$(git_branch)${GB_RESET}${GB_RED}]${GB_RESET}\$ "
 
 # Aliases
 [ -f $HOME/dotfiles/shell/.bash_aliases ] && . $HOME/dotfiles/shell/.bash_aliases

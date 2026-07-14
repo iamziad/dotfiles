@@ -19,7 +19,6 @@
 (setq straight-use-package-by-default t)
 (setq native-comp-async-report-warnings-errors 'silent)
 
-;; melpa
 (require 'package)
 
 (add-to-list 'package-archives
@@ -111,8 +110,6 @@
  ("C-}"        . forward-paragraph)
  ("C-{"        . backward-paragraph)
  ("C-c f"      . find-file-at-point)
- ("C-c h"      . previous-buffer)
- ("C-c l"      . next-buffer)
  ("C-c c"      . compile)
  ("C-c g g"      . grep)
  ("C-c o"      . delete-other-windows)
@@ -178,7 +175,7 @@
   (recentf-mode t)
   (savehist-mode t)
   (winner-mode 1)
-  (delete-selection-mode t)
+  (delete-selection-mode 1)
   (global-auto-revert-mode t)
   (xterm-mouse-mode t)
   (auto-save-visited-mode t)
@@ -187,14 +184,14 @@
   (electric-indent-mode nil)
 
   :custom
-  Vertico
+  ;; Vertico
   (context-menu-mode t)
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   (minibuffer-prompt-properties
    '(read-only t cursor-intangible t face minibuffer-prompt))
 
-  Corfu
+  ;; Corfu
   (tab-always-indent 'complete)
   (text-mode-ispell-word-completion nil)
   (read-extended-command-predicate #'command-completion-default-include-p)
@@ -216,6 +213,16 @@
         (append '(abbreviate-file-name) recentf-filename-handlers))
   (recentf-mode))
 
+;; Tabs
+(setq tab-bar-show 1)
+
+(dotimes (i 9)
+  (global-set-key
+   (kbd (format "M-%d" (1+ i)))
+   `(lambda ()
+      (interactive)
+      (tab-bar-select-tab ,(1+ i)))))
+
 (set-face-attribute 'default nil
                     :family "JetBrains Mono Nerd Font"
                     :height 110
@@ -235,16 +242,6 @@
 
 (setq-default line-spacing 0.12)
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono Nerd Font-11"))
-
-(use-package ligature
-  :ensure t
-  :config
-  (ligature-set-ligatures 'prog-mode
-                          '("|||" ">>>" "=>" ">=" "->>" "->" "-->"
-                            "<-" "<-->" "<<-" "<->" "<=" "<==" "<=>" "<~"
-                            "++" "+++" ":::" "::" "!="
-                            "/*" "*/" "%%" "&&"))
-  (global-ligature-mode t))
 
 (use-package ace-window
   :ensure t
@@ -376,6 +373,18 @@
   :ensure t
   :hook ((emacs-lisp-mode lisp-mode common-lisp-mode) . rainbow-delimiters-mode))
 
+(defun my/toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha-background)))
+    (set-frame-parameter
+     nil
+     'alpha-background
+     (if (or (null alpha) (= alpha 100))
+         90
+       100))))
+
+(global-set-key (kbd "C-c a t") #'my/toggle-transparency)
+
 (use-package vertico
   :init (vertico-mode)
   :bind (:map vertico-map
@@ -397,54 +406,30 @@
 
 (use-package corfu
   :ensure t
+  :init (global-corfu-mode)
+  :bind (:map corfu-map
+              ("C-j" . corfu-next)
+              ("C-k" . corfu-previous)
+              ("RET" . corfu-insert)
+              ("TAB" . corfu-quit))
   :custom
-  (corfu-cycle t)
   (corfu-auto t)
-  (corfu-auto-delay 0.1)
+  (corfu-auto-delay 0.15)
   (corfu-auto-prefix 2)
-  (corfu-quit-at-boundary 'separator)
-  (corfu-quit-no-match 'separator)
-  (corfu-preview-current t)
-  (corfu-echo-documentation t)
-  (corfu-history-mode 1)
-  :hook (prog-mode . corfu-mode)
-  :config
-  (with-eval-after-load 'savehist
-    (add-to-list 'savehist-additional-variables 'corfu-history))
-  (setq corfu-highlight-matches nil)
-  :bind
-  (:map corfu-map
-        ("C-j" . corfu-next)
-        ("C-k" . corfu-previous)
-        ("M-SPC" . corfu-insert-separator)
-        ("SPC" . nil)
-        ("RET" . corfu-insert)
-        ("TAB" . nil)))
-
-(defun my/corfu-enable-in-minibuffer ()
-  (unless (or (bound-and-true-p mct--active)
-              (bound-and-true-p vertico--input)
-              (eq (current-local-map) read-expression-map))
-    (setq-local corfu-auto t)
-    (corfu-mode 1)))
+  (corfu-cycle t)
+  (corfu-preselect 'prompt))
 
 (use-package cape
+  :ensure t
   :init
-  (add-hook 'completion-at-point-functions
-            (cape-capf-super
-             #'cape-keyword
-             #'cape-dabbrev
-             #'cape-file
-             #'elisp-completion-at-point)))
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-dabbrev))
 
-(use-package kind-icon
-  :config
-  (setq kind-icon-default-face 'corfu-default)
-  (setq kind-icon-default-style '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.9 :scale 1))
-  (setq kind-icon-blend-frac 0.08)
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  (add-hook 'counsel-load-theme #'(lambda () (interactive) (kind-icon-reset-cache)))
-  (add-hook 'load-theme         #'(lambda () (interactive) (kind-icon-reset-cache))))
+;; (use-package nerd-icons-corfu
+;;   :ensure t
+;;   :after corfu
+;;   :config
+;;   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package yasnippet
   :config
@@ -487,25 +472,15 @@
   :config
   (editorconfig-mode 1))
 
-(use-package web-mode
-  :ensure t
-  :mode (("\\.html?\\'" . web-mode)
-         ("\\.ejs\\'" . web-mode)
-         ("\\.jsx\\'" . web-mode)
-         ("\\.tsx\\'" . web-mode))
-  :config
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-enable-current-element-highlight t)
-  (setq web-mode-enable-current-column-highlight t))
-
 (use-package emmet-mode
   :ensure t
-  :hook (web-mode . emmet-mode)
+  :hook ((html-ts-mode . emmet-mode)
+         (web-mode     . emmet-mode)
+         (css-ts-mode . emmet-mode))
   :config
   (add-hook 'sgml-mode-hook 'emmet-mode)
   (add-hook 'css-mode-hook  'emmet-mode)
+  (setq emmet-move-cursor-between-quotes t)
   (define-key emmet-mode-keymap (kbd "TAB") 'emmet-expand-line)
   (with-eval-after-load 'emmet-mode
     (define-key emmet-mode-keymap (kbd "C-j") nil)))
@@ -517,8 +492,8 @@
          ("\\.mts\\'"            . typescript-ts-mode)
          ("\\.cjs\\'"            . typescript-ts-mode)
          ("\\.ts\\'"             . typescript-ts-mode)
-         ;; ("\\.jsx\\'"            . tsx-ts-mode)
-         ;; ("\\.tsx\\'"            . tsx-ts-mode)
+         ("\\.jsx\\'"            . tsx-ts-mode)
+         ("\\.tsx\\'"            . tsx-ts-mode)
          ("CMakeLists\\.txt\\'"  . cmake-ts-mode)
          ("\\.cmake\\'"          . cmake-ts-mode)
          ("Dockerfile\\'"        . dockerfile-ts-mode)
@@ -571,12 +546,65 @@
              (sh-base-mode    . bash-ts-mode)
              (bash-mode       . bash-ts-mode)
              (html-mode       . html-ts-mode)
+             (mhtml-mode       . html-ts-mode)
              (css-mode        . css-ts-mode)
              (makefile-mode   . makefile-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
 
   :config
   (my/setup-install-grammars))
+
+(use-package eglot
+  :straight nil
+  :hook ((c-ts-mode c++-ts-mode
+                    java-ts-mode
+                    typescript-ts-mode tsx-ts-mode
+                    html-ts-mode css-ts-mode
+                    json-ts-mode
+                    bash-ts-mode) . eglot-ensure)
+  :bind
+  ("C-c l r" . eglot-rename)
+  ("C-c l a" . eglot-code-actions)
+  ("C-c l f" . eglot-format-buffer)
+  ("C-c l i" . eglot-find-implementation)
+  ("C-c l R" . eglot-reconnect)
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-sync-connect nil)
+  (eglot-events-buffer-size 0)
+  :config
+  (add-to-list 'eglot-server-programs
+               '((typescript-ts-mode tsx-ts-mode) . ("tsc" "--lsp" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '(html-ts-mode . ("vscode-html-languageserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '(css-ts-mode . ("vscode-css-languageserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '(json-ts-mode . ("vscode-json-languageserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '(bash-ts-mode . ("bash-language-server" "start")))
+  (add-to-list 'eglot-server-programs
+               '(java-ts-mode . ("jdtls"))))
+
+;; (use-package apheleia
+;;   :ensure t
+;;   :config
+;;   (apheleia-global-mode +1)
+;;   (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier)
+;;   (setf (alist-get 'tsx-ts-mode apheleia-mode-alist) 'prettier)
+;;   (setf (alist-get 'html-ts-mode apheleia-mode-alist) 'prettier)
+;;   (setf (alist-get 'css-ts-mode apheleia-mode-alist) 'prettier)
+;;   (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'prettier)
+;;   (setf (alist-get 'bash-ts-mode apheleia-mode-alist) 'shfmt)
+;;   (setf (alist-get 'c-ts-mode apheleia-mode-alist) 'clang-format)
+;;   (setf (alist-get 'c++-ts-mode apheleia-mode-alist) 'clang-format))
+
+(use-package flymake-eslint
+  :ensure t
+  :hook ((typescript-ts-mode tsx-ts-mode) .
+         (lambda ()
+           (when (executable-find "eslint")
+             (flymake-eslint-enable)))))
 
 (setq org-hide-leading-stars t
       org-ellipsis " ▾"
@@ -610,7 +638,8 @@
  '((emacs-lisp . t)
    (C . t)
    (shell . t)
-   (java . t)))
+   (java . t)
+   (js . t)))
 
 (setq org-confirm-babel-evaluate nil
       python-shell-completion-native-enable nil
@@ -755,6 +784,13 @@
     (string-trim
      (shell-command-to-string "git branch --show-current 2>/dev/null"))))
 
+(defun my/eshell-trim-pwd (path)
+  (let* ((abbr-path (abbreviate-file-name path))
+         (parts (split-string abbr-path "/" t)))
+    (if (<= (length parts) 2)
+        abbr-path
+      (string-join (last parts 2) "/"))))
+
 (defun my/eshell-prompt ()
   (let* ((branch (my/eshell-git-branch))
          (host   (car (split-string (system-name) "\\."))))
@@ -764,7 +800,8 @@
      (propertize "@"              'face '(:foreground "#fabd2f"))
      (propertize host             'face '(:foreground "#87afaf"))
      " "
-     (propertize (abbreviate-file-name (eshell/pwd))
+
+     (propertize (my/eshell-trim-pwd (eshell/pwd))
                  'face '(:foreground "#afaf00"))
      (when branch
        (concat
@@ -800,6 +837,28 @@
     (select-window window)
     (switch-to-buffer buffer)))
 (keymap-global-set "C-c p e" #'my/project-eshell-bottom)
+
+(defun my/toggle-eshell-right ()
+  (interactive)
+  (let* ((eshell-buffer (get-buffer "*eshell*"))
+         (desired-width (floor (* (frame-width) 0.45)))
+         (new-window (split-window (frame-root-window) (- desired-width) 'right)))
+    (select-window new-window)
+    (if eshell-buffer
+        (switch-to-buffer eshell-buffer)
+      (eshell))))
+(global-set-key (kbd "C-c v e") #'my/toggle-eshell-right)
+
+(defun my/project-eshell-right ()
+  (interactive)
+  (let* ((project (project-current t))
+         (default-directory (project-root project))
+         (buffer (project-eshell))
+         (desired-width (floor (* (frame-width) 0.45)))
+         (window (split-window (frame-root-window) (- desired-width) 'right)))
+    (select-window window)
+    (switch-to-buffer buffer)))
+(keymap-global-set "C-c p v e" #'my/project-eshell-right)
 
 (use-package pdf-tools
   :ensure t
@@ -844,10 +903,6 @@
   :ensure t
   :config
   (xclip-mode 1))
-
-;; (use-package leetcode
-;;     :config
-;;     (setq leetcode-language "java"))
 
 (define-minor-mode my/focus-mode
   "Toggle Focus Mode for distraction-free writing."

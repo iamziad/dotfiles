@@ -48,11 +48,11 @@ if ip link show "$iface" | grep -q "state UP"; then
     fi
 
     if [ -n "$speed" ]; then
-        echo "E: ${rx_str} - ${tx_str} (${speed}Mb/s)"
+        echo "E: ${rx_str} ${tx_str} (${speed}Mb/s)"
         echo "#00ff00"
         echo "#00ff00"
     else
-        echo "E: ${rx_str} - ${tx_str}"
+        echo "E: ${rx_str} ${tx_str}"
         echo "#00ff00"
         echo "#00ff00"
     fi

@@ -1,4 +1,4 @@
-# Emacs backup and temporary files
+# Emacs
 *~
 \#*\#
 *.elc
@@ -6,6 +6,7 @@ editors/.config/emacs/etc/
 editors/.config/emacs/var/
 editors/.config/emacs/cache/
 editors/.config/emacs/straight/
+editors/.config/emacs/elpa/
 editors/.config/emacs/eln-cache/
 editors/.config/emacs/recentf
 editors/.config/emacs/transient/
