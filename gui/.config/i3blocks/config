@@ -7,12 +7,6 @@ color=#f5f5f5
 # markup=pango
 # interval=43200
 
-[arch_update]
-command=$SCRIPT_DIR/arch_update/arch_update
-interval=1800
-markup=pango
-signal=1
-
 [mediaplayer]
 command=$SCRIPT_DIR/mediaplayer/mediaplayer
 # label=󰝚
@@ -89,3 +83,9 @@ command=font=monospace font_weight=regular $SCRIPT_DIR/xkb_layout/xkb_layout
 interval=persist
 markup=pango
 # color=#0492c2
+
+# [arch_update]
+# command=$SCRIPT_DIR/arch_update/arch_update
+# interval=1800
+# markup=pango
+# signal=1

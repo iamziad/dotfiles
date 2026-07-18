@@ -5,6 +5,10 @@
 # Modifier key
 set $mod Mod4
 
+# Keyboard
+exec_always setxkbmap -layout us,ara -variant ,digits -option grp:win_space_toggle -option ctrl:nocaps
+exec_always xset r rate 230 35 &
+
 # Paths
 set $SCRIPTS_GLOBAL  /home/ziad/.local/bin/mybin
 set $TERM            /usr/bin/alacritty
@@ -34,8 +38,11 @@ set $ws10 "10"
 font pango:JetBrainsMono Nerd Font 10
 hide_edge_borders both
 
-gaps outer 0px
-gaps inner 6px
+set $GAPS_OUTER 0px
+set $GAPS_INNER 0px
+
+gaps outer $GAPS_OUTER
+gaps inner $GAPS_INNER
 smart_gaps on
 
 # ============================================================
@@ -43,9 +50,9 @@ smart_gaps on
 # ============================================================
 
 bar {
-    status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
+    # status_command SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks
     font pango:JetBrainsMono Nerd Font 9
-    # status_command i3status
+    status_command i3status
 
     position     bottom
     tray_output  $pri
@@ -252,8 +259,8 @@ mode "$mode_gaps" {
     bindsym shift+plus gaps outer current plus 5
     bindsym shift+minus gaps outer current minus 5
 
-    bindsym r gaps inner current set 8
-    bindsym r gaps outer current set 0
+    bindsym r gaps inner current set $GAPS_INNER
+    bindsym r gaps outer current set $GAPS_OUTER
 
     bindsym 0 gaps inner current set 0
     bindsym 0 gaps outer current set 0
