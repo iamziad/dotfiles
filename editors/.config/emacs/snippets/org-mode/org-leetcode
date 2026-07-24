@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: org-leetcode
+# key: <lc
+# --
+
+#+begin_src java :dir /tmp :tangle ${1}
+class ${2: Solution} {
+$>public static void main(String[] args) {
+$>${3}
+}
+}
+#+end_src

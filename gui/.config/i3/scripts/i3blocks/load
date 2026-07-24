@@ -1,0 +1,9 @@
+#!/bin/sh
+
+LOAD=$(cat /proc/loadavg | awk '{print $1}')
+
+echo "Load: $LOAD"
+
+if [ "$(echo "$LOAD > 10.0" | bc)" -eq 1 ]; then
+    echo "#ff0000"
+fi
