@@ -1,192 +1,61 @@
-" ------------------------------------------------------------
-" Basics
-" ------------------------------------------------------------
-set nocompatible
-filetype plugin indent on
-syntax on
+" XDG
+set viminfofile=$XDG_STATE_HOME/vim/viminfo
+set directory=$XDG_STATE_HOME/vim/swap//   | call mkdir(&directory, 'p', 0700)
+set backupdir=$XDG_STATE_HOME/vim/backup// | call mkdir(&backupdir, 'p', 0700)
+set undodir=$XDG_STATE_HOME/vim/undo//     | call mkdir(&undodir, 'p', 0700)
 
-set encoding=utf-8
-set number relativenumber
-set scrolloff=8
-set signcolumn=yes
-set colorcolumn=80
-set wrap
+" Plug
+"call plug#begin()
+"Plug 'morhetz/gruvbox'
+"call plug#end()
+
+" Colors
+if has('termguicolors')
+    set termguicolors
+endif
+
+colorscheme retrobox 
+set background=dark
+
+" Misc
+syntax on
+set number
+set relativenumber
 set mouse=a
 set clipboard=unnamedplus
-
-set ignorecase
-set smartcase
-set incsearch
-set hlsearch
-
-set hidden
+set guicursor=n-v-c:block,i:block-blinkon0
+set equalalways
+set colorcolumn=80
+set timeoutlen=300
+set ttimeoutlen=10
+set nowrap
+set scrolloff=8
+set signcolumn=yes
 set updatetime=300
-set nobackup
-set nowritebackup
-set noswapfile
-set splitright
 set splitbelow
+set splitright
+set virtualedit=block
+set backspace=start,eol,indent
 
-" default indentation: 4 spaces
-set expandtab
+" Indenting
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
+set expandtab
 set smartindent
 
-let mapleader = " "
+" Searching
+set nohlsearch
+set incsearch
+set ignorecase
+set smartcase
 
-" ------------------------------------------------------------
-" Per-language indentation
-" ------------------------------------------------------------
-augroup filetype_indent
-  autocmd!
-  autocmd FileType javascript,javascriptreact,typescript,typescriptreact,
-        \html,css,scss,json,yaml,jsx,tsx
-        \ setlocal tabstop=2 shiftwidth=2 softtabstop=2
-augroup END
+" Netrw settings
+let g:netrw_banner = 0
+let g:netrw_browse_split = 4
+let g:netrw_altv = 0
+let g:netrw_liststyle = 3
 
-" ------------------------------------------------------------
-" vim-plug bootstrap (auto-installs vim-plug if missing)
-" ------------------------------------------------------------
-if empty(glob('~/.config/vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-call plug#begin('~/.config/vim/plugged')
-
-" --- Theme & UI ---
-Plug 'morhetz/gruvbox'
-Plug 'itchyny/lightline.vim'
-
-" --- Navigation / fuzzy finding ---
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'preservim/nerdtree'
-
-" --- Git ---
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
-
-" --- Editing quality-of-life ---
-Plug 'tpope/vim-commentary'   " gcc to comment a line
-Plug 'tpope/vim-surround'     " cs"' etc.
-Plug 'jiangmiao/auto-pairs'   " auto-close brackets/quotes
-
-" --- LSP, autocomplete, diagnostics, formatting ---
-" This is the one "heavy" piece — it's a Node.js process that talks
-" to real language servers (clangd, gopls, tsserver, jdtls, etc.)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" --- Language-specific syntax (coc handles semantics, these help highlighting) ---
-Plug 'pangloss/vim-javascript'
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'uiiaoo/java-syntax.vim'
-Plug 'mattn/emmet-vim'        " HTML/CSS tag expansion, useful for JSX too
-
-call plug#end()
-
-" ------------------------------------------------------------
-" Colorscheme — gruvbox
-" ------------------------------------------------------------
-set termguicolors
-set background=dark
-colorscheme gruvbox
-set laststatus=2
-let g:lightline = { 'colorscheme': 'gruvbox' }
-
-" ------------------------------------------------------------
-" fzf
-" ------------------------------------------------------------
-nnoremap <leader>f :Files<CR>
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>g :Rg<CR>
-
-" ------------------------------------------------------------
-" NERDTree
-" ------------------------------------------------------------
-nnoremap <leader>e :NERDTreeToggle<CR>
-autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
-
-" ------------------------------------------------------------
-" vim-go
-" ------------------------------------------------------------
-let g:go_fmt_command = "goimports"
-let g:go_highlight_types = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_function_calls = 1
-
-" ------------------------------------------------------------
-" emmet-vim — only in html/css/jsx/tsx buffers
-" ------------------------------------------------------------
-let g:user_emmet_install_global = 0
-autocmd FileType html,css,javascriptreact,typescriptreact EmmetInstall
-
-" ------------------------------------------------------------
-" coc.nvim
-" Needs Node.js installed. After :PlugInstall, run:
-"   :CocInstall coc-json coc-tsserver coc-html coc-css coc-clangd
-"              coc-java coc-go coc-eslint coc-prettier coc-snippets
-" ------------------------------------------------------------
-let g:coc_global_extensions = [
-  \ 'coc-json',
-  \ 'coc-tsserver',
-  \ 'coc-html',
-  \ 'coc-css',
-  \ 'coc-clangd',
-  \ 'coc-java',
-  \ 'coc-go',
-  \ 'coc-eslint',
-  \ 'coc-prettier',
-  \ 'coc-snippets',
-  \ ]
-
-" Tab to trigger/navigate completion, Enter to confirm
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackSpace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>"
-
-function! CheckBackSpace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Navigation
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gr <Plug>(coc-references)
-nmap <silent> gi <Plug>(coc-implementation)
-
-" Show docs on hover
-nnoremap <silent> K :call ShowDocumentation()<CR>
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
-
-" Rename symbol / apply quickfix / format selection
-nmap <leader>rn <Plug>(coc-rename)
-xmap <leader>qf <Plug>(coc-fix-current)
-nmap <leader>qf <Plug>(coc-fix-current)
-xmap <leader>fm <Plug>(coc-format-selected)
-nmap <leader>fm <Plug>(coc-format-selected)
-
-" Jump between diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" Format whole file on save for web/js/ts files (via coc-prettier)
-command! -nargs=0 Format :call CocActionAsync('format')
-autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json,*.html,*.css :call CocActionAsync('format')
+" Completion
+set completeopt=menu,menuone,noselect
+set pumheight=10

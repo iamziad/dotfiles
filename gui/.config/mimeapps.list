@@ -4,12 +4,12 @@ x-scheme-handler/https=firefox.desktop
 text/html=firefox.desktop
 application/pdf=firefox.desktop
 
-image/jpeg=vimiv.desktop
-image/png=vimiv.desktop
-image/webp=vimiv.desktop
-image/bmp=vimiv.desktop
-image/tiff=vimiv.desktop
-image/svg+xml=vimiv.desktop
+image/jpeg=feh.desktop
+image/png=feh.desktop
+image/webp=feh.desktop
+image/bmp=feh.desktop
+image/tiff=feh.desktop
+image/svg+xml=feh.desktop
 
 video/mp4=mpv.desktop
 video/mpeg-4=mpv.desktop
@@ -30,4 +30,4 @@ text/css=emacsclient.desktop
 text/x-makefile=emacsclient.desktop
 
 [Added Associations]
-text/plain=nvim.desktop
+text/plain=emacsclient.desktop

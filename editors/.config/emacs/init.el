@@ -201,20 +201,20 @@
 (blink-cursor-mode -1)
 
 ;; Fonts
-(defun my/setup-fonts (&optional frame)
-  (when frame (select-frame frame))
-  (set-face-attribute 'default nil
-                      :font "JetBrainsMono Nerd Font"
-                      :height 110)
-  (set-face-attribute 'fixed-pitch nil
-                      :font "JetBrainsMono Nerd Font"
-                      :height 110)
-  (set-fontset-font t 'arabic (font-spec :family "Cairo" :size 15) nil 'prepend))
+(defvar my/font-family "JetBrainsMono Nerd Font")
+(defvar my/font-size 110)
 
-(add-hook 'after-make-frame-functions #'my/setup-fonts)
+(defun my/apply-fonts (&optional frame)
+  (when (display-graphic-p frame)
+    (set-face-attribute 'default frame :family my/font-family :height my/font-size :weight 'normal)
+    (set-face-attribute 'fixed-pitch frame :family my/font-family :height my/font-size :weight 'normal)
+    (set-face-attribute 'variable-pitch frame :family "PlaywriteGBJ" :height 120)
+    (set-fontset-font t 'arabic (font-spec :family "Cairo" :size 15) frame)))
 
-(when (daemonp)
-  (my/setup-fonts))
+(my/apply-fonts)
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'my/apply-fonts)
+  (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" my/font-family (/ my/font-size 10)))))
 
 ;; Theme
 (use-package zenburn-theme :defer t)
