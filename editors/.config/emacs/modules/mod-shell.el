@@ -1,6 +1,5 @@
 ;;; mod-shell.el
 
-
 (defvar my-term-shell "/bin/bash")
 
 (defun my/eshell-git-branch ()
@@ -62,27 +61,101 @@
 (add-hook 'eshell-mode-hook (lambda () (local-set-key (kbd "C-n") #'eshell/clear)))
 
 
-(defun my/toggle-ansi-term-bottom ()
-  (interactive)
-  (let* ((term-buffer (get-buffer "*ansi-term*"))
-         (desired-height (floor (* (frame-height) 0.45)))
-         (new-window (split-window (frame-root-window) (- desired-height) 'below)))
-    (select-window new-window)
-    (if (buffer-live-p term-buffer)
-        (switch-to-buffer term-buffer)
-      (ansi-term my-term-shell))))
-(global-set-key (kbd "C-c s") #'my/toggle-ansi-term-bottom)
+(use-package vterm
+  :ensure t
+  :config
+  (add-to-list 'vterm-keymap-exceptions "C-c")
+  (setq vterm-buffer-name-string "*vterm: %s*"))
 
-(defun my/toggle-ansi-term-right ()
+(defun my/open-vterm-bottom ()
   (interactive)
-  (let* ((term-buffer (get-buffer "*ansi-term*"))
-         (desired-width (floor (* (frame-width) 0.45)))
-         (new-window (split-window (frame-root-window) (- desired-width) 'right)))
-    (select-window new-window)
-    (if (buffer-live-p term-buffer)
-        (switch-to-buffer term-buffer)
-      (ansi-term my-term-shell))))
-(global-set-key (kbd "C-c v s") #'my/toggle-ansi-term-right)
+  (let* ((vterm-win (catch 'found
+                      (walk-windows
+                       (lambda (w)
+                         (when (string-prefix-p "*vterm" (buffer-name (window-buffer w)))
+                           (throw 'found w)))
+                       nil 'visible))))
+    (if vterm-win
+        (progn
+          (select-window vterm-win)
+          (vterm t))
+      (let* ((desired-height (floor (* (frame-height) 0.45)))
+             (new-window (split-window (frame-root-window) (- desired-height) 'below)))
+        (select-window new-window)
+        (vterm)))))
+
+(global-set-key (kbd "C-c t") #'my/open-vterm-bottom)
+
+(defun my/open-vterm-right ()
+  (interactive)
+  (let* ((vterm-win (catch 'found
+                      (walk-windows
+                       (lambda (w)
+                         (when (string-prefix-p "*vterm" (buffer-name (window-buffer w)))
+                           (throw 'found w)))
+                       nil 'visible))))
+    (if vterm-win
+        (progn
+          (select-window vterm-win)
+          (vterm t))
+      (let* ((desired-width (floor (* (frame-width) 0.45)))
+             (new-window (split-window (frame-root-window) (- desired-width) 'right)))
+        (select-window new-window)
+        (vterm)))))
+
+(global-set-key (kbd "C-c v t") #'my/open-vterm-right)
+
+(defun my/switch-vterm-buffer ()
+  (interactive)
+  (let* ((vterm-buffers (seq-filter (lambda (buf)
+                                      (with-current-buffer buf
+                                        (derived-mode-p 'vterm-mode)))
+                                    (buffer-list)))
+         (buffer-names (mapcar #'buffer-name vterm-buffers)))
+    (if buffer-names
+        (let* ((selected (completing-read "Switch to vterm: " buffer-names nil t))
+               (vterm-win (catch 'found
+                            (walk-windows
+                             (lambda (w)
+                               (when (with-current-buffer (window-buffer w)
+                                       (derived-mode-p 'vterm-mode))
+                                 (throw 'found w)))
+                             nil 'visible))))
+          (if vterm-win
+              (progn
+                (select-window vterm-win)
+                (switch-to-buffer selected))
+            (let* ((desired-height (floor (* (frame-height) 0.45)))
+                   (new-window (split-window (frame-root-window) (- desired-height) 'below)))
+              (select-window new-window)
+              (switch-to-buffer selected))))
+      (message "No vterm buffers opened"))))
+
+(global-set-key (kbd "C-c b t") #'my/switch-vterm-buffer)
+
+;; Replaced by vterm
+
+;; (defun my/toggle-ansi-term-bottom ()
+;;   (interactive)
+;;   (let* ((term-buffer (get-buffer "*ansi-term*"))
+;;          (desired-height (floor (* (frame-height) 0.45)))
+;;          (new-window (split-window (frame-root-window) (- desired-height) 'below)))
+;;     (select-window new-window)
+;;     (if (buffer-live-p term-buffer)
+;;         (switch-to-buffer term-buffer)
+;;       (ansi-term my-term-shell))))
+;; (global-set-key (kbd "C-c t") #'my/toggle-ansi-term-bottom)
+
+;; (defun my/toggle-ansi-term-right ()
+;;   (interactive)
+;;   (let* ((term-buffer (get-buffer "*ansi-term*"))
+;;          (desired-width (floor (* (frame-width) 0.45)))
+;;          (new-window (split-window (frame-root-window) (- desired-width) 'right)))
+;;     (select-window new-window)
+;;     (if (buffer-live-p term-buffer)
+;;         (switch-to-buffer term-buffer)
+;;       (ansi-term my-term-shell))))
+;; (global-set-key (kbd "C-c v t") #'my/toggle-ansi-term-right)
 
 
 (provide 'mod-shell)

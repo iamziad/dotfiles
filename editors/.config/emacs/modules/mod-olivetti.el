@@ -40,6 +40,8 @@
 (use-package olivetti
   :hook (((eww-mode) . olivetti-mode)
          (olivetti-mode . mod-olivetti--sync))
+  :bind
+  (("C-c v o" . olivetti-mode))
   :custom
   (olivetti-body-width 90))
 

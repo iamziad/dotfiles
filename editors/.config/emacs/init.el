@@ -40,6 +40,15 @@
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;;; --------------------------------------------------------------------------
+;;; Modules & Custom-file Load
+;;; --------------------------------------------------------------------------
+
+(when (file-exists-p custom-file)
+  (load custom-file 'noerror 'nomessage))
+
+(require 'modules)
+
+;;; --------------------------------------------------------------------------
 ;;; Core Emacs Defaults & Built-in Settings
 ;;; --------------------------------------------------------------------------
 
@@ -149,38 +158,58 @@
 ;;; Keybindings
 ;;; --------------------------------------------------------------------------
 
+;; Unsets
+(keymap-global-unset "C-q")
+
 ;; Windmove
-(windmove-default-keybindings 'shift)
+;; (windmove-default-keybindings 'shift)
 
 (bind-keys
+ ("C-q C-h"       . windmove-left)
+ ("C-q C-j"       . windmove-down)
+ ("C-q C-k"       . windmove-up)
+ ("C-q C-l"       . windmove-right)
+ ;;
+ ("M-s h"         . windmove-swap-states-left)
+ ("M-s j"         . windmove-swap-states-down)
+ ("M-s k"         . windmove-swap-states-up)
+ ("M-s l"         . windmove-swap-states-right)
+ ;;
  ("C-a"           . my/smart-move-beginning-of-line)
  ("C-o"           . my/smart-open-line)
+ ;;
  ("M-k"           . my/delete-to-end)
  ("M-DEL"         . my/backward-delete-word)
  ("M-d"           . my/forward-delete-word)
  ("<C-backspace>" . my/backward-delete-word)
+ ;;
  ("C-c C-x r"     . rename-visited-file)
  ("C-c C-x d"     . delete-visited-file)
  ("C-x C-k"       . kill-buffer-and-window)
+ ;;
  ("C-,"           . duplicate-dwim)
  ("C-;"           . comment-line)
  ("C-<tab>"       . mode-line-other-buffer)
+ ;;
  ("C-n"           . (lambda () (interactive) (forward-line 5)))
  ("C-p"           . (lambda () (interactive) (forward-line -5)))
- ("M-n"           . recenter-top-bottom)
+ ;;
  ("C-x C-="       . (lambda () (interactive) (enlarge-window-horizontally 10)))
  ("C-x C--"       . (lambda () (interactive) (shrink-window-horizontally 10)))
+ ;;
  ("M-="           . text-scale-increase)
  ("M--"           . text-scale-decrease)
  ("M-0"           . (lambda () (interactive) (text-scale-set 0)))
+ ;;
  ("C-}"           . forward-paragraph)
  ("C-{"           . backward-paragraph)
- ("C-c t t"       . my/toggle-transparency)
+ ;;
+ ("C-c p t"       . my/toggle-transparency)
+ ("C-c p k"       . eldoc-doc-buffer)
+ ("M-n"           . recenter-top-bottom)
  ("C-c f"         . find-file-at-point)
- ("C-c k"         . eldoc-doc-buffer)
  ("C-c c"         . compile)
- ("C-c o"         . delete-other-windows)
- ("C-c v o"       . olivetti-mode))
+ ("C-c o"         . delete-other-windows))
 
 ;; Leader Map
 (bind-keys :prefix-map my-leader-map
@@ -245,9 +274,9 @@
 (use-package image-dired
   :ensure nil
   :config
-  (setq image-dired-thumbnail-storage 'standard)
-  :bind (:map dired-mode-map
-              ("C-t d" . image-dired)))
+  (setq image-dired-thumbnail-storage 'standard))
+;; :bind (:map dired-mode-map
+;;             ("C-d i" . image-dired)))
 
 (defun my/dired-open-xdg ()
   (interactive)
@@ -306,15 +335,6 @@
   (if (= (point) (line-end-position))
       (unless (eobp) (delete-char 1))
     (delete-region (point) (line-end-position))))
-
-;;; --------------------------------------------------------------------------
-;;; Modules & Custom-file Load
-;;; --------------------------------------------------------------------------
-
-(when (file-exists-p custom-file)
-  (load custom-file 'noerror 'nomessage))
-
-(require 'modules)
 
 ;;; --------------------------------------------------------------------------
 (provide 'init)
