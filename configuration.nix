@@ -9,6 +9,12 @@
         ./hardware-configuration.nix
     ];
 
+zramSwap = {
+enable = true;
+memoryPercent = 50;  # حجم الـ zram device كنسبة من الـ RAM
+algorithm = "zstd";  # default كويس، zstd بيوازن بين السرعة ونسبة الضغط
+};
+
 # Use the systemd-boot EFI boot loader.
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
