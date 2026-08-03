@@ -55,5 +55,14 @@
       css-indent-offset 2
       css-ts-mode-indent-offset 2)
 
+;;; --------------------------------------------------------------------------
+;;; Extra Language Modes
+;;; --------------------------------------------------------------------------
+
+;; (use-package nix-mode
+;;   :ensure t
+;;   :mode "\\.nix\\'")
+
+
 (provide 'mod-programming)
 ;;; mod-programming.el ends here

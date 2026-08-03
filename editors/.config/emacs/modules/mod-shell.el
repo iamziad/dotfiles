@@ -1,6 +1,16 @@
 ;;; mod-shell.el
 
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(x mac))
+    (exec-path-from-shell-initialize)))
+
 (defvar my-term-shell "/bin/bash")
+
+;;------------------------------------------------------------------------------
+;; Eshell
+;;------------------------------------------------------------------------------
 
 (defun my/eshell-git-branch ()
   (when (and (executable-find "git")
@@ -60,10 +70,15 @@
 
 (add-hook 'eshell-mode-hook (lambda () (local-set-key (kbd "C-n") #'eshell/clear)))
 
+;;------------------------------------------------------------------------------
+;; Vterm
+;;------------------------------------------------------------------------------
 
 (use-package vterm
   :ensure t
   :config
+  (define-key vterm-mode-map (kbd "C-q") nil)
+  (add-to-list 'vterm-keymap-exceptions "C-q")
   (add-to-list 'vterm-keymap-exceptions "C-c")
   (setq vterm-buffer-name-string "*vterm: %s*"))
 
