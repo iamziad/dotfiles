@@ -4,17 +4,6 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_STATE_HOME="$HOME/.local/state"
 
-export BROWSER=firefox
-export EDITOR=/usr/bin/emacs
-export TERM=alacritty
-
-if [ -f "$HOME/.bashrc" ]; then
-    . "$HOME/.bashrc"
-fi
-export BROWSER=firefox
-export EDITOR=/usr/bin/emacs
-export TERM=alacritty
-
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
 fi

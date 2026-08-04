@@ -27,3 +27,6 @@ alias emacs-reload='emacsclient -e "(kill-emacs)" 2>/dev/null; sleep 0.3; emacs 
 function ecw() {
     emacsclient -e "(find-file-other-window \"$1\")"
 }
+
+# nixos
+alias re="sudo nixos-rebuild switch"

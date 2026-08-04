@@ -5,7 +5,6 @@
 
 alias ls='ls --color=auto'
 alias grep='grep --color'
-alias paclean='sudo pacman -Rns $(pacman -Qdtq)'
 
 # Gruvbox truecolor PS1
 GB_RED='\[\e[38;2;251;73;52m\]'
@@ -33,17 +32,5 @@ get_trimmed_pwd() {
 
 PS1="${GB_RED}[${GB_YELLOW}\u${GB_GREEN}@${GB_BLUE}\h${GB_RESET} ${GB_GREEN}\$(get_trimmed_pwd)${GB_RESET}${GB_PURPLE}\$(git_branch)${GB_RESET}${GB_RED}]${GB_RESET}\$ "
 
-# Aliases
+# My aliases
 [ -f $HOME/dotfiles/shell/.bash_aliases ] && . $HOME/dotfiles/shell/.bash_aliases
-
-
-################################################################################
-
-# PATH
-
-## .local
-export PATH="$HOME/.local/bin:$PATH"
-## nvm
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

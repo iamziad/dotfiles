@@ -59,9 +59,9 @@
 ;;; Extra Language Modes
 ;;; --------------------------------------------------------------------------
 
-;; (use-package nix-mode
-;;   :ensure t
-;;   :mode "\\.nix\\'")
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'")
 
 
 (provide 'mod-programming)

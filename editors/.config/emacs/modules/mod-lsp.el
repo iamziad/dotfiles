@@ -13,7 +13,8 @@
          (css-ts-mode        . lsp-deferred)
          (go-ts-mode         . lsp-deferred)
 	     (web-mode        . lsp-deferred)
-         (bash-ts-mode       . lsp-deferred))
+         (bash-ts-mode       . lsp-deferred)
+         (nix-mode       . lsp-deferred))
   :init
   (setq lsp-keymap-prefix "C-c l")
   :custom

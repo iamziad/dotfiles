@@ -3,10 +3,9 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  (when (memq window-system '(x mac))
+  (when (or (memq window-system '(x mac))
+            (daemonp))
     (exec-path-from-shell-initialize)))
-
-(defvar my-term-shell "/bin/bash")
 
 ;;------------------------------------------------------------------------------
 ;; Eshell
@@ -76,11 +75,15 @@
 
 (use-package vterm
   :ensure t
+  :custom
+  (vterm-shell (executable-find "bash"))
+  (vterm-tramp-shells '(("sudo" "/run/current-system/sw/bin/bash")
+                        ("ssh"  "/run/current-system/sw/bin/bash")))
+  (vterm-buffer-name-string "*vterm: %s*")
   :config
   (define-key vterm-mode-map (kbd "C-q") nil)
   (add-to-list 'vterm-keymap-exceptions "C-q")
-  (add-to-list 'vterm-keymap-exceptions "C-c")
-  (setq vterm-buffer-name-string "*vterm: %s*"))
+  (add-to-list 'vterm-keymap-exceptions "C-c"))
 
 (defun my/open-vterm-bottom ()
   (interactive)
