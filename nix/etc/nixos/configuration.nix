@@ -55,6 +55,7 @@
   # Time & Localization
   # ---------------------------------------------------------------------
   time.timeZone = "Africa/Cairo";
+
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS        = "en_US.UTF-8";
@@ -90,9 +91,15 @@
   # ---------------------------------------------------------------------
   services.displayManager.ly.enable = true;
 
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    noto-fonts
+  ];
+
+  fonts.fontconfig.enable = true;
+
   services.xserver = {
     enable = true;
-
     xkb = {
       layout = "us,ara";
       options = "grp:win_space_toggle,ctrl:nocaps";
@@ -137,16 +144,6 @@
   };
 
   # ---------------------------------------------------------------------
-  # Fonts
-  # ---------------------------------------------------------------------
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    noto-fonts
-  ];
-
-  fonts.fontconfig.enable = true;
-
-  # ---------------------------------------------------------------------
   # Users
   # ---------------------------------------------------------------------
   users.users.ziad = {
@@ -173,6 +170,7 @@
     tree
     xclip
     gromit-mpx
+    qalculate-gtk
     # C
     glibc
     libcxx
@@ -183,6 +181,9 @@
     valgrind
     clang-tools
     man-pages
+    # Java
+    jdk
+    jdt-language-server
     # Emacs
     emacs
     emacsPackages.vterm
@@ -197,7 +198,6 @@
   # ---------------------------------------------------------------------
   # System Services
   # ---------------------------------------------------------------------
-
   services = {
     openssh.enable = true;
     envfs.enable = true;

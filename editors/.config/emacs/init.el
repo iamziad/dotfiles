@@ -206,7 +206,7 @@
  ;;
  ("C-c p t"       . my/toggle-transparency)
  ("C-c p k"       . eldoc-doc-buffer)
- ("M-n"           . recenter-top-bottom)
+ ("M-r"           . recenter-top-bottom)
  ("C-c f"         . find-file-at-point)
  ("C-c c"         . compile)
  ("C-c o"         . delete-other-windows))

@@ -79,76 +79,80 @@
   (vterm-shell (executable-find "bash"))
   (vterm-tramp-shells '(("sudo" "/run/current-system/sw/bin/bash")
                         ("ssh"  "/run/current-system/sw/bin/bash")))
-  (vterm-buffer-name-string "*vterm: %s*")
   :config
   (define-key vterm-mode-map (kbd "C-q") nil)
   (add-to-list 'vterm-keymap-exceptions "C-q")
   (add-to-list 'vterm-keymap-exceptions "C-c"))
 
+(defun my/vterm-buffer-name ()
+  (let ((dir-name (file-name-nondirectory (directory-file-name default-directory))))
+    (format "*vterm: %s*" dir-name)))
+
+(defun my/get-or-create-vterm ()
+  "Get existing vterm buffer for current dir, or create it without
+disturbing the current window layout."
+  (let ((buf-name (my/vterm-buffer-name)))
+    (or (get-buffer buf-name)
+        (progn
+          (save-window-excursion (vterm buf-name))
+          (get-buffer buf-name)))))
+
+(defun my/find-vterm-window ()
+  (catch 'found
+    (walk-windows
+     (lambda (w)
+       (with-current-buffer (window-buffer w)
+         (when (derived-mode-p 'vterm-mode)
+           (throw 'found w))))
+     nil
+     'visible)))
+
+(defun my/vterm-display-buffer (buf &optional direction)
+  "Toggle-display BUF in a vterm window.
+DIRECTION is `below' (default) or `right'."
+  (let ((vterm-win (my/find-vterm-window))
+        (direction (or direction 'below)))
+    (cond
+     ;; already open and focused -> close it
+     ((and vterm-win (eq vterm-win (selected-window)))
+      (delete-window vterm-win))
+     ;; already open but not focused -> jump to it and switch buffer
+     (vterm-win
+      (select-window vterm-win)
+      (switch-to-buffer buf))
+     ;; not open -> split and open
+     (t
+      (let* ((size (if (eq direction 'below)
+                       (floor (* (frame-height) 0.45))
+                     (floor (* (frame-width) 0.45))))
+             (new-window (split-window (frame-root-window) (- size) direction)))
+        (select-window new-window)
+        (switch-to-buffer buf))))))
+
 (defun my/open-vterm-bottom ()
   (interactive)
-  (let* ((vterm-win (catch 'found
-                      (walk-windows
-                       (lambda (w)
-                         (when (string-prefix-p "*vterm" (buffer-name (window-buffer w)))
-                           (throw 'found w)))
-                       nil 'visible))))
-    (if vterm-win
-        (progn
-          (select-window vterm-win)
-          (vterm t))
-      (let* ((desired-height (floor (* (frame-height) 0.45)))
-             (new-window (split-window (frame-root-window) (- desired-height) 'below)))
-        (select-window new-window)
-        (vterm)))))
-
-(global-set-key (kbd "C-c t") #'my/open-vterm-bottom)
+  (my/vterm-display-buffer (my/get-or-create-vterm) 'below))
+(global-set-key (kbd "C-c k") #'my/open-vterm-bottom)
 
 (defun my/open-vterm-right ()
   (interactive)
-  (let* ((vterm-win (catch 'found
-                      (walk-windows
-                       (lambda (w)
-                         (when (string-prefix-p "*vterm" (buffer-name (window-buffer w)))
-                           (throw 'found w)))
-                       nil 'visible))))
-    (if vterm-win
-        (progn
-          (select-window vterm-win)
-          (vterm t))
-      (let* ((desired-width (floor (* (frame-width) 0.45)))
-             (new-window (split-window (frame-root-window) (- desired-width) 'right)))
-        (select-window new-window)
-        (vterm)))))
-
-(global-set-key (kbd "C-c v t") #'my/open-vterm-right)
+  (my/vterm-display-buffer (my/get-or-create-vterm) 'right))
+(global-set-key (kbd "C-c v k") #'my/open-vterm-right)
 
 (defun my/switch-vterm-buffer ()
   (interactive)
-  (let* ((vterm-buffers (seq-filter (lambda (buf)
-                                      (with-current-buffer buf
-                                        (derived-mode-p 'vterm-mode)))
-                                    (buffer-list)))
+  (let* ((vterm-buffers
+          (seq-filter
+           (lambda (buf)
+             (with-current-buffer buf
+               (derived-mode-p 'vterm-mode)))
+           (buffer-list)))
          (buffer-names (mapcar #'buffer-name vterm-buffers)))
     (if buffer-names
-        (let* ((selected (completing-read "Switch to vterm: " buffer-names nil t))
-               (vterm-win (catch 'found
-                            (walk-windows
-                             (lambda (w)
-                               (when (with-current-buffer (window-buffer w)
-                                       (derived-mode-p 'vterm-mode))
-                                 (throw 'found w)))
-                             nil 'visible))))
-          (if vterm-win
-              (progn
-                (select-window vterm-win)
-                (switch-to-buffer selected))
-            (let* ((desired-height (floor (* (frame-height) 0.45)))
-                   (new-window (split-window (frame-root-window) (- desired-height) 'below)))
-              (select-window new-window)
-              (switch-to-buffer selected))))
+        (my/vterm-display-buffer
+         (get-buffer (completing-read "Switch to vterm: " buffer-names nil t))
+         'below)
       (message "No vterm buffers opened"))))
-
 (global-set-key (kbd "C-c b t") #'my/switch-vterm-buffer)
 
 ;; Replaced by vterm
