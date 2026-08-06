@@ -23,9 +23,13 @@
     extraOptions = "experimental-features = nix-command flakes";
   };
 
+  time.timeZone = "Africa/Cairo";
+  i18n.defaultLocale = "en_US.UTF-8";
+
   # ---------------------------------------------------------------------
   # Boot
   # ---------------------------------------------------------------------
+
   boot.loader.grub = {
     enable = true;
     device = "nodev";
@@ -38,6 +42,7 @@
   # ---------------------------------------------------------------------
   # Networking
   # ---------------------------------------------------------------------
+
   networking.hostName = "nixpc";
   networking.networkmanager.enable = true;
 
@@ -52,27 +57,16 @@
   # networking.firewall.enable = false;
 
   # ---------------------------------------------------------------------
-  # Time & Localization
-  # ---------------------------------------------------------------------
-  time.timeZone = "Africa/Cairo";
-
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS        = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT    = "en_US.UTF-8";
-    LC_MONETARY       = "en_US.UTF-8";
-    LC_NAME           = "en_US.UTF-8";
-    LC_NUMERIC        = "en_US.UTF-8";
-    LC_PAPER          = "en_US.UTF-8";
-    LC_TELEPHONE      = "en_US.UTF-8";
-    LC_TIME           = "en_US.UTF-8";
-  };
-
-  # ---------------------------------------------------------------------
   # Hardware
   # ---------------------------------------------------------------------
-  hardware.i2c.enable = true;
+
+  hardware = {
+    i2c.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
+  };
 
   zramSwap = {
     enable = true;
@@ -87,13 +81,27 @@
   };
 
   # ---------------------------------------------------------------------
+  # Users
+  # ---------------------------------------------------------------------
+
+  users.users.ziad = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "i2c" ];
+  };
+
+  programs.bash.enable = true;
+
+  # ---------------------------------------------------------------------
   # GUI
   # ---------------------------------------------------------------------
+
   services.displayManager.ly.enable = true;
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
   ];
 
   fonts.fontconfig.enable = true;
@@ -136,25 +144,9 @@
   };
 
   # ---------------------------------------------------------------------
-  # Audio
-  # ---------------------------------------------------------------------
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-  };
-
-  # ---------------------------------------------------------------------
-  # Users
-  # ---------------------------------------------------------------------
-  users.users.ziad = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "i2c" ];
-    shell = pkgs.bash;
-  };
-
-  # ---------------------------------------------------------------------
   # Packages
   # ---------------------------------------------------------------------
+
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
@@ -183,27 +175,39 @@
     man-pages
     # Java
     jdk
-    jdt-language-server
     # Emacs
     emacs
     emacsPackages.vterm
-    pam_u2f
     libvterm
-    libtool
+    pam_u2f
     # LSP
     nixd
     bash-language-server
   ];
 
+  documentation = {
+    dev.enable = true;
+    man.enable = true;
+  };
+
   # ---------------------------------------------------------------------
   # System Services
   # ---------------------------------------------------------------------
+
   services = {
+    dbus.enable = true;
     openssh.enable = true;
     envfs.enable = true;
     udisks2.enable = true;
     gvfs.enable = true;
     devmon.enable = true;
+
+    pipewire = {
+      enable = true;
+      pulse.enable = true;
+      alsa.enable = true;
+      jack.enable = true;
+    };
 
     cloudflare-warp = {
       enable = true;
@@ -239,6 +243,7 @@
   # ---------------------------------------------------------------------
   # State Version
   # ---------------------------------------------------------------------
+
   # Do NOT change this value unless you have manually inspected all the
   # changes it would make to your configuration, and migrated your data
   # accordingly. See `man configuration.nix` or

@@ -292,7 +292,12 @@
 
 (defun my/sudo-this-file ()
   (interactive)
-  (when buffer-file-name (find-alternate-file (concat "/sudo::" buffer-file-name))))
+  (if (file-remote-p buffer-file-name)
+      (find-alternate-file
+       (tramp-file-name-localname
+        (tramp-dissect-file-name buffer-file-name)))
+    (find-alternate-file
+     (concat "/sudo::" buffer-file-name))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Utility Functions

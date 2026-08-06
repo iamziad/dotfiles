@@ -7,9 +7,3 @@ export XDG_STATE_HOME="$HOME/.local/state"
 if [ -f "$HOME/.bashrc" ]; then
     . "$HOME/.bashrc"
 fi
-
-# replaced by ly
-
-#if [ -z "$DISPLAY" ] && [ -f "$XINITRC" ] && [ "$(tty)" = "/dev/tty1" ]; then
-#    startx
-#fi

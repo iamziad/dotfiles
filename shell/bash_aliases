@@ -1,13 +1,19 @@
-# some more ls aliases
-# alias ll='ls -l'
-# alias la='ls -A'
-# alias l='ls -CF'
-
 # general
+alias ls="ls --color=auto"
+alias grep="grep --color"
 alias sudo="sudo "
 alias rm="rm -i"
 alias c="xclip -selection clipboard"
-alias deb="distrobox enter debian"
+
+# nixos
+alias re="sudo nixos-rebuild switch"
+
+# git
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit -m";
+alias gl="git log";
+alias gd="git diff";
 
 # tmux
 alias tl="tmux list-sessions"
@@ -27,6 +33,3 @@ alias emacs-reload='emacsclient -e "(kill-emacs)" 2>/dev/null; sleep 0.3; emacs 
 function ecw() {
     emacsclient -e "(find-file-other-window \"$1\")"
 }
-
-# nixos
-alias re="sudo nixos-rebuild switch"
