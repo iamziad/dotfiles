@@ -87,9 +87,10 @@
   users.users.ziad = {
     isNormalUser = true;
     extraGroups = [ "wheel" "i2c" ];
+    shell = pkgs.fish;
   };
 
-  programs.bash.enable = true;
+  programs.fish.enable = true;
 
   # ---------------------------------------------------------------------
   # GUI
