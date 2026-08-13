@@ -35,3 +35,7 @@ Cpp11BracedListStyle: true
 
 DerivePointerAlignment: false
 ReflowComments: false
+
+BinPackParameters: false
+BinPackArguments: false
+AlignAfterOpenBracket: BlockIndent

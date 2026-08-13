@@ -100,6 +100,8 @@
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
+    nerd-fonts.iosevka
+    nerd-fonts.ubuntu
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
@@ -159,31 +161,26 @@
     git
     github-cli
     cloudflare-warp
+    fish
     tmux
     tree
     xclip
+    xcolor
     gromit-mpx
     qalculate-gtk
-    # C
-    glibc
-    libcxx
-    gcc
-    gnumake
-    gdb
-    clang
-    valgrind
-    clang-tools
-    man-pages
-    # Java
+    htop
+    xdg-ninja
     jdk
+    # C
+    gcc
+    gdb
+    gnumake
+    valgrind
     # Emacs
     emacs
     emacsPackages.vterm
     libvterm
     pam_u2f
-    # LSP
-    nixd
-    bash-language-server
   ];
 
   documentation = {
@@ -202,6 +199,10 @@
     udisks2.enable = true;
     gvfs.enable = true;
     devmon.enable = true;
+    dunst.enable = true;
+    picom.enable = true;
+    emacs.enable = true;
+
 
     pipewire = {
       enable = true;

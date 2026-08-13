@@ -11,7 +11,7 @@ alias re="sudo nixos-rebuild switch"
 # git
 alias gs="git status"
 alias ga="git add"
-alias gc="git commit -m";
+alias gc="git commit";
 alias gl="git log";
 alias gd="git diff";
 

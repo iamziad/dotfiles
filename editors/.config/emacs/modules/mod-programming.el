@@ -43,6 +43,7 @@
 (setq java-ts-mode-indent-offset 4)
 
 ;; JavaScript / TypeScript
+
 (setq js-indent-level 2
       typescript-ts-mode-indent-offset 2)
 
@@ -63,6 +64,42 @@
   :ensure t
   :mode "\\.nix\\'")
 
+;;; --------------------------------------------------------------------------
+;;; GDB Multiple Windows
+;;; --------------------------------------------------------------------------
+
+(with-eval-after-load 'gdb-mi
+  (defun my-gdb-setup-windows ()
+    (set-window-dedicated-p (selected-window) nil)
+    (switch-to-buffer gud-comint-buffer)
+    (delete-other-windows)
+    (let ((win-src (selected-window))
+          (win-right (split-window-horizontally (round (* 0.55 (window-width))))))
+      (select-window win-src)
+      (let ((win-console (split-window-vertically (round (* 0.65 (window-body-height))))))
+        (set-window-buffer win-src
+                           (if gud-last-last-frame
+                               (gud-find-file (car gud-last-last-frame))
+                             (if gdb-main-file (gud-find-file gdb-main-file)
+                               (list-buffers-noselect))))
+        (setq gdb-source-window win-src)
+        (set-window-buffer win-console gud-comint-buffer))
+
+      (select-window win-right)
+      (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-locals-buffer))
+      (let ((w (split-window-vertically (round (* 0.25 (window-body-height))))))
+        (select-window w)
+        (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-breakpoints-buffer))
+        (let ((w (split-window-vertically (round (* 0.33 (window-body-height))))))
+          (select-window w)
+          (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-registers-buffer))
+          (let ((w (split-window-vertically (round (* 0.5 (window-body-height))))))
+            (select-window w)
+            (gdb-set-window-buffer (gdb-get-buffer-create 'gdb-threads-buffer)))))
+      (select-window win-src)))
+
+  (advice-add 'gdb-setup-windows :override #'my-gdb-setup-windows)
+  (setq gdb-many-windows t))
 
 (provide 'mod-programming)
 ;;; mod-programming.el ends here

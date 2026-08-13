@@ -72,6 +72,7 @@
   (winner-mode 1)
   (delete-selection-mode 1)
   (global-auto-revert-mode 1)
+  (setq auto-revert-use-notify t)
   (xterm-mouse-mode 1)
   (auto-save-visited-mode 1)
   (global-visual-line-mode 1)
@@ -247,6 +248,9 @@
 
 ;; Theme
 (use-package zenburn-theme :defer t)
+(use-package doom-themes :defer t)
+(straight-use-package 'catppuccin-theme)
+(setq catppuccin-flavor 'frappe)
 (defvar my/theme 'gruvbox)
 (load-theme my/theme t)
 
@@ -263,7 +267,7 @@
 ;; Modeline & Fringe
 (column-number-mode 1)
 (size-indication-mode 1)
-(fringe-mode '(10 . 0))
+(fringe-mode '(8 . 0))
 
 ;;; --------------------------------------------------------------------------
 ;;; Dired

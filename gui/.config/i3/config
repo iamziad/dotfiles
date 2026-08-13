@@ -8,12 +8,11 @@ set $mod Mod4
 # Xresources
 exec --no-startup-id xrdb -merge "$HOME/.config/x11/Xresources"
 
-# exec_always --no-startup-id ~/.local/bin/scripts/screenlayout.sh
-
-# Paths
 set $SCRIPTS_GLOBAL  /home/ziad/.local/bin/scripts
 set $TERM            alacritty
-set $LAUNCHER        i3-dmenu-desktop --dmenu="dmenu -i -fn JetBrainsMonoNerdFont:size=11"
+set $LAUNCHER        i3-dmenu-desktop --dmenu="dmenu -i -fn JetBrainsMonoNerdFont:size=10"
+set $BAR             i3blocks
+set $FONT            JetBrainsMonoNerd Font
 # set $LOCK            i3lock
 
 # Monitors
@@ -36,8 +35,8 @@ set $ws10 "10"
 #  Appearance
 # ============================================================
 
-font pango:JetBrainsMono Nerd Font 10
-hide_edge_borders both
+font pango:$FONT SemiBold 9
+hide_edge_borders smart
 
 set $GAPS_OUTER 0px
 set $GAPS_INNER 0px
@@ -46,20 +45,20 @@ gaps outer $GAPS_OUTER
 gaps inner $GAPS_INNER
 smart_gaps on
 
+for_window [class="^.*"] border pixel 3
+
 # ============================================================
 #  Bar
 # ============================================================
 
 bar {
-# status_command i3status -c ~/.config/i3/i3status.conf
-status_command i3blocks -c ~/.config/i3/i3blocks.conf
-font pango:JetBrainsMono Nerd Font 9
+status_command $BAR -c ~/.config/i3/$BAR.conf
+font pango:$FONT SemiBold 8
 
 position     bottom
-tray_output  $pri
+tray_output  $PRI
 
    colors {
-    # urgent_workspace #4c7899 #282828 #FFFFFF
     urgent_workspace #ff0000 #282828 #FFFFFF
     background #1d1d1d
    }
@@ -70,24 +69,23 @@ tray_output  $pri
 # ============================================================
 
 workspace_layout                tabbed
-# workspace_auto_back_and_forth   yes
 focus_follows_mouse             yes
 popup_during_fullscreen         leave_fullscreen
 focus_on_window_activation      focus
 show_marks                      yes
 
 # Monitor assignments
-workspace $ws1  output $pri
-workspace $ws2  output $pri
-workspace $ws3  output $pri
-workspace $ws4  output $pri
-workspace $ws5  output $pri
+workspace $ws1  output $PRI
+workspace $ws2  output $PRI
+workspace $ws3  output $PRI
+workspace $ws4  output $PRI
+workspace $ws5  output $PRI
 
-workspace $ws6  output $sec
-workspace $ws7  output $sec
-workspace $ws8  output $sec
-workspace $ws9  output $sec
-workspace $ws10 output $sec
+workspace $ws6  output $SEC
+workspace $ws7  output $SEC
+workspace $ws8  output $SEC
+workspace $ws9  output $SEC
+workspace $ws10 output $SEC
 
 # Switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -118,16 +116,13 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 # ============================================================
 
 exec_always --no-startup-id i3-msg 'workspace $ws6; workspace $ws1'
+exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
 exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- $SCRIPTS_GLOBAL/i3/i3lock.sh
-
-exec        --no-startup-id xsettingsd
+# exec        --no-startup-id xsettingsd
 exec        --no-startup-id picom --config ~/.config/picom/.picom.conf -b
 exec        --no-startup-id dunst
 exec        --no-startup-id redshift-gtk
-exec        --no-startup-id gromit-mpx
 exec        --no-startup-id emacs --daemon
-
-exec_always --no-startup-id $SCRIPTS_GLOBAL/feh.sh
 
 # ============================================================
 #  Window Rules
@@ -142,8 +137,6 @@ set $SIZE_XS resize set 800 370
 
 # App assignments
 assign [class="Anki"]    $ws2
-assign [class="Spotify"] $ws4
-assign [class="obs"]     $ws5
 
 # Floating rules
 for_window [class="Thunar"]                             $FLOAT, $SIZE_LG, $CENTER
@@ -295,7 +288,7 @@ bindsym $mod+F8 exec --no-startup-id $SCRIPTS_GLOBAL/brightness.sh Dell +
 # ============================================================
 
 ##
-bindsym $mod+Return exec $TERM || /usr/bin/i3-sensible-terminal
+bindsym $mod+Return exec $TERM
 bindsym $mod+d      exec --no-startup-id $LAUNCHER
 bindsym $mod+q      kill
 ##

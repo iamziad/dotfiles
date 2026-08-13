@@ -3,12 +3,13 @@
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode)
+  :config
+  (setq flycheck-display-errors-function #'flycheck-display-error-messages)
+  (setq flycheck-display-errors-delay 0.2)
+  ;; (setq flycheck-indication-mode 'right-margin)
   :bind
   (("M-n"     . flycheck-next-error)
    ("M-p"     . flycheck-previous-error)))
-
-(setq flycheck-display-errors-function #'flycheck-display-error-messages)
-(setq flycheck-display-errors-delay 0.2)
 
 (use-package flycheck-inline
   :ensure t

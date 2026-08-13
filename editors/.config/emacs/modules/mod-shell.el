@@ -7,6 +7,12 @@
             (daemonp))
     (exec-path-from-shell-initialize)))
 
+(use-package fish-mode
+  :straight t
+  :mode (("\\.fish\\'" . fish-mode))
+  :hook (fish-mode . (lambda ()
+                       (add-hook 'before-save-hook 'fish_indent-before-save))))
+
 ;;------------------------------------------------------------------------------
 ;; Eshell
 ;;------------------------------------------------------------------------------
@@ -75,10 +81,10 @@
 
 (use-package vterm
   :ensure t
-  :custom
-  (vterm-shell (executable-find "bash"))
-  (vterm-tramp-shells '(("sudo" "/run/current-system/sw/bin/bash")
-                        ("ssh"  "/run/current-system/sw/bin/bash")))
+  ;; :custom
+  ;; (vterm-shell (executable-find "bash"))
+  ;; (vterm-tramp-shells '(("sudo" "/run/current-system/sw/bin/bash")
+  ;;                       ("ssh"  "/run/current-system/sw/bin/bash")))
   :config
   (define-key vterm-mode-map (kbd "C-q") nil)
   (add-to-list 'vterm-keymap-exceptions "C-q")

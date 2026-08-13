@@ -3,7 +3,7 @@
     name = Ziad Ahmed
     email = dev.ziadahmed@gmail.com
 [core]
-    editor = emacsclient -c -a emacs -nw
+    editor = emacsclient -r
     excludesfile = ~/.config/git/ignore
 [init]
     defaultBranch = main

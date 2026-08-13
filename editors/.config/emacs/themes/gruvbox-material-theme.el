@@ -1,46 +1,45 @@
-;;; gruvbox-theme.el --- Minimal Gruvbox theme (Classic base, Material mode-line/org) -*- lexical-binding: t -*-
+;;; gruvbox-material-theme.el --- Gruvbox Material theme (medium contrast, material palette) -*- lexical-binding: t -*-
 
 ;; Author: Ziad Ahmed
 
 ;;;###autoload
-(deftheme gruvbox
-  "Gruvbox Theme")
+(deftheme gruvbox-material
+  "Gruvbox Material Theme")
 
 (let* (
-       ;; Backgrounds
+       ;; Backgrounds (Gruvbox Material, medium contrast — sainnhe/gruvbox-material)
        (bg0 "#282828")
        (bg0-soft "#32302f")
        (bg1 "#3c3836")
-       (bg2 "#504945")
-       (bg3 "#665c54")
-       (bg4 "#7c6f64")
+       (bg2 "#45403d")
+       (bg3 "#504945")
+       (bg4 "#5a524c")
        ;; Foregrounds
-       (fg-1 "#fbf1c7")
-       (fg0 "#ebdbb2")
-       (fg1 "#ddc7a1")
-       (fg2 "#d5be98")
-       (fg3 "#d5c4a1")
+       (fg-1 "#ddc7a1")
+       (fg0 "#d4be98")
+       (fg1 "#c9b593")
+       (fg2 "#beab8e")
+       (fg3 "#b3a289")
        (fg4 "#a89984")
        (gray "#928374")
-       ;; Bright palette
-       (red "#fb4934")
-       (orange "#fe8019")
-       (yellow "#fabd2f")
-       (green "#b8bb26")
-       (aqua "#8ec07c")
-       (blue "#83a598")
-       (light-blue "#b6c0a4")
+       ;; Bright palette (Material foreground)
+       (red "#ea6962")
+       (orange "#e78a4e")
+       (yellow "#d8a657")
+       (green "#a9b665")
+       (aqua "#89b482")
+       (blue "#7daea3")
        (purple "#d3869b")
        ;; Faded backgrounds (diffs / search highlights)
        (bg-red "#402120")
        (bg-green "#34381b")
-       (bg-yellow "#3B3116")
+       (bg-yellow "#4f422e")
        (bg-blue "#0e363e")
-       (bg-teal "#2D4F4F")
+       (bg-teal "#374141")
        ;; Mode-line / powerline
-       (bg-statusline1 "#3A3735")
-       (bg-statusline2 "#2B2B2B")
-       (bg-statusline3 "#45403d")
+       (bg-statusline1 "#32302f")
+       (bg-statusline2 "#1b1b1b")
+       (bg-statusline3 "#504945")
        (bg-statusline4 "#5a524c")
        ;; Material accents (org headings, mode-line emphasis)
        (mat-red "#ea6962")
@@ -52,11 +51,11 @@
        (bg-mat-teal "#374141"))
 
   (custom-theme-set-faces
-   'gruvbox
+   'gruvbox-material
    `(default ((t (:background ,bg0 :foreground ,fg0))))
    `(bold    ((t (:inherit default :foreground ,blue :weight bold))))
    `(cursor ((t (:background ,fg0))))
-   `(fringe ((t (:background ,bg0 :foreground ,bg4))))
+   `(fringe ((t (:background ,bg0-soft :foreground ,bg4))))
    `(hl-line ((t (:background ,bg1))))
    `(region ((t (:background ,bg-teal))))
    `(secondary-selection ((t (:background ,bg2))))
@@ -91,8 +90,7 @@
    `(tooltip ((t (:background ,bg3 :foreground ,fg-1))))
    `(line-number ((t (:background ,bg0 :foreground ,bg4 :inherit fixed-pitch :height 1.0))))
    `(line-number-current-line ((t (:background ,bg0 :foreground ,yellow :weight bold :inherit fixed-pitch :height 1.0))))
-   ;; `(mode-line ((t (:background ,bg-statusline1 :foreground ,fg2 :box (:line-width 1 :color ,bg2)))))
-   `(mode-line ((t (:background ,bg-statusline1 :foreground ,fg2))))
+   `(mode-line ((t (:background ,bg-statusline1 :foreground ,fg2 :box (:line-width 1 :color ,bg2)))))
    `(mode-line-inactive ((t (:background ,bg-statusline2 :foreground ,gray :box (:line-width 1 :color ,bg2)))))
    `(mode-line-buffer-id ((t (:foreground ,fg1 :weight semi-bold))))
    `(mode-line-emphasis ((t (:foreground ,fg1 :weight semi-bold))))
@@ -124,7 +122,7 @@
    `(font-lock-builtin-face ((t (:foreground ,orange :weight regular))))
    `(font-lock-function-name-face ((t (:foreground ,green :weight normal))))
    `(font-lock-function-call-face ((t (:foreground ,green :weight normal))))
-   `(font-lock-variable-name-face ((t (:foreground ,blue :weight normal))))
+   `(font-lock-variable-name-face ((t (:foreground ,fg0 :weight normal))))
    `(font-lock-variable-use-face ((t (:foreground ,blue :weight normal))))
    `(font-lock-constant-face ((t (:foreground ,purple))))
    `(font-lock-string-face ((t (:foreground ,green :slant italic))))
@@ -138,20 +136,10 @@
    `(font-lock-bracket-face ((t (:foreground ,yellow :weight normal))))
    `(font-lock-delimiter-face ((t (:foreground ,fg3))))
    `(font-lock-punctuation-face ((t (:foreground ,aqua :weight semi-bold))))
-   `(font-lock-property-name-face ((t (:foreground ,orange :weight normal))))
-   `(font-lock-property-use-face ((t (:foreground ,orange :weight normal))))
+   `(font-lock-property-name-face ((t (:foreground ,blue :weight normal))))
+   `(font-lock-property-use-face ((t (:foreground ,blue :weight normal))))
    `(font-lock-number-face ((t (:foreground ,purple))))
    `(font-lock-negation-char-face ((t (:foreground ,orange))))
-   ;; nix-mode
-   `(nix-keyword-face ((t (:foreground ,red :weight regular))))
-   `(nix-keyword-warning-face ((t (:foreground ,red :weight bold))))
-   `(nix-builtin-face ((t (:foreground ,orange :weight regular))))
-   `(nix-constant-face ((t (:foreground ,purple))))
-   `(nix-attribute-face ((t (:foreground ,light-blue :weight normal))))
-   `(nix-antiquote-face ((t (:foreground ,aqua :weight semi-bold))))
-   `(nix-store-path-face ((t (:foreground ,mat-teal))))
-   `(nix-store-path-realised-face ((t (:inherit nix-store-path-face))))
-   `(nix-store-path-unrealised-face ((t (:inherit nix-store-path-face :slant italic))))
    `(treesit-fold-replacement-face ((t (:foreground ,gray :box (:line-width 1 :color ,bg3)))))
    `(treesit-fold-fringe-face
      ((t (:foreground ,bg4 :background ,bg0-soft))))
@@ -166,30 +154,18 @@
    `(diff-header ((t (:background ,bg2 :foreground ,fg0 :weight bold))))
    `(diff-file-header ((t (:background ,bg2 :foreground ,fg0 :weight bold))))
    `(diff-hunk-header ((t (:background ,bg2 :foreground ,yellow))))
-   ;; `(diff-hl-insert
-   ;;   ((t (:foreground ,green :background ,bg0-soft))))
-   ;; `(diff-hl-delete
-   ;;   ((t (:foreground ,red :background ,bg0-soft))))
-   ;; `(diff-hl-change
-   ;;   ((t (:foreground ,blue :background ,bg0-soft))))
-   ;; `(diff-hl-margin-insert
-   ;;   ((t (:foreground ,green :background ,bg0-soft))))
-   ;; `(diff-hl-margin-delete
-   ;;   ((t (:foreground ,red :background ,bg0-soft))))
-   ;; `(diff-hl-margin-change
-   ;;   ((t (:foreground ,blue :background ,bg0-soft))))
    `(diff-hl-insert
-     ((t (:foreground ,green :background ,green))))
+     ((t (:foreground ,green :background ,bg0-soft))))
    `(diff-hl-delete
-     ((t (:foreground ,red :background ,red))))
+     ((t (:foreground ,red :background ,bg0-soft))))
    `(diff-hl-change
-     ((t (:foreground ,blue :background ,blue))))
+     ((t (:foreground ,blue :background ,bg0-soft))))
    `(diff-hl-margin-insert
-     ((t (:foreground ,green :background ,green))))
+     ((t (:foreground ,green :background ,bg0-soft))))
    `(diff-hl-margin-delete
-     ((t (:foreground ,red :background ,red))))
+     ((t (:foreground ,red :background ,bg0-soft))))
    `(diff-hl-margin-change
-     ((t (:foreground ,blue :background ,blue))))
+     ((t (:foreground ,blue :background ,bg0-soft))))
    `(diff-hl-reverted-hunk-highlight ((t (:background ,bg-yellow))))
    `(magit-section-heading ((t (:foreground ,aqua :weight semi-bold :extend t))))
    `(magit-section-heading-selection ((t (:foreground ,orange :weight semi-bold :extend t))))
@@ -359,10 +335,10 @@
    `(corfu-border ((t (:background ,bg3))))
    `(corfu-bar ((t (:background ,gray))))
    `(corfu-annotations ((t (:foreground ,gray))))
-   `(company-tooltip ((t (:background ,bg1 :foreground ,fg1))))
-   `(company-tooltip-common ((t (:foreground ,fg0 :weight semi-bold))))
+   `(company-tooltip ((t (:background ,bg1 :foreground ,fg0))))
+   `(company-tooltip-common ((t (:foreground ,blue :weight semi-bold))))
    `(company-tooltip-selection ((t (:background ,bg2 :foreground ,fg-1 :weight semi-bold))))
-   `(company-tooltip-common-selection ((t (:foreground ,fg0 :weight bold))))
+   `(company-tooltip-common-selection ((t (:foreground ,blue :weight bold))))
    `(company-tooltip-search ((t (:background ,bg-yellow :foreground ,yellow :weight semi-bold))))
    `(company-tooltip-search-selection ((t (:background ,yellow :foreground ,bg0 :weight bold))))
    `(company-tooltip-annotation ((t (:foreground ,gray))))
@@ -680,7 +656,7 @@
    `(xref-file-header ((t (:foreground ,mat-orange :weight semi-bold))))
    `(org-superstar-header-bullet ((t (:height 1.2))))))
 
-(defun my-remap-fringe ()
+(defun gruvbox-material--remap-fringe ()
   (face-remap-add-relative 'fringe
                            :background "#282828"))
 
@@ -688,15 +664,15 @@
                 eshell-mode-hook
                 magit-mode-hook
                 compilation-mode-hook))
-  (add-hook hook #'my-remap-fringe))
+  (add-hook hook #'gruvbox-material--remap-fringe))
 
 
-(provide-theme 'gruvbox)
+(provide-theme 'gruvbox-material)
 
 ;;;###autoload
 (when load-file-name
   (add-to-list 'custom-theme-load-path
                (file-name-directory load-file-name)))
 
-(provide 'gruvbox)
-;;; gruvbox-theme.el ends here
+(provide 'gruvbox-material)
+;;; gruvbox-material-theme.el ends here
