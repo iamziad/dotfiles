@@ -17,6 +17,6 @@ in
 
     (mkScript "ziad-power-manager" ./power_manager.sh)
 
-    pkgs.xorg.xrandr
+    pkgs.xrandr
   ];
 }

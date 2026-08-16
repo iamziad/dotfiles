@@ -3,20 +3,20 @@
 \#*\#
 *.elc
 
-source/emacs/*
+config/emacs/*
 
-!source/emacs/modules/
-!source/emacs/snippets/
-!source/emacs/themes/
-!source/emacs/init.el
-!source/emacs/early-init.el
+!config/emacs/modules/
+!config/emacs/snippets/
+!config/emacs/themes/
+!config/emacs/init.el
+!config/emacs/early-init.el
 
 # Vim
-source/vim/plugged/
-source/vim/autoload/
+config/vim/plugged/
+config/vim/autoload/
 
 # Folder-specific ignore
 .DS_Store
 
 # Tmux plugins
-source/tmux/.tmux/plugins/
+config/tmux/.tmux/plugins/

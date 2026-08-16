@@ -316,5 +316,5 @@ bindsym $mod+ctrl+Print  exec --no-startup-id ziad-screenshot select save
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus [class="^(?!spterm$).*"] scratchpad show
 
-bindsym $mod+k exec i3-msg '[class="spterm"] scratchpad show' || exec $TERM -o "window.opacity=1" --class spterm
+bindsym $mod+k exec i3-msg '[class="spterm"] scratchpad show' || exec $TERM -o "window.opacity=0.95" --class spterm
 for_window [class="spterm"] floating enable, move scratchpad

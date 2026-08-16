@@ -33,6 +33,7 @@
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
+(defvar treesit-auto-install-grammar nil)
 ;; Manage temp files
 (use-package no-littering
   :config
