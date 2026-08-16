@@ -2,31 +2,23 @@
 *~
 \#*\#
 *.elc
-# emacs/etc/
-# emacs/var/
-# emacs/cache/
-# emacs/straight/
-# emacs/elpa/
-# emacs/eln-cache/
-# emacs/recentf
-# emacs/transient/
-# emacs/tree-sitter/
-# emacs/custom.el
 
-editors/emacs/*
+source/emacs/*
 
-!editors/emacs/modules/
-!editors/emacs/snippets/
-!editors/emacs/themes/
-!editors/emacs/init.el
-!editors/emacs/early-init.el
+!source/emacs/modules/
+!source/emacs/snippets/
+!source/emacs/themes/
+!source/emacs/init.el
+!source/emacs/early-init.el
 
 # Vim
-editors/vim/plugged/
-editors/vim/autoload/
+source/vim/plugged/
+source/vim/autoload/
 
 # Folder-specific ignore
 .DS_Store
 
 # Tmux plugins
-tmux/.tmux/plugins/
+source/tmux/.tmux/plugins/
+
+hardware-configuration.nix
