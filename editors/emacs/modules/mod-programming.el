@@ -62,7 +62,9 @@
 
 (use-package nix-mode
   :ensure t
-  :mode "\\.nix\\'")
+  :mode "\\.nix\\'"
+  :hook (nix-mode . (lambda ()
+                      (add-hook 'before-save-hook #'nix-mode-format nil t))))
 
 ;;; --------------------------------------------------------------------------
 ;;; GDB Multiple Windows

@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, pkgs, ... }:
 
 {
@@ -37,7 +33,7 @@
     useOSProber = true;
   };
 
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.loader.efi.efiSysMountPoint = "/efi/boot";
 
   # ---------------------------------------------------------------------
   # Networking
@@ -90,7 +86,13 @@
     shell = pkgs.fish;
   };
 
-  programs.fish.enable = true;
+  programs = {
+    fish.enable = true;
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+  };
 
   # ---------------------------------------------------------------------
   # GUI
@@ -142,6 +144,7 @@
         ddcutil
         polkit_gnome
         feh
+        xsettingsd
       ];
     };
   };
@@ -155,6 +158,9 @@
   environment.systemPackages = with pkgs; [
     vim
     wget
+    zip
+    unzip
+    mpv
     firefox
     alacritty
     stow
@@ -170,17 +176,18 @@
     qalculate-gtk
     htop
     xdg-ninja
-    jdk
-    # C
-    gcc
-    gdb
-    gnumake
-    valgrind
-    # Emacs
     emacs
     emacsPackages.vterm
     libvterm
-    pam_u2f
+    gcc
+    gdb
+    valgrind
+    gnumake
+    clang-tools
+    man-pages
+    nixd
+    bash-language-server
+    nodejs
   ];
 
   documentation = {
@@ -221,34 +228,34 @@
 
   # polkit authentication agent for the graphical session
   # systemd.user.services.polkit-gnome-authentication-agent-1 = {
-  #   description = "polkit-gnome-authentication-agent-1";
-  #   wantedBy = [ "graphical-session.target" ];
-  #   wants = [ "graphical-session.target" ];
-  #   after = [ "graphical-session.target" ];
-  #   serviceConfig = {
-  #     Type = "simple";
-  #     ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-  #     Restart = "on-failure";
-  #     RestartSec = 1;
-  #     TimeoutStopSec = 10;
-  #   };
-  # };
+    #   description = "polkit-gnome-authentication-agent-1";
+    #   wantedBy = [ "graphical-session.target" ];
+    #   wants = [ "graphical-session.target" ];
+    #   after = [ "graphical-session.target" ];
+    #   serviceConfig = {
+      #     Type = "simple";
+      #     ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      #     Restart = "on-failure";
+      #     RestartSec = 1;
+      #     TimeoutStopSec = 10;
+      #   };
+      # };
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+      # Some programs need SUID wrappers, can be configured further or are
+      # started in user sessions.
+      # programs.mtr.enable = true;
+      # programs.gnupg.agent = {
+        #   enable = true;
+        #   enableSSHSupport = true;
+        # };
 
-  # ---------------------------------------------------------------------
-  # State Version
-  # ---------------------------------------------------------------------
+        # ---------------------------------------------------------------------
+        # State Version
+        # ---------------------------------------------------------------------
 
-  # Do NOT change this value unless you have manually inspected all the
-  # changes it would make to your configuration, and migrated your data
-  # accordingly. See `man configuration.nix` or
-  # https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion
-  system.stateVersion = "26.05"; # Did you read the comment?
+        # Do NOT change this value unless you have manually inspected all the
+        # changes it would make to your configuration, and migrated your data
+        # accordingly. See `man configuration.nix` or
+        # https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion
+        system.stateVersion = "26.05"; # Did you read the comment?
 }

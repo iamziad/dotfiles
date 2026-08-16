@@ -2,35 +2,28 @@
 *~
 \#*\#
 *.elc
-# editors/.config/emacs/etc/
-# editors/.config/emacs/var/
-# editors/.config/emacs/cache/
-# editors/.config/emacs/straight/
-# editors/.config/emacs/elpa/
-# editors/.config/emacs/eln-cache/
-# editors/.config/emacs/recentf
-# editors/.config/emacs/transient/
-# editors/.config/emacs/tree-sitter/
-# editors/.config/emacs/custom.el
+# emacs/etc/
+# emacs/var/
+# emacs/cache/
+# emacs/straight/
+# emacs/elpa/
+# emacs/eln-cache/
+# emacs/recentf
+# emacs/transient/
+# emacs/tree-sitter/
+# emacs/custom.el
 
-editors/.config/emacs/*
-editors/.config/emacs-old/*
+editors/emacs/*
 
-!editors/.config/emacs/modules/
-!editors/.config/emacs/snippets/
-!editors/.config/emacs/themes/
-!editors/.config/emacs/init.el
-!editors/.config/emacs/early-init.el
-
-!editors/.config/emacs-old/init.el
-!editors/.config/emacs-old/early-init.el
-!editors/.config/emacs-old/init.org
-!editors/.config/emacs-old/README.org
-!editors/.config/emacs-old/lisp/
+!editors/emacs/modules/
+!editors/emacs/snippets/
+!editors/emacs/themes/
+!editors/emacs/init.el
+!editors/emacs/early-init.el
 
 # Vim
-editors/.config/vim/plugged/
-editors/.config/vim/autoload/
+editors/vim/plugged/
+editors/vim/autoload/
 
 # Folder-specific ignore
 .DS_Store

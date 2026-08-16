@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: nix-shell
+# key: nshell
+# --
+{ pkgs ? import <nixpkgs> {} }:
+
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    $0
+  ];
+}

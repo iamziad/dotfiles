@@ -7,6 +7,10 @@
             (daemonp))
     (exec-path-from-shell-initialize)))
 
+(use-package envrc
+  :straight t
+  :hook (after-init . envrc-global-mode))
+
 (use-package fish-mode
   :straight t
   :mode (("\\.fish\\'" . fish-mode))

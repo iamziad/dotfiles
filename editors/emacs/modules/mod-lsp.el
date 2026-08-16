@@ -22,7 +22,7 @@
   (lsp-completion-provider :capf)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-disabled-clients '(semgrep-ls))
-  (lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+  ;; (lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
   ;; (lsp-clients-tsgo-path (executable-find "tsgo"))
   :bind (:map lsp-mode-map
               ("M-."     . lsp-find-definition)
