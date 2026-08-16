@@ -1,10 +1,10 @@
 { config, pkgs, ... }:
 let
-  source = "../source";
-  sym = config.lib.file.mkOutOfStoreSymlink;
+  dotfiles = "${config.home.homeDirectory}/dotfiles";
+  sym = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
 in
 {
-  import = [
+  imports = [
     ./services/picom.nix
     ./services/dunst.nix
 
@@ -45,10 +45,10 @@ in
 
   # programs that it's config changes alot
   xdg.configFile = {
-    "i3".source = sym "${source}/i3";
-    "alacritty".source = sym "${source}/alacritty";
-    "emacs".source = sym "${source}/emacs";
-    "vim/vimrc".source = sym "${source}/vim/vimrc";
+	  "i3".source = sym "source/i3";
+	  "alacritty".source = sym "source/alacritty";
+	  "emacs".source = sym "source/emacs";
+	  "vim/vimrc".source = sym "source/vim/vimrc";
   };
 
   home.sessionVariables = {
@@ -208,7 +208,7 @@ in
     };
   };
 
-  xdg.dataFile."applications/feh.desktop".source = ./../files/applications/feh.desktop;
+xdg.dataFile."applications/feh.desktop".source = sym "source/feh.desktop";
 
   xdg.configFile."xsettingsd/xsettingsd.conf".text = ''
     Net/ThemeName "Adwaita-dark"

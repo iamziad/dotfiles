@@ -20,5 +20,3 @@ source/vim/autoload/
 
 # Tmux plugins
 source/tmux/.tmux/plugins/
-
-hardware-configuration.nix
