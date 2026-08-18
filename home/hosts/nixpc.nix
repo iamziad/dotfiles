@@ -5,7 +5,7 @@
 
 {
   imports = [
-    ../common.nix
+    ../home.nix
     ../desktop-minimal.nix
   ];
 
