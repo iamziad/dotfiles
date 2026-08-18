@@ -1,10 +1,5 @@
 { config, lib, pkgs, ... }:
 
-# Shared NixOS settings for every "i3 desktop" machine. A new host's
-# configuration.nix should just `imports = [ ../common.nix ./hardware-configuration.nix ];`
-# and then add whatever is genuinely specific to that machine (hostname,
-# disks, boot loader quirks, extra hardware).
-
 {
   nix = {
     settings.auto-optimise-store = true;
@@ -52,17 +47,8 @@
     shell = pkgs.fish;
   };
 
-  programs = {
-    fish.enable = true;
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
-    dconf.enable = true;
-  };
-
   # ---------------------------------------------------------------------
-  # GUI (i3 desktop)
+  # GUI
   # ---------------------------------------------------------------------
 
   services.displayManager.ly.enable = true;
@@ -126,20 +112,21 @@
     wget
     zip
     unzip
+    tree
     mpv
     firefox
+    google-chrome
     alacritty
     git
     github-cli
     cloudflare-warp
     fish
-    tree
     xclip
     xcolor
     gromit-mpx
     qalculate-gtk
     htop
-    xdg-ninja
+    btop
     emacs
     emacsPackages.vterm
     libvterm
@@ -151,7 +138,6 @@
     man-pages
     nixd
     bash-language-server
-    nodejs
   ];
 
   documentation = {

@@ -1,9 +1,5 @@
 { config, pkgs, ... }:
 
-# Everything X11/i3-desktop specific. Only import this on a machine that
-# actually runs the i3 desktop (see home/hosts/nixpc.nix). A future
-# headless or WSL profile would import home/common.nix alone.
-
 let
   dotfiles = "${config.home.homeDirectory}/dotfiles";
   sym = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
@@ -13,8 +9,6 @@ in
     ./services/picom.nix
     ./services/dunst.nix
   ];
-
-  dconf.enable = false;
 
   # Programs whose config is large/changes a lot: kept as plain files in
   # config/ and symlinked in, instead of modeled as Nix options.

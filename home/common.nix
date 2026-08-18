@@ -32,13 +32,15 @@ in
     TERMINAL = "alacritty";
   };
 
+  home.file = {
+    ".clang-format".source = sym "config/clang-format";
+  };
+
   # large/changes a lot
   xdg.configFile = {
     "emacs".source     = sym "config/emacs";
     "vim/vimrc".source = sym "config/vim/vimrc";
   };
-
-  home.file.".clang-format".source = sym "config/clang-format";
 
   services.emacs = {
     enable = true;

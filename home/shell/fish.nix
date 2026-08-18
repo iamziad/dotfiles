@@ -16,7 +16,8 @@ in
 
     shellAbbrs = {
       c = "xclip -selection clipboard";
-      nrs = "sudo nixos-rebuild switch";
+      nrs = "cd ~/dotfiles && sudo nixos-rebuild switch --flake .";
+      hms = "cd ~/dotfiles && home-manager switch -b backup --flake .";
     } // gitAliases // tmuxAliases // emacsAliases // {
       emacs-kill = "emacsclient -e '(kill-emacs)'";
       emacs-start = "emacs --daemon";
@@ -31,28 +32,21 @@ in
       fish_prompt = ''
         set_color fb4934
         echo -n "["
-
         set_color fabd2f
         echo -n (whoami)
-
         set_color b8bb26
         echo -n "@"
-
         set_color 83a598
         echo -n (prompt_hostname)
-
         set_color normal
         echo -n " "
-
         set_color b8bb26
         echo -n (get_trimmed_pwd)
-
         set_color d3869b
         echo -n (git_branch)
-
+        echo -n (nix_shell_indicator)
         set_color fb4934
         echo -n "]"
-
         set_color normal
         echo -n "\$ "
       '';
@@ -82,6 +76,18 @@ in
         end
         if test -n "$branch"
         echo " $branch"
+        end
+      '';
+
+      nix_shell_indicator = ''
+        if set -q IN_NIX_SHELL
+        set_color 8ec07c
+        if set -q prompt
+        echo -n "  $prompt"
+        else
+        echo -n "  nix"
+        end
+        set_color normal
         end
       '';
     };

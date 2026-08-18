@@ -6,6 +6,7 @@ let
 in
 {
   home.packages = [
+    # can get called individually
     (mkScript "ziad-toggle-darkmode"  ./toggle-darkmode.sh)
     (mkScript "ziad-screenshot"       ./screenshot.sh)
     (mkScript "ziad-screenlayout"     ./screenlayout.sh)
@@ -14,7 +15,7 @@ in
     (mkScript "ziad-open-dired-home"  ./open-dired-home.sh)
     (mkScript "ziad-i3lock"           ./i3lock.sh)
     (mkScript "ziad-make-desktop"     ./make_desktop.sh)
-
+    # called by other scripts
     (mkScript "ziad-power-manager" ./power_manager.sh)
 
     pkgs.xrandr

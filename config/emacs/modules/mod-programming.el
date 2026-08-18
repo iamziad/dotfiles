@@ -14,17 +14,35 @@
 ;; Makefiles MUST use real tabs
 (add-hook 'makefile-mode-hook (lambda () (setq indent-tabs-mode t)))
 
-;; Performance boost: disable bidi reordering for prog-mode
 (add-hook 'prog-mode-hook
           (lambda ()
             (setq bidi-paragraph-direction 'left-to-right
                   bidi-display-reordering nil)))
+
+(defun my/enable-bidi ()
+  (setq bidi-paragraph-direction nil
+        bidi-display-reordering t))
+
+(add-hook 'web-mode-hook #'my/enable-bidi)
+(add-hook 'html-ts-mode-hook #'my/enable-bidi)
+(add-hook 'html-mode-hook #'my/enable-bidi)
+(add-hook 'mhtml-mode-hook #'my/enable-bidi)
 
 ;; Misc
 (global-subword-mode +1)
 
 (use-package hl-todo
   :init (global-hl-todo-mode 1))
+
+(use-package auto-rename-tag
+  :ensure t
+  :hook ((web-mode
+          html-mode
+          html-ts-mode
+          mhtml-mode
+          rjsx-mode
+          js-ts-mode
+          tsx-ts-mode) . auto-rename-tag-mode))
 
 ;;; --------------------------------------------------------------------------
 ;;; Language Specific Indentation Settings

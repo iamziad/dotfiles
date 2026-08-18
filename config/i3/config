@@ -60,7 +60,7 @@ tray_output  $PRI
 
    colors {
     urgent_workspace #ff0000 #282828 #FFFFFF
-    background #1d1d1d
+    # background #1d1d1d
    }
 }
 
@@ -123,6 +123,7 @@ exec_always --no-startup-id i3-msg 'workspace $ws6; workspace $ws1'
 exec_always --no-startup-id ziad-random-wallpaper
 exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- ziad-i3lock
 exec        --no-startup-id redshift-gtk
+exec        --no-startup-id xsettingsd
 
 # ============================================================
 #  Window Rules
@@ -218,7 +219,7 @@ bindsym $mod+Shift+x focus child
 # Power mode
 set $mode_system Power Options: Lock(l) - Exit(e) - Suspend(s) - Reboot(r) - Poweroff(o) - Cancel(Esc)
 mode "$mode_system" {
-bindsym l      exec --no-startup-id $SCRIPTS_GLOBAL/i3/i3lock.sh, mode "default"
+bindsym l      exec --no-startup-id ziad-i3lock, mode "default"
 bindsym e      exec --no-startup-id i3-msg    exit,      mode "default"
 bindsym s      exec --no-startup-id systemctl suspend,   mode "default"
 bindsym r      exec --no-startup-id systemctl reboot,    mode "default"
