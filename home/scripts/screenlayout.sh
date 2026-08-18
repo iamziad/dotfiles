@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 MY_MAIN_MONITOR="HDMI-1"
 

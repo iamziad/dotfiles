@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # 1. Check if the user provided a program name
 if [ -z "$1" ]; then

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # brightness.sh <name> <+/->
 
 set -euo pipefail

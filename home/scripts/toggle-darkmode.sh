@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 LIGHT_THEME="Adwaita"
 DARK_THEME="Adwaita-dark"
