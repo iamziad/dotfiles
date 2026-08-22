@@ -1,5 +1,16 @@
 ;;; mod-web.el  -*- lexical-binding: t; -*-
 
+
+(use-package add-node-modules-path
+  :ensure t
+  :hook ((js-mode . add-node-modules-path)
+         (js2-mode . add-node-modules-path)
+         (typescript-mode . add-node-modules-path)
+         (typescript-ts-mode . add-node-modules-path)
+         (tsx-ts-mode . add-node-modules-path)
+         (json-ts-mode . add-node-modules-path)
+         (web-mode . add-node-modules-path)))
+
 (use-package web-mode
   :ensure t
   :mode ("\\.phtml\\'"
@@ -24,7 +35,27 @@
   ;; Let smartparens handle pairing instead of web-mode's built-in
   (web-mode-enable-auto-pairing nil)
   (web-mode-enable-current-element-highlight t)
-  (web-mode-enable-current-column-highlight t))
+  (web-mode-enable-current-column-highlight t)
+  :bind
+  (:map web-mode-map
+        ;; Navigation & Selection
+        ("M-n" . web-mode-element-next)
+        ("M-p" . web-mode-element-previous)
+        ("M-P" . web-mode-element-parent)
+        ("M-N" . web-mode-element-child)
+        ("C-c C-e s" . web-mode-element-select)
+
+        ;; Editing & DOM Manipulation
+        ("C-c C-e w" . web-mode-element-wrap)
+        ("C-c C-e r" . web-mode-element-rename)
+        ("C-c C-e k" . web-mode-element-kill)
+        ("C-c C-e i" . web-mode-element-insert-at-point)
+        ("C-c C-e t" . web-mode-element-transpose)
+
+        ;; Tag Closing & Folding
+        ("C-c C-f"   . web-mode-tag-match)
+        ("C-c /"     . web-mode-element-close)
+        ("C-c C-e f" . web-mode-element-children-fold-or-unfold)))
 
 ;; smartparens integration for ERB/EJS-style template tags
 (with-eval-after-load 'web-mode
@@ -49,11 +80,11 @@
   (with-eval-after-load 'emmet-mode
     (define-key emmet-mode-keymap (kbd "C-j") nil)))
 
-;; (use-package rainbow-mode
-;;   :ensure t
-;;   :defer t
-;;   :config
-;;   (rainbow-mode +1))
+(use-package rainbow-mode
+  :ensure t
+  :defer t
+  :config
+  (rainbow-mode +1))
 
 
 (provide 'mod-web)

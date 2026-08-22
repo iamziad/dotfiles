@@ -6,8 +6,8 @@
   :hook ((c-ts-mode          . lsp-deferred)
          (c++-ts-mode        . lsp-deferred)
          (java-ts-mode       . lsp-deferred)
-         (typescript-ts-mode . lsp-deferred)
          (js-ts-mode         . lsp-deferred)
+         (typescript-ts-mode . lsp-deferred)
          (tsx-ts-mode        . lsp-deferred)
          (html-ts-mode       . lsp-deferred)
          (css-ts-mode        . lsp-deferred)
@@ -24,6 +24,7 @@
   (lsp-disabled-clients '(semgrep-ls))
   ;; (lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
   ;; (lsp-clients-tsgo-path (executable-find "tsgo"))
+  :config
   :bind (:map lsp-mode-map
               ("M-."     . lsp-find-definition)
               ("M-,"     . lsp-find-references)
@@ -31,6 +32,10 @@
               ("M-RET"   . lsp-execute-code-action)
               ("C-c l f" . lsp-format-buffer)
               ("C-c l b" . lsp-headerline-breadcrumb-mode)))
+
+(use-package lsp-completion
+  :straight nil
+  :hook ((lsp-mode . lsp-completion-mode)))
 
 (use-package lsp-ui
   :ensure t

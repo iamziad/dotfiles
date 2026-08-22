@@ -33,8 +33,9 @@
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
-(defvar treesit-auto-install-grammar nil)
 ;; Manage temp files
+(defvar treesit-auto-install-grammar nil)
+
 (use-package no-littering
   :config
   (setq auto-save-file-name-transforms
@@ -211,7 +212,7 @@
  ("M-r"           . recenter-top-bottom)
  ("C-c f"         . find-file-at-point)
  ("C-c c"         . compile)
- ("C-c o"         . delete-other-windows))
+ ("M-o"         . delete-other-windows))
 
 ;; Leader Map
 (bind-keys :prefix-map my-leader-map

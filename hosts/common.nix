@@ -47,11 +47,14 @@
     shell = pkgs.fish;
   };
 
+  programs.fish.enable = true;
+
   # ---------------------------------------------------------------------
   # GUI
   # ---------------------------------------------------------------------
 
   services.displayManager.ly.enable = true;
+  programs.dconf.enable = true;
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
@@ -61,6 +64,7 @@
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
   ];
+
   fonts.fontconfig.enable = true;
 
   services.xserver = {

@@ -154,7 +154,7 @@ for_window [class="pavucontrol"]                        $FLOAT, $SIZE_SM, $CENTE
 for_window [class="Blueman-manager"]                    $FLOAT, $SIZE_SM, $CENTER
 for_window [class="Qalculate"]                          $FLOAT, $CENTER
 for_window [class="Brave-browser" window_role="pop-up"] $FLOAT, $SIZE_SM, $CENTER
-for_window [instance="Devtools"]                        $FLOAT, $SIZE_LG, $CENTER
+for_window [instance="Devtools"]                        $FLOAT, $SIZE_SM, $CENTER
 for_window [instance="nitrogen"]                        $FLOAT, $SIZE_LG, $CENTER
 # for_window [instance="virt-manager"]                    $FLOAT, $SIZE_LG, $CENTER
 for_window [window_role="alert"]                        $FLOAT

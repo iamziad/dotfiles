@@ -10,13 +10,13 @@
   :config
   (require 'smartparens-config)
 
-  (defun my/sp-open-line-between-braces (&rest _)
-    (save-excursion
-      (newline)
-      (indent-according-to-mode))
-    (indent-according-to-mode))
+  ;; (defun my/sp-open-line-between-braces (&rest _)
+  ;;   (save-excursion
+  ;;     (newline)
+  ;;     (indent-according-to-mode))
+  ;;   (indent-according-to-mode))
 
-  (sp-pair "{" nil :post-handlers '((my/sp-open-line-between-braces "RET")))
+  ;; (sp-pair "{" nil :post-handlers '((my/sp-open-line-between-braces "RET")))
 
   :bind
   ("C-c s r" . sp-rewrap-sexp))
