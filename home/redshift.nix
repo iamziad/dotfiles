@@ -1,0 +1,15 @@
+{ ... }:
+
+{
+  xdg.configFile."redshift.conf".text = ''
+    [redshift]
+    temp-day=5000
+    temp-night=3500
+    adjustment-method=randr
+    location-provider=manual
+
+    [manual]
+    lat=30.0444
+    lon=31.2357
+  '';
+}

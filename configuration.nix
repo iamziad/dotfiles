@@ -1,6 +1,27 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [ ./hardware-configuration.nix ];
+
+  networking.hostName = "nixpc";
+
+  # ---------------------------------------------------------------------
+  # Boot
+  # ---------------------------------------------------------------------
+
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    useOSProber = true; # dual-boot with Windows on /dev/sdb
+  };
+
+  boot.loader.efi.efiSysMountPoint = "/efi/boot";
+
+  # ---------------------------------------------------------------------
+  # Nix
+  # ---------------------------------------------------------------------
+
   nix = {
     settings.auto-optimise-store = true;
 
@@ -31,10 +52,18 @@
     enable32Bit = true;
   };
 
+  hardware.i2c.enable = true; # needed for ddcutil monitor brightness control
+
   zramSwap = {
     enable = true;
     memoryPercent = 50;
     algorithm = "zstd";
+  };
+
+  fileSystems."/mnt/hdd" = {
+    device  = "/dev/disk/by-uuid/7E6F-FB0D";
+    fsType  = "exfat";
+    options = [ "defaults" "nofail" "x-systemd.automount" ];
   };
 
   # ---------------------------------------------------------------------
@@ -43,7 +72,7 @@
 
   users.users.ziad = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "i2c" ];
     shell = pkgs.fish;
   };
 
@@ -175,4 +204,11 @@
   };
 
   security.polkit.enable = true;
+
+  # ---------------------------------------------------------------------
+  # State Version — do NOT change this after install. See
+  # https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion
+  # ---------------------------------------------------------------------
+
+  system.stateVersion = "26.05";
 }
