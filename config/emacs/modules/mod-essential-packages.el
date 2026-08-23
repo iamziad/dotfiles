@@ -47,6 +47,13 @@
 
 ;;; --------------------------------------------------------------------------
 
+(use-package drag-stuff
+  :ensure t
+  :config
+  (drag-stuff-global-mode 1)
+  :bind
+  ("C-S-k" . drag-stuff-up)
+  ("C-S-j" . drag-stuff-down))
 
 (provide 'mod-essential-packages)
 ;;; mod-essential-packages.el ends here

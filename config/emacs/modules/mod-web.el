@@ -86,6 +86,5 @@
   :config
   (rainbow-mode +1))
 
-
 (provide 'mod-web)
 ;;; mod-web.el ends here

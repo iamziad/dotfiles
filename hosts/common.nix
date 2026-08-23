@@ -140,7 +140,7 @@
     gnumake
     clang-tools
     man-pages
-    nixd
+    nil
     bash-language-server
   ];
 

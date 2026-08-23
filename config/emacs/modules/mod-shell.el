@@ -85,84 +85,69 @@
 
 (use-package vterm
   :ensure t
-  ;; :custom
-  ;; (vterm-shell (executable-find "bash"))
-  ;; (vterm-tramp-shells '(("sudo" "/run/current-system/sw/bin/bash")
-  ;;                       ("ssh"  "/run/current-system/sw/bin/bash")))
   :config
   (define-key vterm-mode-map (kbd "C-q") nil)
   (add-to-list 'vterm-keymap-exceptions "C-q")
   (add-to-list 'vterm-keymap-exceptions "C-c"))
 
-(defun my/vterm-buffer-name ()
-  (let ((dir-name (file-name-nondirectory (directory-file-name default-directory))))
-    (format "*vterm: %s*" dir-name)))
+(use-package multi-vterm
+  :ensure t
+  :custom
+  (multi-vterm-dedicated-window-height-percent 40)
+  :bind
+  ("C-c t t" . multi-vterm)
+  ("C-c t n" . multi-vterm-next)
+  ("C-c t p" . multi-vterm-prev)
+  ("C-c t r" . multi-vterm-rename)
+  ("C-c t T" . my/vterm-new-named))
 
-(defun my/get-or-create-vterm ()
-  "Get existing vterm buffer for current dir, or create it without
-disturbing the current window layout."
-  (let ((buf-name (my/vterm-buffer-name)))
-    (or (get-buffer buf-name)
-        (progn
-          (save-window-excursion (vterm buf-name))
-          (get-buffer buf-name)))))
+(defun my/vterm-new-named (name &optional percent)
+  (interactive "sTerminal name: ")
+  (let* ((percent (or percent 45))
+         (height (ceiling (* (frame-height) (/ (float percent) 100)))))
+    (select-window (split-window (selected-window) (- height) 'below))
+    (multi-vterm)
+    (multi-vterm-rename-buffer name)))
 
-(defun my/find-vterm-window ()
-  (catch 'found
-    (walk-windows
-     (lambda (w)
-       (with-current-buffer (window-buffer w)
-         (when (derived-mode-p 'vterm-mode)
-           (throw 'found w))))
-     nil
-     'visible)))
-
-(defun my/vterm-display-buffer (buf &optional direction)
-  "Toggle-display BUF in a vterm window.
-DIRECTION is `below' (default) or `right'."
-  (let ((vterm-win (my/find-vterm-window))
-        (direction (or direction 'below)))
+(defun my/vterm-project-toggle (&optional side percent)
+  (interactive)
+  (require 'multi-vterm)
+  (let* ((side (or side 'below))
+         (percent (or percent 40))
+         (name (multi-vterm-project-get-buffer-name))
+         (win  (get-buffer-window name)))
     (cond
-     ;; already open and focused -> close it
-     ((and vterm-win (eq vterm-win (selected-window)))
-      (delete-window vterm-win))
-     ;; already open but not focused -> jump to it and switch buffer
-     (vterm-win
-      (select-window vterm-win)
-      (switch-to-buffer buf))
-     ;; not open -> split and open
+     (win (if (eq (selected-window) win) (delete-window win) (select-window win)))
      (t
-      (let* ((size (if (eq direction 'below)
-                       (floor (* (frame-height) 0.45))
-                     (floor (* (frame-width) 0.45))))
-             (new-window (split-window (frame-root-window) (- size) direction)))
-        (select-window new-window)
-        (switch-to-buffer buf))))))
+      (let* ((total (if (eq side 'right) (window-width) (window-height)))
+             (size (ceiling (* total (/ (float percent) 100)))))
+        (select-window (split-window (selected-window) (- size) side)))
+      (if (buffer-live-p (get-buffer name))
+          (switch-to-buffer name)
+        (let ((buf (multi-vterm-get-buffer 'project)))
+          (set-buffer buf)
+          (multi-vterm-internal)
+          (switch-to-buffer buf)))))))
 
-(defun my/open-vterm-bottom ()
-  (interactive)
-  (my/vterm-display-buffer (my/get-or-create-vterm) 'below))
-(global-set-key (kbd "C-c k") #'my/open-vterm-bottom)
+(defun my/vterm-k-dispatch (arg)
+  (interactive "P")
+  (if arg
+      (multi-vterm-dedicated-toggle)
+    (my/vterm-project-toggle 'below)))
+(global-set-key (kbd "C-c k") #'my/vterm-k-dispatch)
 
-(defun my/open-vterm-right ()
+(defun my/vterm-project-toggle-right ()
   (interactive)
-  (my/vterm-display-buffer (my/get-or-create-vterm) 'right))
-(global-set-key (kbd "C-c v k") #'my/open-vterm-right)
+  (my/vterm-project-toggle 'right))
+(global-set-key (kbd "C-c v k") #'my/vterm-project-toggle-right)
 
 (defun my/switch-vterm-buffer ()
   (interactive)
-  (let* ((vterm-buffers
-          (seq-filter
-           (lambda (buf)
-             (with-current-buffer buf
-               (derived-mode-p 'vterm-mode)))
-           (buffer-list)))
-         (buffer-names (mapcar #'buffer-name vterm-buffers)))
-    (if buffer-names
-        (my/vterm-display-buffer
-         (get-buffer (completing-read "Switch to vterm: " buffer-names nil t))
-         'below)
-      (message "No vterm buffers opened"))))
+  (if-let* ((bufs (seq-filter (lambda (b) (with-current-buffer b (derived-mode-p 'vterm-mode)))
+                              (buffer-list)))
+            (names (mapcar #'buffer-name bufs)))
+      (switch-to-buffer (completing-read "Switch to vterm: " names nil t))
+    (message "No vterm buffers opened")))
 (global-set-key (kbd "C-c b t") #'my/switch-vterm-buffer)
 
 ;; Replaced by vterm
