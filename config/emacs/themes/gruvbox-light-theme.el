@@ -1,58 +1,58 @@
-;;; gruvbox-theme.el --- Minimal Gruvbox theme (Classic base, Material mode-line/org) -*- lexical-binding: t -*-
+;;; gruvbox-light-theme.el --- Minimal Gruvbox theme (Light, creamy base) -*- lexical-binding: t -*-
 
 ;; Author: Ziad Ahmed
 
 ;;;###autoload
-(deftheme gruvbox
-  "Gruvbox Theme")
+(deftheme gruvbox-light
+  "Gruvbox Light Theme (creamy)")
 
 (let* (
-       ;; Backgrounds
-       (bg0 "#282828")
-       (bg0-soft "#32302f")
-       (bg1 "#3c3836")
-       (bg2 "#504945")
-       (bg3 "#665c54")
-       (bg4 "#7c6f64")
+       ;; Backgrounds (creamy stack)
+       (bg0 "#fbf1c7")
+       (bg0-soft "#f2e5bc")
+       (bg1 "#ebdbb2")
+       (bg2 "#d5c4a1")
+       (bg3 "#bdae93")
+       (bg4 "#a89984")
        ;; Foregrounds
-       (fg-1 "#fbf1c7")
-       (fg0 "#ebdbb2")
-       (fg1 "#ddc7a1")
-       (fg2 "#d5be98")
-       (fg3 "#d5c4a1")
-       (fg4 "#a89984")
+       (fg-1 "#1d2021")
+       (fg0 "#282828")
+       (fg1 "#3c3836")
+       (fg2 "#504945")
+       (fg3 "#665c54")
+       (fg4 "#7c6f64")
        (gray "#928374")
-       ;; Bright palette
-       (red "#fb4934")
-       (orange "#fe8019")
-       (yellow "#fabd2f")
-       (green "#b8bb26")
-       (aqua "#8ec07c")
-       (blue "#83a598")
-       (light-blue "#b6c0a4")
-       (purple "#d3869b")
+       ;; Faded palette (readable on a light/creamy background)
+       (red "#9d0006")
+       (orange "#af3a03")
+       (yellow "#b57614")
+       (green "#79740e")
+       (aqua "#427b58")
+       (blue "#076678")
+       (light-blue "#5c6e49")
+       (purple "#8f3f71")
        ;; Faded backgrounds (diffs / search highlights)
-       (bg-red "#402120")
-       (bg-green "#34381b")
-       (bg-yellow "#3B3116")
-       (bg-blue "#0e363e")
-       (bg-teal "#2D4F4F")
+       (bg-red "#f2d5cd")
+       (bg-green "#e6e9c4")
+       (bg-yellow "#f2e2ac")
+       (bg-blue "#d9e6e2")
+       (bg-teal "#dde8d3")
        ;; Mode-line / powerline
-       (bg-statusline1 "#3A3735")
-       (bg-statusline2 "#2B2B2B")
-       (bg-statusline3 "#45403d")
-       (bg-statusline4 "#5a524c")
+       (bg-statusline1 "#e6dcb9")
+       (bg-statusline2 "#f2ecd3")
+       (bg-statusline3 "#dccfa0")
+       (bg-statusline4 "#cbb888")
        ;; Material accents (org headings, mode-line emphasis)
-       (mat-red "#ea6962")
-       (mat-orange "#e78a4e")
-       (mat-yellow "#d8a657")
-       (mat-green "#a9b665")
-       (mat-aqua "#7daea3")
-       (mat-teal "#89b482")
-       (bg-mat-teal "#374141"))
+       (mat-red "#af3029")
+       (mat-orange "#a35a1f")
+       (mat-yellow "#9c7317")
+       (mat-green "#707a2e")
+       (mat-aqua "#40726a")
+       (mat-teal "#4f7a5c")
+       (bg-mat-teal "#e2ecdf"))
 
   (custom-theme-set-faces
-   'gruvbox
+   'gruvbox-light
    `(default ((t (:background ,bg0 :foreground ,fg0))))
    `(bold    ((t (:inherit default :foreground ,blue :weight bold))))
    `(cursor ((t (:background ,fg0))))
@@ -91,7 +91,6 @@
    `(tooltip ((t (:background ,bg3 :foreground ,fg-1))))
    `(line-number ((t (:background ,bg0 :foreground ,bg4 :inherit fixed-pitch :height 1.0))))
    `(line-number-current-line ((t (:background ,bg0 :foreground ,yellow :weight bold :inherit fixed-pitch :height 1.0))))
-   ;; `(mode-line ((t (:background ,bg-statusline1 :foreground ,fg2 :box (:line-width 1 :color ,bg2)))))
    `(mode-line ((t (:background ,bg-statusline1 :foreground ,fg2))))
    `(mode-line-inactive ((t (:background ,bg-statusline2 :foreground ,gray :box (:line-width 1 :color ,bg2)))))
    `(mode-line-buffer-id ((t (:foreground ,fg1 :weight semi-bold))))
@@ -169,18 +168,6 @@
    `(diff-header ((t (:background ,bg2 :foreground ,fg0 :weight bold))))
    `(diff-file-header ((t (:background ,bg2 :foreground ,fg0 :weight bold))))
    `(diff-hunk-header ((t (:background ,bg2 :foreground ,yellow))))
-   ;; `(diff-hl-insert
-   ;;   ((t (:foreground ,green :background ,bg0-soft))))
-   ;; `(diff-hl-delete
-   ;;   ((t (:foreground ,red :background ,bg0-soft))))
-   ;; `(diff-hl-change
-   ;;   ((t (:foreground ,blue :background ,bg0-soft))))
-   ;; `(diff-hl-margin-insert
-   ;;   ((t (:foreground ,green :background ,bg0-soft))))
-   ;; `(diff-hl-margin-delete
-   ;;   ((t (:foreground ,red :background ,bg0-soft))))
-   ;; `(diff-hl-margin-change
-   ;;   ((t (:foreground ,blue :background ,bg0-soft))))
    `(diff-hl-insert
      ((t (:foreground ,green :background ,green))))
    `(diff-hl-delete
@@ -683,23 +670,12 @@
    `(xref-file-header ((t (:foreground ,mat-orange :weight semi-bold))))
    `(org-superstar-header-bullet ((t (:height 1.2))))))
 
-;; (defun my-remap-fringe ()
-;;   (face-remap-add-relative 'fringe
-;;                            :background "#282828"))
-
-;; (dolist (hook '(minibuffer-setup-hook
-;;                 eshell-mode-hook
-;;                 magit-mode-hook
-;;                 compilation-mode-hook))
-;;   (add-hook hook #'my-remap-fringe))
-
-
-(provide-theme 'gruvbox)
+(provide-theme 'gruvbox-light)
 
 ;;;###autoload
 (when load-file-name
   (add-to-list 'custom-theme-load-path
                (file-name-directory load-file-name)))
 
-(provide 'gruvbox)
-;;; gruvbox-theme.el ends here
+(provide 'gruvbox-light)
+;;; gruvbox-light-theme.el ends here

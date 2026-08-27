@@ -11,7 +11,8 @@
          ("Dockerfile\\'"    . dockerfile-ts-mode)
          ("\\.go\\'"         . go-ts-mode)
          ("/go\\.mod\\'"     . go-mod-ts-mode)
-         ("\\.ya?ml\\'"      . yaml-ts-mode))
+         ("\\.ya?ml\\'"      . yaml-ts-mode)
+         ("\\.java\\'"      . java-ts-mode))
   :preface
   (defun my/setup-install-grammars ()
     (interactive)

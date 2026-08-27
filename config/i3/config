@@ -219,51 +219,54 @@ bindsym $mod+Shift+x focus child
 # Power mode
 set $mode_system Power Options: Lock(l) - Exit(e) - Suspend(s) - Reboot(r) - Poweroff(o) - Cancel(Esc)
 mode "$mode_system" {
-bindsym l      exec --no-startup-id ziad-i3lock, mode "default"
-bindsym e      exec --no-startup-id i3-msg    exit,      mode "default"
-bindsym s      exec --no-startup-id systemctl suspend,   mode "default"
-bindsym r      exec --no-startup-id systemctl reboot,    mode "default"
-bindsym o      exec --no-startup-id systemctl poweroff,  mode "default"
-bindsym Escape                                           mode "default"
+    bindsym l      exec --no-startup-id ziad-i3lock, mode "default"
+    bindsym e      exec --no-startup-id i3-msg    exit,      mode "default"
+    bindsym s      exec --no-startup-id systemctl suspend,   mode "default"
+    bindsym r      exec --no-startup-id systemctl reboot,    mode "default"
+    bindsym o      exec --no-startup-id systemctl poweroff,  mode "default"
+    bindsym Escape                                           mode "default"
 }
 bindsym $mod+Shift+e mode "$mode_system"
 
 # Resize mode
 mode "resize" {
-bindsym h      resize shrink width  5 px or 5 ppt
-bindsym j      resize grow   height 5 px or 5 ppt
-bindsym k      resize shrink height 5 px or 5 ppt
-bindsym l      resize grow   width  5 px or 5 ppt
+    bindsym h      resize shrink width  5 px or 5 ppt
+    bindsym j      resize grow   height 5 px or 5 ppt
+    bindsym k      resize shrink height 5 px or 5 ppt
+    bindsym l      resize grow   width  5 px or 5 ppt
 
-bindsym Left   resize shrink width  5 px or 5 ppt
-bindsym Down   resize grow   height 5 px or 5 ppt
-bindsym Up     resize shrink height 5 px or 5 ppt
-bindsym Right  resize grow   width  5 px or 5 ppt
+    bindsym Left   resize shrink width  5 px or 5 ppt
+    bindsym Down   resize grow   height 5 px or 5 ppt
+    bindsym Up     resize shrink height 5 px or 5 ppt
+    bindsym Right  resize grow   width  5 px or 5 ppt
 
-bindsym Return mode "default"
-bindsym Escape mode "default"
-bindsym $mod+r mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
 }
+
 bindsym $mod+r mode "resize"
 
 # Gaps mode
 set $mode_gaps Gaps: Inner(+/-) - Outer(shift +/-) - No gaps(0) - Resotre(r) - Cancel(Esc)
+
 mode "$mode_gaps" {
-bindsym plus gaps inner current plus 5
-bindsym minus gaps inner current minus 5
+    bindsym plus gaps inner current plus 5
+    bindsym minus gaps inner current minus 5
 
-bindsym shift+plus gaps outer current plus 5
-bindsym shift+minus gaps outer current minus 5
+    bindsym shift+plus gaps outer current plus 5
+    bindsym shift+minus gaps outer current minus 5
 
-bindsym r gaps inner current set $GAPS_INNER
-bindsym r gaps outer current set $GAPS_OUTER
+    bindsym r gaps inner current set $GAPS_INNER
+    bindsym r gaps outer current set $GAPS_OUTER
 
-bindsym 0 gaps inner current set 0
-bindsym 0 gaps outer current set 0
+    bindsym 0 gaps inner current set 0
+    bindsym 0 gaps outer current set 0
 
-bindsym Escape mode "default"
-bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
 }
+
 bindsym $mod+g mode "$mode_gaps"
 
 # ============================================================

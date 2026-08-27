@@ -18,6 +18,7 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
   :custom
+  (lsp-completion-sort-initial-results nil)
   (lsp-diagnostics-provider :flycheck)
   (lsp-completion-provider :capf)
   (lsp-headerline-breadcrumb-enable nil)
@@ -47,6 +48,8 @@
   (lsp-ui-sideline-show-diagnostics nil)
   :bind (:map lsp-ui-mode-map
               ("C-c l k" . lsp-ui-doc-glance)))
+
+(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
 
 (use-package lsp-java
   :ensure t

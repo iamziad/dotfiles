@@ -49,6 +49,7 @@
 
 (use-package drag-stuff
   :ensure t
+  :diminish drag-stuff-mode
   :config
   (drag-stuff-global-mode 1)
   :bind

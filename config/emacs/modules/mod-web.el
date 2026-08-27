@@ -73,9 +73,10 @@
 
 (use-package emmet-mode
   :ensure t
-  :hook ((html-ts-mode web-mode css-ts-mode sgml-mode css-mode) . emmet-mode)
+  :hook ((html-ts-mode web-mode css-ts-mode sgml-mode mhtml-mode html-mode css-mode) . emmet-mode)
   :config
   (setq emmet-move-cursor-between-quotes t)
+  (add-to-list 'emmet-css-major-modes 'css-ts-mode)
   (define-key emmet-mode-keymap (kbd "TAB") 'emmet-expand-line)
   (with-eval-after-load 'emmet-mode
     (define-key emmet-mode-keymap (kbd "C-j") nil)))

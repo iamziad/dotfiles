@@ -6,6 +6,7 @@
 ;; over "who inserts the closing bracket."
 
 (use-package smartparens
+  :diminish 'smartparens-mode
   :hook (prog-mode . smartparens-mode)
   :config
   (require 'smartparens-config)

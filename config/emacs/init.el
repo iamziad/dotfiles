@@ -31,6 +31,7 @@
 ;; Load modules
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 ;; Manage temp files
@@ -212,7 +213,8 @@
  ("M-r"           . recenter-top-bottom)
  ("C-c f"         . find-file-at-point)
  ("C-c c"         . compile)
- ("M-o"         . delete-other-windows))
+ ("M-o"           . delete-other-windows)
+ ("C-c y"         . company-yasnippet))
 
 ;; Leader Map
 (bind-keys :prefix-map my-leader-map

@@ -19,6 +19,10 @@
             (setq bidi-paragraph-direction 'left-to-right
                   bidi-display-reordering nil)))
 
+;; Fix compile escape codes
+(add-hook 'compilation-filter-hook
+          (lambda () (ansi-color-apply-on-region (point-min) (point-max))))
+
 (defun my/enable-bidi ()
   (setq bidi-paragraph-direction nil
         bidi-display-reordering t))

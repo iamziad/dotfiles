@@ -171,6 +171,7 @@
     man-pages
     nil
     bash-language-server
+    yt-dlp
   ];
 
   documentation = {

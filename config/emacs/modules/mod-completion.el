@@ -15,14 +15,9 @@
 (use-package marginalia
   :init (marginalia-mode 1))
 
-;; (use-package consult
-;;   :bind (("C-s"   . consult-line)
-;;          ("C-x b" . consult-buffer)
-;;          ("M-y"   . consult-yank-pop)
-;;          ("C-c g" . consult-ripgrep)))
-
 (use-package company
   :ensure t
+  :diminish 'company-mode
   :hook (after-init . global-company-mode)
   :custom
   (company-format-margin-function #'company-text-icons-margin)
@@ -34,9 +29,12 @@
   (company-dabbrev-ignore-case t)
   (company-tooltip-minimum-width 30)
   (company-tooltip-limit 10)
-  :config
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends '(company-capf :with company-yasnippet)))
+  (company-transformers '(company-sort-by-occurrence))
+  :init
+  (setq company-backends '(company-capf company-files company-keywords))
+  (setq company-frontends
+        '(company-pseudo-tooltip-frontend  ; always show candidates in overlay tooltip
+          company-echo-metadata-frontend))  ; show selected candidate docs in echo area
   :bind (:map company-active-map
               ("TAB" . company-complete-selection)
               ("<tab>" . company-complete-selection)
@@ -44,46 +42,11 @@
               ("C-k" . company-select-previous)
               ("<escape>" . company-abort)))
 
-;; (use-package corfu
-;;   :ensure t
-;;   ;; Optional customizations
-;;   :custom
-;;   (corfu-cycle t)                 ; Allows cycling through candidates
-;;   (corfu-auto t)                  ; Enable auto completion
-;;   (corfu-auto-prefix 2)           ; Minimum length of prefix for completion
-;;   (corfu-auto-delay 0)            ; No delay for completion
-;;   (corfu-popupinfo-delay '(0.5 . 0.2))  ; Automatically update info popup after that numver of seconds
-;;   (corfu-preview-current 'insert) ; insert previewed candidate
-;;   (corfu-preselect 'prompt)
-;;   (corfu-on-exact-match nil)      ; Don't auto expand tempel snippets
-;;   ;; Optionally use TAB for cycling, default is `corfu-complete'.
-;;   :bind (:map corfu-map
-;;               ("M-SPC"      . corfu-insert-separator)
-;;               ("TAB"        . corfu-next)
-;;               ([tab]        . corfu-next)
-;;               ("S-TAB"      . corfu-previous)
-;;               ([backtab]    . corfu-previous)
-;;               ("S-<return>" . corfu-insert)
-;;               ("RET"        . corfu-insert))
-
-;;   :init
-;;   (global-corfu-mode)
-;;   (corfu-history-mode)
-;;   (corfu-popupinfo-mode) ; Popup completion info
-;;   :config
-;;   (add-hook 'eshell-mode-hook
-;;             (lambda () (setq-local corfu-quit-at-boundary t
-;;                                    corfu-quit-no-match t
-;;                                    corfu-auto nil)
-;;               (corfu-mode))
-;;             nil
-;;             t))
-
-;; (use-package cape
-;;   :init
-;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-;;   (add-to-list 'completion-at-point-functions #'cape-file)
-;;   (add-to-list 'completion-at-point-functions #'cape-keyword))
+;; (use-package consult
+;;   :bind (;; ("C-s"   . consult-line)
+;;          ("C-x b" . consult-buffer)
+;;          ("M-y"   . consult-yank-pop)
+;;          ("C-c g" . consult-ripgrep)))
 
 (provide 'mod-completion)
 ;;; mod-completion.el ends here
