@@ -257,6 +257,7 @@
 (setq catppuccin-flavor 'frappe)
 (defvar my/theme 'gruvbox)
 (load-theme my/theme t)
+(require 'gruvbox-toggle)
 
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative
