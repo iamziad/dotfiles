@@ -20,3 +20,5 @@ config/vim/autoload/
 
 # Tmux plugins
 config/tmux/.tmux/plugins/
+
+config/alacritty/colors.toml

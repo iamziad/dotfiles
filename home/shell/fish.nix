@@ -29,7 +29,15 @@ in
     '';
 
     functions = {
+      prompt_is_dark_mode = ''
+        set -l settings "$HOME/.config/gtk-3.0/settings.ini"
+        set -l line (grep "gtk-theme-name" "$settings" 2>/dev/null)
+        test -z "$line"; and return 0
+        string match -q "*-dark*" -- "$line"
+      '';
+
       fish_prompt = ''
+        if prompt_is_dark_mode
         set_color fb4934
         echo -n "["
         set_color fabd2f
@@ -44,11 +52,32 @@ in
         echo -n (get_trimmed_pwd)
         set_color d3869b
         echo -n (git_branch)
-        echo -n (nix_shell_indicator)
+        echo -n (nix_shell_indicator 8ec07c)
         set_color fb4934
         echo -n "]"
         set_color normal
         echo -n "\$ "
+        else
+        set_color 9d0006
+        echo -n "["
+        set_color b57614
+        echo -n (whoami)
+        set_color 79740e
+        echo -n "@"
+        set_color 076678
+        echo -n (prompt_hostname)
+        set_color normal
+        echo -n " "
+        set_color 79740e
+        echo -n (get_trimmed_pwd)
+        set_color 8f3f71
+        echo -n (git_branch)
+        echo -n (nix_shell_indicator 427b58)
+        set_color 9d0006
+        echo -n "]"
+        set_color normal
+        echo -n "\$ "
+        end
       '';
 
       get_trimmed_pwd = ''
@@ -80,8 +109,10 @@ in
       '';
 
       nix_shell_indicator = ''
+        set -l color $argv[1]
+        test -n "$color"; or set color 8ec07c
         if set -q IN_NIX_SHELL
-        set_color 8ec07c
+        set_color $color
         if set -q prompt
         echo -n "  $prompt"
         else
