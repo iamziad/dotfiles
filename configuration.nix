@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [ ./hardware-configuration.nix ];
@@ -31,7 +36,9 @@
       options = "--delete-older-than 7d";
     };
 
-    extraOptions = "experimental-features = nix-command flakes";
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
   };
 
   time.timeZone = "Africa/Cairo";
@@ -61,9 +68,13 @@
   };
 
   fileSystems."/mnt/hdd" = {
-    device  = "/dev/disk/by-uuid/7E6F-FB0D";
-    fsType  = "exfat";
-    options = [ "defaults" "nofail" "x-systemd.automount" ];
+    device = "/dev/disk/by-uuid/7E6F-FB0D";
+    fsType = "exfat";
+    options = [
+      "defaults"
+      "nofail"
+      "x-systemd.automount"
+    ];
   };
 
   # ---------------------------------------------------------------------
@@ -72,7 +83,10 @@
 
   users.users.ziad = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "i2c" ];
+    extraGroups = [
+      "wheel"
+      "i2c"
+    ];
     shell = pkgs.fish;
   };
 

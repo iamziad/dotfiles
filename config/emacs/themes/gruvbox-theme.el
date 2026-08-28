@@ -661,6 +661,7 @@
    `(lsp-headerline-breadcrumb-path-info-face ((t (:underline (:style wave :color ,blue) :inherit fixed-pitch))))
    `(lsp-lens-face ((t (:foreground ,gray :height 0.9 :slant italic))))
    `(lsp-flycheck-warning-unnecessary-face ((t (:foreground ,gray :underline (:style wave :color ,yellow)))))
+   `(lsp-flycheck-info-unnecessary-face ((t (:foreground gray, :underline (:style wave :color ,light-blue)))))
    ;; lsp-ui
    `(lsp-ui-doc-background ((t (:background ,bg1))))
    `(lsp-ui-doc-border ((t (:background ,bg3))))
