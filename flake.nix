@@ -7,15 +7,24 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }:
   let
     system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
+  pkgs = nixpkgs.legacyPackages.${system};
   in
   {
     nixosConfigurations.nixpc = nixpkgs.lib.nixosSystem {
       inherit system;
-      modules = [ ./configuration.nix ];
+      modules = [
+        ./configuration.nix
+        (if builtins.pathExists ./secrets.nix then ./secrets.nix else { })
+      ];
     };
 
     homeConfigurations.ziad = home-manager.lib.homeManagerConfiguration {
