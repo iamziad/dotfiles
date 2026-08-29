@@ -251,10 +251,10 @@
   (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" my/font-family (/ my/font-size 10)))))
 
 ;; Theme
-(use-package zenburn-theme :defer t)
-(use-package doom-themes :defer t)
-(straight-use-package 'catppuccin-theme)
-(setq catppuccin-flavor 'frappe)
+;; (use-package zenburn-theme :defer t)
+;; (use-package doom-themes :defer t)
+;; (straight-use-package 'catppuccin-theme)
+;; (setq catppuccin-flavor 'frappe)
 (defvar my/theme 'gruvbox)
 (load-theme my/theme t)
 (require 'gruvbox-toggle)

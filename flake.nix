@@ -23,7 +23,6 @@
       inherit system;
       modules = [
         ./configuration.nix
-        (if builtins.pathExists ./secrets.nix then ./secrets.nix else { })
       ];
     };
 
