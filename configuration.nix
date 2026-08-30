@@ -8,9 +8,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-
-    # ./desktop/i3.nix
-    ./desktop/kde.nix
   ];
 
   networking.hostName = "nixpc";
@@ -127,6 +124,37 @@
     updateDbusEnvironment = true;
   };
 
+  services.xserver.desktopManager.xfce.enable = false;
+  environment.xfce.excludePackages = with pkgs.xfce; [
+    mousepad
+    parole
+  ];
+
+  services.xserver.windowManager.i3 = {
+    enable = true;
+    extraPackages = with pkgs; [
+      dmenu
+      i3status
+      i3blocks
+      i3lock-color
+      xss-lock
+      dunst
+      libnotify
+      picom
+      maim
+      xkb-switch
+      playerctl
+      lxappearance
+      pcmanfm
+      pavucontrol
+      lm_sensors
+      ddcutil
+      polkit_gnome
+      feh
+      xsettingsd
+    ];
+  };
+
   # ---------------------------------------------------------------------
   # Packages
   # ---------------------------------------------------------------------
@@ -145,7 +173,6 @@
     alacritty
     git
     github-cli
-    cloudflare-warp
     fish
     xclip
     xcolor
@@ -165,6 +192,8 @@
     nil
     bash-language-server
     yt-dlp
+    redshift
+    anki-bin
   ];
 
   documentation = {
