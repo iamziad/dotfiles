@@ -9,6 +9,14 @@
 
 ;;; --------------------------------------------------------------------------
 
+(use-package iy-go-to-char
+  :ensure t
+  :config
+  :bind (("M-f" . iy-go-to-char)
+         ("M-b" . iy-go-to-char-backward)))
+
+;;; --------------------------------------------------------------------------
+
 (use-package anzu
   :ensure t
   :diminish anzu-mode

@@ -18,6 +18,13 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
   :custom
+  (lsp-enable-indentation nil)
+  (lsp-enable-on-type-formatting t)
+  (lsp-enable-symbol-highlighting t)
+  (lsp-completion-enable t)
+  (lsp-completion-enable-additional-text-edit t)
+  (lsp-enable-snippet t)
+  (lsp-completion-show-kind t)
   (lsp-completion-sort-initial-results nil)
   (lsp-diagnostics-provider :flycheck)
   (lsp-completion-provider :capf)
@@ -45,6 +52,7 @@
   :custom
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-delay 0.3)
+  (lsp-ui-doc-position 'at-point)
   (lsp-ui-sideline-show-diagnostics nil)
   :bind (:map lsp-ui-mode-map
               ("C-c l k" . lsp-ui-doc-glance)))

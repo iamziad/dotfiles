@@ -8,7 +8,7 @@
 
 (let* (
        ;; Backgrounds (softened — much less yellow than stock gruvbox light)
-       (bg0 "#f6f4ec")
+       (bg0 "#f9f5d7")
        (bg0-soft "#ece7d9")
        (bg1 "#e2ddcc")
        (bg2 "#cfc9b6")

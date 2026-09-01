@@ -60,19 +60,19 @@ in
         else
         set_color 9d0006
         echo -n "["
-        set_color b57614
+        set_color 9d5000
         echo -n (whoami)
-        set_color 79740e
+        set_color 5c600a
         echo -n "@"
-        set_color 076678
+        set_color 044d5a
         echo -n (prompt_hostname)
         set_color normal
         echo -n " "
-        set_color 79740e
+        set_color 5c600a
         echo -n (get_trimmed_pwd)
-        set_color 8f3f71
+        set_color 6a2c53
         echo -n (git_branch)
-        echo -n (nix_shell_indicator 427b58)
+        echo -n (nix_shell_indicator 2f573e)
         set_color 9d0006
         echo -n "]"
         set_color normal

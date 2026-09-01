@@ -122,37 +122,31 @@
     autoRepeatDelay = 230;
     autoRepeatInterval = 35;
     updateDbusEnvironment = true;
-  };
 
-  services.xserver.desktopManager.xfce.enable = false;
-  environment.xfce.excludePackages = with pkgs.xfce; [
-    mousepad
-    parole
-  ];
-
-  services.xserver.windowManager.i3 = {
-    enable = true;
-    extraPackages = with pkgs; [
-      dmenu
-      i3status
-      i3blocks
-      i3lock-color
-      xss-lock
-      dunst
-      libnotify
-      picom
-      maim
-      xkb-switch
-      playerctl
-      lxappearance
-      pcmanfm
-      pavucontrol
-      lm_sensors
-      ddcutil
-      polkit_gnome
-      feh
-      xsettingsd
-    ];
+    windowManager.i3 = {
+      enable = true;
+      extraPackages = with pkgs; [
+        dmenu
+        i3status
+        i3blocks
+        i3lock-color
+        xss-lock
+        dunst
+        libnotify
+        picom
+        maim
+        xkb-switch
+        playerctl
+        lxappearance
+        thunar
+        pavucontrol
+        lm_sensors
+        ddcutil
+        polkit_gnome
+        feh
+        xsettingsd
+      ];
+    };
   };
 
   # ---------------------------------------------------------------------

@@ -6,7 +6,7 @@
 set $mod Mod4
 
 # Xresources
-exec --no-startup-id xrdb -merge "$HOME/.Xresources"
+# exec --no-startup-id xrdb -merge "$HOME/.Xresources"
 
 set $SCRIPTS_GLOBAL  /home/ziad/.local/bin/scripts
 set $TERM            alacritty
@@ -60,7 +60,6 @@ tray_output  $PRI
 
    colors {
     urgent_workspace #ff0000 #282828 #FFFFFF
-    # background #1d1d1d
    }
 }
 
@@ -140,12 +139,13 @@ set $SIZE_XS resize set 800 370
 assign [class="Anki"]    $ws2
 
 # Floating rules
-for_window [class="Thunar"]                             $FLOAT, $SIZE_LG, $CENTER
 # for_window [class="Pcmanfm"]                            $FLOAT, $SIZE_MD, $CENTER
+# for_window [class="Anki"]                               $FLOAT, $SIZE_LG, $CENTER
+# for_window [instance="virt-manager"]                    $FLOAT, $SIZE_LG, $CENTER
+# for_window [class="Thunar"]                             $FLOAT, $SIZE_LG, $CENTER
 for_window [class="imv"]                                $FLOAT, $SIZE_LG, $CENTER
 for_window [class="Vimiv"]                              $FLOAT, $SIZE_MD, $CENTER
 for_window [class="feh"]                                $FLOAT, $SIZE_LG, $CENTER
-for_window [class="Anki"]                               $FLOAT, $SIZE_LG, $CENTER
 for_window [class="Lxappearance"]                       $FLOAT, $SIZE_LG, $CENTER
 for_window [class="vlc"]                                $FLOAT, $SIZE_MD, $CENTER
 for_window [class="mpv"]                                $FLOAT, $SIZE_MD, $CENTER
@@ -156,7 +156,6 @@ for_window [class="Qalculate"]                          $FLOAT, $CENTER
 for_window [class="Brave-browser" window_role="pop-up"] $FLOAT, $SIZE_SM, $CENTER
 for_window [instance="Devtools"]                        $FLOAT, $SIZE_SM, $CENTER
 for_window [instance="nitrogen"]                        $FLOAT, $SIZE_LG, $CENTER
-# for_window [instance="virt-manager"]                    $FLOAT, $SIZE_LG, $CENTER
 for_window [window_role="alert"]                        $FLOAT
 for_window [window_role="pop-up"]                       $FLOAT, $SIZE_SM, $CENTER
 for_window [window_role="dialog"]                       $FLOAT
@@ -300,7 +299,7 @@ bindsym $mod+Shift+c exec i3-msg reload
 bindsym $mod+Shift+r restart
 # bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 ##
-bindsym F1           exec pcmanfm
+bindsym F1           exec thunar
 bindsym F2           exec qalculate-gtk
 bindsym F4           exec spotify
 bindsym F5           exec --no-startup-id xcolor -s clipboard

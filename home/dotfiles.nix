@@ -5,8 +5,6 @@ let
   sym = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
 in
 {
-  # Programs whose config is large/changes a lot: kept as plain files in
-  # config/ and symlinked in, instead of modeled as Nix options.
   home.file = {
     ".clang-format".source = sym "config/clang-format";
   };

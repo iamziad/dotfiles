@@ -2,7 +2,7 @@
 
 (require 'mod-essential-packages)
 (require 'mod-navigation)
-;; (require 'mod-evil)      ; vim keybindings - mutually exclusive with mod-nav
+;; (require 'mod-evil)
 (require 'mod-completion)
 (require 'mod-project)
 (require 'mod-git)
