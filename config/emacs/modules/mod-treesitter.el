@@ -2,17 +2,19 @@
 
 (use-package treesit
   :straight nil
-  :mode (("\\.[cm]?[jt]s\\'" . typescript-ts-mode)
-         ("\\.[jt]sx\\'"      . tsx-ts-mode)
-         ("\\.json\\'"       . json-ts-mode)
+  :mode (("\\.[cm]?js\\'"      . js-ts-mode)
+         ("\\.[cm]?ts\\'"      . typescript-ts-mode)
+         ("\\.jsx\\'"          . tsx-ts-mode)
+         ("\\.tsx\\'"          . tsx-ts-mode)
+         ("\\.json\\'"         . json-ts-mode)
          ("CMakeLists\\.txt\\'" . cmake-ts-mode)
-         ("\\.cmake\\'"      . cmake-ts-mode)
-         ("\\.dockerfile\\'" . dockerfile-ts-mode)
-         ("Dockerfile\\'"    . dockerfile-ts-mode)
-         ("\\.go\\'"         . go-ts-mode)
-         ("/go\\.mod\\'"     . go-mod-ts-mode)
-         ("\\.ya?ml\\'"      . yaml-ts-mode)
-         ("\\.java\\'"      . java-ts-mode))
+         ("\\.cmake\\'"        . cmake-ts-mode)
+         ("\\.dockerfile\\'"   . dockerfile-ts-mode)
+         ("Dockerfile\\'"      . dockerfile-ts-mode)
+         ("\\.go\\'"           . go-ts-mode)
+         ("/go\\.mod\\'"       . go-mod-ts-mode)
+         ("\\.ya?ml\\'"        . yaml-ts-mode)
+         ("\\.java\\'"         . java-ts-mode))
   :preface
   (defun my/setup-install-grammars ()
     (interactive)
@@ -42,14 +44,15 @@
   (dolist (mapping
            '((c-mode . c-ts-mode)
              (c++-mode  . c++-ts-mode)
-             (c-or-c++-mode. c-or-c++-ts-mode)
-             (python-mode. python-ts-mode)
-             (java-mode. java-ts-mode)
-             (sh-mode. bash-ts-mode)
-             (html-mode. html-ts-mode)
+             (c-or-c++-mode . c-or-c++-ts-mode)
+             (python-mode . python-ts-mode)
+             (java-mode . java-ts-mode)
+             (js-mode . js-ts-mode)
+             (sh-mode . bash-ts-mode)
+             (html-mode . html-ts-mode)
              (mhtml-mode . html-ts-mode)
              (css-mode . css-ts-mode)
-             (makefile-mode. makefile-ts-mode)))
+             (makefile-mode . makefile-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (my/setup-install-grammars))
@@ -58,25 +61,26 @@
 (use-package combobulate
   :hook ((prog-mode . combobulate-mode))
   :bind
-  ;; Navigation
-  ("M-n"     . combobulate-navigate-next)
-  ("M-p"     . combobulate-navigate-previous)
-  ("M-N"   . combobulate-drag-down)
-  ("M-P"   . combobulate-drag-up)
+  (:map combobulate-mode-map
+        ;; Navigation
+        ("M-n"   . combobulate-navigate-next)
+        ("M-p"   . combobulate-navigate-previous)
+        ("M-N"   . combobulate-drag-down)
+        ("M-P"   . combobulate-drag-up)
 
-  ;; Dragging / Movement
-  ("M-[" . combobulate-drag-down)
-  ("M-]"   . combobulate-drag-up)
+        ;; Dragging / Movement
+        ("M-[" . combobulate-drag-down)
+        ("M-]"   . combobulate-drag-up)
 
-  ;; Selection & Editing
-  ("C-c o s"  . combobulate-mark-node)
-  ("C-c o k"  . combobulate-kill-node)
-  ("C-c o w"  . combobulate-envelope-mw)
-  ("C-c o S"  . combobulate-splice)
+        ;; Selection & Editing
+        ("C-c o s"  . combobulate-mark-node)
+        ("C-c o k"  . combobulate-kill-node)
+        ("C-c o w"  . combobulate-envelope-mw)
+        ("C-c o S"  . combobulate-splice)
 
-  ;; Refactoring / Transpose
-  ("C-c o t"  . combobulate-transpose-sexps)
-  ("C-c o a"  . combobulate-ui-visual-edit))
+        ;; Refactoring / Transpose
+        ("C-c o t"  . combobulate-transpose-sexps)
+        ("C-c o a"  . combobulate-ui-visual-edit)))
 
 (provide 'mod-treesitter)
 ;;; mod-treesitter.el ends here

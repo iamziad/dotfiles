@@ -29,9 +29,9 @@
       use-package-expand-minimally t)
 
 ;; Load modules
-(add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 ;; Manage temp files
@@ -158,6 +158,12 @@
    (kbd (format "M-%d" (1+ i)))
    `(lambda () (interactive) (tab-bar-select-tab ,(1+ i)))))
 
+(defun my/word-includes-hyphen ()
+  (modify-syntax-entry ?- "w"))
+
+(add-hook 'text-mode-hook #'my/word-includes-hyphen)
+(add-hook 'prog-mode-hook #'my/word-includes-hyphen)
+
 ;;; --------------------------------------------------------------------------
 ;;; Keybindings
 ;;; --------------------------------------------------------------------------
@@ -182,10 +188,12 @@
  ("C-a"           . my/smart-move-beginning-of-line)
  ("C-o"           . my/smart-open-line)
  ;;
- ("M-k"           . my/delete-to-end)
- ("M-DEL"         . my/backward-delete-word)
- ("M-d"           . my/forward-delete-word)
- ("<C-backspace>" . my/backward-delete-word)
+ ("M-k"           . (lambda () (interactive)
+                      (delete-region (line-beginning-position) (line-end-position))))
+ ("C-<backspace>" . my/backward-delete-word)
+ ("M-d"           . my/delete-word)
+ ("C-M-d"         . sp-delete-word)
+ ("<M-backspace>" . sp-backward-delete-word)
  ;;
  ("C-c C-x r"     . rename-visited-file)
  ("C-c C-x d"     . delete-visited-file)
@@ -200,6 +208,7 @@
  ;;
  ("C-x C-="       . (lambda () (interactive) (enlarge-window-horizontally 10)))
  ("C-x C--"       . (lambda () (interactive) (shrink-window-horizontally 10)))
+ ("C-x ="         . global-text-scale-adjust)
  ;;
  ("M-="           . text-scale-increase)
  ("M--"           . text-scale-decrease)
@@ -223,7 +232,7 @@
            ("c"     . org-capture)
            ("t"     . org-babel-tangle)
            ("s"     . org-download-clipboard)
-           ("m l"      . magit-list-repositories))
+           ("m l"   . magit-list-repositories))
 
 ;;; --------------------------------------------------------------------------
 ;;; UI, Theme & Fonts
@@ -249,6 +258,8 @@
 (if (daemonp)
     (add-hook 'server-after-make-frame-hook #'my/apply-fonts)
   (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" my/font-family (/ my/font-size 10)))))
+
+(setq text-scale-mode-step 1.1)
 
 ;; Theme
 ;; (use-package zenburn-theme :defer t)
@@ -279,6 +290,21 @@
 ;;; --------------------------------------------------------------------------
 
 (require 'dired-x)
+
+(setq delete-by-moving-to-trash t)
+
+(use-package dired-subtree
+  :after dired
+  :custom
+  (dired-subtree-use-backgrounds nil)
+  :bind
+  ( :map dired-mode-map
+    ("TAB" . dired-subtree-toggle)
+    ("<tab>" . dired-subtree-toggle))
+  :config
+  ;; Fix "no icons in subtree" issue.
+  (defadvice dired-subtree-toggle
+      (after add-icons activate) (revert-buffer)))
 
 (use-package image-dired
   :ensure nil
@@ -330,25 +356,34 @@
   (move-end-of-line 1)
   (newline-and-indent))
 
-(defun my/backward-delete-word ()
-  (interactive)
-  (let ((limit (line-beginning-position)))
-    (if (> (point) limit)
-        (let ((end (point)))
-          (subword-backward 1)
-          (when (< (point) limit) (goto-char limit))
-          (delete-region (point) end))
-      (delete-char -1))))
+;; https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
+(defun my/delete-word (arg)
+  "Delete characters forward until encountering the end of a word.
+With argument, do this that many times.
+This command does not push text to `kill-ring'."
+  (interactive "p")
+  (delete-region
+   (point)
+   (progn
+     (forward-word arg)
+     (point))))
 
-(defun my/forward-delete-word ()
-  (interactive)
-  (delete-region (point) (progn (forward-word 1) (point))))
+(defun my/backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+With argument, do this that many times.
+This command does not push text to `kill-ring'."
+  (interactive "p")
+  (my/delete-word (- arg)))
 
-(defun my/delete-to-end ()
+(defun my/delete-line-backward ()
+  "Delete text between the beginning of the line to the cursor position.
+This command does not push text to `kill-ring'."
   (interactive)
-  (if (= (point) (line-end-position))
-      (unless (eobp) (delete-char 1))
-    (delete-region (point) (line-end-position))))
+  (let (p1 p2)
+    (setq p1 (point))
+    (beginning-of-line 1)
+    (setq p2 (point))
+    (delete-region p1 p2)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'init)

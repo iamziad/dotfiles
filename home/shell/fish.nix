@@ -26,6 +26,8 @@ in
 
     interactiveShellInit = ''
       set -g fish_greeting ""
+
+      fish_add_path node_modules/.bin
     '';
 
     functions = {

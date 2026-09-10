@@ -35,6 +35,7 @@
          ("C-c m n" . electric-newline-and-maybe-indent)
          ("C-c m e" . mc/edit-lines))
   :config
+  (require 'mc-hide-unmatched-lines-mode)
   (setq mc/always-run-for-all t))
 
 ;;; --------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 (use-package add-node-modules-path
   :ensure t
   :hook ((js-mode . add-node-modules-path)
-         (js2-mode . add-node-modules-path)
+         (js-ts-mode . add-node-modules-path)
          (typescript-mode . add-node-modules-path)
          (typescript-ts-mode . add-node-modules-path)
          (tsx-ts-mode . add-node-modules-path)

@@ -9,9 +9,9 @@ CACHE_FILE="/tmp/ddc_bus_${NAME}.txt"
 
 get_bus() {
     ddcutil detect 2>/dev/null | awk -v name="$NAME" '
-        /^Display/ { fxound=0; bus="" }
+        /^Display/ { found=0; bus="" }
         /I2C bus:/  { match($0, /[0-9]+$/); bus=substr($0, RSTART, RLENGTH) }
-        $0 ~ name   { found=1 }
+        tolower($0) ~ tolower(name) { found=1 }
         /VCP version|DDC communication/ { if (found && bus != "") { print bus; exit } }
     '
 }

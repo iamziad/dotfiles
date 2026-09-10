@@ -12,9 +12,7 @@
 
   networking.hostName = "nixpc";
 
-  # ---------------------------------------------------------------------
-  # Boot
-  # ---------------------------------------------------------------------
+  # ---Boot--------------------------------------------------------------
 
   boot.loader.grub = {
     enable = true;
@@ -25,9 +23,7 @@
 
   boot.loader.efi.efiSysMountPoint = "/efi/boot";
 
-  # ---------------------------------------------------------------------
-  # Nix
-  # ---------------------------------------------------------------------
+  # ---Nix---------------------------------------------------------------
 
   nix = {
     settings.auto-optimise-store = true;
@@ -43,18 +39,16 @@
     '';
   };
 
+  nixpkgs.overlays = import ./overlays.nix;
+
   time.timeZone = "Africa/Cairo";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # ---------------------------------------------------------------------
-  # Networking
-  # ---------------------------------------------------------------------
+  # ---Networking--------------------------------------------------------
 
   networking.networkmanager.enable = true;
 
-  # ---------------------------------------------------------------------
-  # Hardware
-  # ---------------------------------------------------------------------
+  # ---Hardware----------------------------------------------------------
 
   hardware.graphics = {
     enable = true;
@@ -79,9 +73,7 @@
     ];
   };
 
-  # ---------------------------------------------------------------------
-  # Users
-  # ---------------------------------------------------------------------
+  # ---Users--------------------------------------------------------------
 
   users.users.ziad = {
     isNormalUser = true;
@@ -94,18 +86,14 @@
 
   programs.fish.enable = true;
 
-  # ---------------------------------------------------------------------
-  # GUI
-  # ---------------------------------------------------------------------
+  # ---GUI---------------------------------------------------------------
 
   services.displayManager.ly.enable = true;
   programs.dconf.enable = true;
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
-    nerd-fonts.iosevka
     nerd-fonts.ubuntu
-    noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
   ];
@@ -127,7 +115,6 @@
       enable = true;
       extraPackages = with pkgs; [
         dmenu
-        i3status
         i3blocks
         i3lock-color
         xss-lock
@@ -136,7 +123,6 @@
         picom
         maim
         xkb-switch
-        playerctl
         lxappearance
         thunar
         pavucontrol
@@ -145,13 +131,12 @@
         polkit_gnome
         feh
         xsettingsd
+        xautolock
       ];
     };
   };
 
-  # ---------------------------------------------------------------------
-  # Packages
-  # ---------------------------------------------------------------------
+  # ---Packages----------------------------------------------------------
 
   nixpkgs.config.allowUnfree = true;
 
@@ -179,15 +164,17 @@
     libvterm
     gcc
     gdb
-    valgrind
     gnumake
     clang-tools
     man-pages
     nil
     bash-language-server
-    yt-dlp
     redshift
     anki-bin
+    bruno
+    mongodb-compass
+    (aspellWithDicts (dicts: with dicts; [ en ]))
+    vscode
   ];
 
   documentation = {
@@ -195,9 +182,7 @@
     man.enable = true;
   };
 
-  # ---------------------------------------------------------------------
-  # System Services
-  # ---------------------------------------------------------------------
+  # ---System Services---------------------------------------------------
 
   services = {
     dbus.enable = true;
@@ -222,9 +207,6 @@
 
   security.polkit.enable = true;
 
-  # ---------------------------------------------------------------------
-  # State Version — do NOT change this after install. See
-  # https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion
   # ---------------------------------------------------------------------
 
   system.stateVersion = "26.05";

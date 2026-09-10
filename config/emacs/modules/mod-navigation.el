@@ -32,7 +32,9 @@
   (local-set-key (kbd "C-p") #'previous-history-element)
   (local-set-key (kbd "C-n") #'next-history-element)
   (local-set-key (kbd "C-h") #'backward-char)
-  (local-set-key (kbd "C-l") #'forward-char))
+  (local-set-key (kbd "C-l") #'forward-char)
+  (local-set-key (kbd "C-f") #'forward-word)
+  (local-set-key (kbd "C-b") #'backward-word))
 (add-hook 'minibuffer-setup-hook #'my-setup-minibuffer-navigation)
 
 ;; --- Known per-mode conflicts ---------------------------------------------

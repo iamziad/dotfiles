@@ -17,7 +17,7 @@ set $FONT            JetBrainsMonoNerd Font
 
 # Monitors
 set $pri HDMI-1
-set $sec DisplayPort-0
+set $sec DP-1
 
 # Workspaces
 set $ws1  "1"
@@ -117,10 +117,12 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 exec --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY XDG_SESSION_ID XDG_RUNTIME_DIR
 exec --no-startup-id dbus-update-activation-environment --systemd --all
 exec --no-startup-id systemctl --user start graphical-session.target
+exec --no-startup-id my-xautolock
+exec --no-startup-id ~/.screenlayout/dual.sh
 
 exec_always --no-startup-id i3-msg 'workspace $ws6; workspace $ws1'
-exec_always --no-startup-id ziad-random-wallpaper
-exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- ziad-i3lock
+exec_always --no-startup-id my-random-wallpaper
+exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- my-i3lock
 exec        --no-startup-id redshift-gtk
 exec        --no-startup-id xsettingsd
 
@@ -136,7 +138,7 @@ set $SIZE_SM resize set 800 600
 set $SIZE_XS resize set 800 370
 
 # App assignments
-assign [class="Anki"]    $ws2
+assign [class="Anki"]    $ws5
 
 # Floating rules
 # for_window [class="Pcmanfm"]                            $FLOAT, $SIZE_MD, $CENTER
@@ -218,7 +220,7 @@ bindsym $mod+Shift+x focus child
 # Power mode
 set $mode_system Power Options: Lock(l) - Exit(e) - Suspend(s) - Reboot(r) - Poweroff(o) - Cancel(Esc)
 mode "$mode_system" {
-    bindsym l      exec --no-startup-id ziad-i3lock, mode "default"
+    bindsym l      exec --no-startup-id my-i3lock, mode "default"
     bindsym e      exec --no-startup-id i3-msg    exit,      mode "default"
     bindsym s      exec --no-startup-id systemctl suspend,   mode "default"
     bindsym r      exec --no-startup-id systemctl reboot,    mode "default"
@@ -281,10 +283,10 @@ bindsym XF86AudioMute        exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_
 bindsym $mod+m exec --no-startup-id sh -c 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+10 i3blocks'
 
 # Brightness
-bindsym $mod+F5 exec --no-startup-id ziad-brightness Samsung -
-bindsym $mod+F6 exec --no-startup-id ziad-brightness Samsung +
-bindsym $mod+F7 exec --no-startup-id ziad-brightness Dell -
-bindsym $mod+F8 exec --no-startup-id ziad-brightness Dell +
+bindsym $mod+F5 exec --no-startup-id my-brightness Samsung -
+bindsym $mod+F6 exec --no-startup-id my-brightness Samsung +
+bindsym $mod+F7 exec --no-startup-id my-brightness Dell -
+bindsym $mod+F8 exec --no-startup-id my-brightness Dell +
 
 # ============================================================
 #  Keybindings
@@ -304,13 +306,13 @@ bindsym F2           exec qalculate-gtk
 bindsym F4           exec spotify
 bindsym F5           exec --no-startup-id xcolor -s clipboard
 bindsym $mod+z       exec emacsclient -c
-bindsym $mod+l       exec ziad-open-dired-home
-bindsym $mod+Shift+g exec --no-startup-id ziad-toggle-darkmode
+bindsym $mod+l       exec my-open-dired-home
+bindsym $mod+Shift+g exec --no-startup-id my-toggle-darkmode
 ##
-bindsym Print            exec --no-startup-id ziad-screenshot full   clip
-bindsym $mod+Print       exec --no-startup-id ziad-screenshot full   save
-bindsym $mod+Shift+Print exec --no-startup-id ziad-screenshot select clip
-bindsym $mod+ctrl+Print  exec --no-startup-id ziad-screenshot select save
+bindsym Print            exec --no-startup-id my-screenshot full   clip
+bindsym $mod+Print       exec --no-startup-id my-screenshot full   save
+bindsym $mod+Shift+Print exec --no-startup-id my-screenshot select clip
+bindsym $mod+ctrl+Print  exec --no-startup-id my-screenshot select save
 
 # ============================================================
 #  Scratchpads

@@ -38,7 +38,22 @@
 (use-package hl-todo
   :init (global-hl-todo-mode 1))
 
+(use-package highlight-indent-guides
+  :diminish highlight-indent-guides-mode
+  ;; :hook ((typescript-ts-mode js-ts-mode js-jsx-mode html-ts-mode mhtml-mode
+  ;;                            tsx-ts-mode json-ts-mode) . highlight-indent-guides-mode)
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-auto-enabled nil)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-responsive 'top))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
 (use-package auto-rename-tag
+  :diminish auto-rename-tag-mode
   :ensure t
   :hook ((web-mode
           html-mode

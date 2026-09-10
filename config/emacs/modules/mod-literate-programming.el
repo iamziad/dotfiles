@@ -9,5 +9,10 @@
    'org-babel-load-languages
    '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t))))
 
+;; (use-package verb
+;;   :config
+;;   (with-eval-after-load 'org
+;;     (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+
 (provide 'mod-literate-programming)
 ;;; mod-literate-programming.el ends here

@@ -7,16 +7,15 @@ in
 {
   home.packages = [
     # can get called individually
-    (mkScript "ziad-toggle-darkmode"  ./toggle-darkmode.sh)
-    (mkScript "ziad-screenshot"       ./screenshot.sh)
-    (mkScript "ziad-screenlayout"     ./screenlayout.sh)
-    (mkScript "ziad-random-wallpaper" ./feh.sh)
-    (mkScript "ziad-brightness"       ./brightness.sh)
-    (mkScript "ziad-open-dired-home"  ./open-dired-home.sh)
-    (mkScript "ziad-i3lock"           ./i3lock.sh)
-    (mkScript "ziad-make-desktop"     ./make_desktop.sh)
+    (mkScript "my-toggle-darkmode"  ./toggle-darkmode.sh)
+    (mkScript "my-screenshot"       ./screenshot.sh)
+    (mkScript "my-screenlayout"     ./screenlayout.sh)
+    (mkScript "my-random-wallpaper" ./feh.sh)
+    (mkScript "my-brightness"       ./brightness.sh)
+    (mkScript "my-i3lock"           ./i3lock.sh)
+    (mkScript "my-xautolock"        ./xautolock.sh)
     # called by other scripts
-    (mkScript "ziad-power-manager" ./power_manager.sh)
+    (mkScript "my-suspend-notify" ./suspend_notify.sh)
 
     pkgs.xrandr
   ];

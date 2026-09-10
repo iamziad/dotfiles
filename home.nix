@@ -11,6 +11,7 @@
     ./home/mime.nix
     ./home/dotfiles.nix
     ./home/emacs.nix
+    ./home/vim.nix
     ./home/redshift.nix
   ];
 
