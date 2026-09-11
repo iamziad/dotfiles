@@ -84,6 +84,7 @@
   (show-paren-mode 1)
   (global-so-long-mode 1)
   (context-menu-mode 1)
+  (setq whitespace-global-modes '(prog-mode))
   (global-whitespace-mode 1)
 
   :custom
@@ -185,6 +186,10 @@
  ("M-s k"         . windmove-swap-states-up)
  ("M-s l"         . windmove-swap-states-right)
  ;;
+ ("C-c C-k C-n"       . tab-new)
+ ("C-c C-k C-k"       . tab-close)
+ ("C-c C-k C-o"       . tab-close-other)
+ ;;
  ("C-a"           . my/smart-move-beginning-of-line)
  ("C-o"           . my/smart-open-line)
  ;;
@@ -203,8 +208,8 @@
  ("C-;"           . comment-line)
  ("C-<tab>"       . mode-line-other-buffer)
  ;;
- ("C-n"           . (lambda () (interactive) (forward-line 5)))
- ("C-p"           . (lambda () (interactive) (forward-line -5)))
+ ("C-n"           . forward-paragraph)
+ ("C-p"           . backward-paragraph)
  ;;
  ("C-x C-="       . (lambda () (interactive) (enlarge-window-horizontally 10)))
  ("C-x C--"       . (lambda () (interactive) (shrink-window-horizontally 10)))
@@ -222,8 +227,8 @@
  ("M-r"           . recenter-top-bottom)
  ("C-c f"         . find-file-at-point)
  ("C-c c"         . compile)
- ("M-o"           . delete-other-windows)
- ("C-c y"         . company-yasnippet))
+ ("M-o"           . delete-other-windows))
+
 
 ;; Leader Map
 (bind-keys :prefix-map my-leader-map
@@ -278,7 +283,7 @@
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
 (setq-default fill-column 80)
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Modeline & Fringe
 (column-number-mode 1)

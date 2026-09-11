@@ -1,5 +1,8 @@
 ;;; mod-org.el --- Org mode -*- lexical-binding: t; -*-
 
+(with-eval-after-load 'org
+  (keymap-unset org-mode-map "C-c C-k"))
+
 (setq
  org-directory "~/Documents/org"
  org-agenda-files (list "~/Documents/org")

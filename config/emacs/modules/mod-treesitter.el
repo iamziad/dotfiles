@@ -23,7 +23,7 @@
                (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
                (python "https://github.com/tree-sitter/tree-sitter-python")
                (java "https://github.com/tree-sitter/tree-sitter-java")
-               (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+               (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
                (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
                (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
                (json "https://github.com/tree-sitter/tree-sitter-json")

@@ -10,6 +10,7 @@
 
 (setq magit-repository-directories '(("~/dotfiles/" . 0) ("~/Projects"  . 2)))
 
+(use-package blamer)
 
 ;; (use-package diff-hl
 ;;   :ensure t

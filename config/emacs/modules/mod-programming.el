@@ -63,6 +63,13 @@
           js-ts-mode
           tsx-ts-mode) . auto-rename-tag-mode))
 
+(use-package zeal-at-point)
+
+(use-package verb
+  :config
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+
 ;;; --------------------------------------------------------------------------
 ;;; Language Specific Indentation Settings
 ;;; --------------------------------------------------------------------------
@@ -84,8 +91,16 @@
 (setq js-indent-level 2
       typescript-ts-mode-indent-offset 2)
 
-(with-eval-after-load 'js-mode 'typescript-ts-mode 'tsx-ts-mode 'web-mode
-                      (define-key js-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
+;; `with-eval-after-load' only takes one feature, so the old version silently
+;; only ever ran for `js-mode' and never bound M-. in the other three modes.
+(with-eval-after-load 'js-mode
+  (define-key js-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
+(with-eval-after-load 'typescript-ts-mode
+  (define-key typescript-ts-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
+(with-eval-after-load 'tsx-ts-mode
+  (define-key tsx-ts-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
+(with-eval-after-load 'web-mode
+  (define-key web-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
 
 
 ;; HTML / CSS

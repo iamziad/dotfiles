@@ -162,6 +162,7 @@
     emacs
     emacsPackages.vterm
     libvterm
+    emacs-lsp-booster
     gcc
     gdb
     gnumake
@@ -171,10 +172,9 @@
     bash-language-server
     redshift
     anki-bin
-    bruno
     mongodb-compass
     (aspellWithDicts (dicts: with dicts; [ en ]))
-    vscode
+    zeal
   ];
 
   documentation = {
