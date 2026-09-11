@@ -42,6 +42,19 @@
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
+;; gc-cons-threshold in early-init.el is a fixed 64mb ceiling for the whole
+;; session. gcmh instead raises the threshold while Emacs is active and only
+;; runs a full GC when it goes idle - the visible "hang" while lsp-mode parses
+;; a big JSON-RPC response is very often just a GC pause, and this is the
+;; standard fix for it.
+(use-package gcmh
+  :ensure t
+  :diminish gcmh-mode
+  :config
+  (gcmh-mode 1)
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold (* 64 1024 1024)))
+
 ;;; --------------------------------------------------------------------------
 ;;; Modules & Custom-file Load
 ;;; --------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-;;; mod-completion.el --- Minibuffer + in-buffer completion -*- lexical-binding: t; -*-
+;;; mod-completion.el -*- lexical-binding: t; -*-
 
 (use-package vertico
   :init
@@ -15,68 +15,67 @@
 (use-package marginalia
   :init (marginalia-mode 1))
 
-;; (use-package company
-;;   :ensure t
-;;   :diminish 'company-mode
-;;   :hook (after-init . global-company-mode)
-;;   :custom
-;;   (company-format-margin-function #'company-text-icons-margin)
-;;   ;; (company-idle-delay 0.2)
-;;   (company-minimum-prefix-length 3)
-;;   (company-selection-wrap-around t)
-;;   (company-tooltip-align-annotations t)
-;;   (company-dabbrev-downcase nil)
-;;   (company-dabbrev-ignore-case t)
-;;   (company-tooltip-minimum-width 30)
-;;   (company-tooltip-limit 10)
-;;   (company-transformers '(company-sort-by-occurrence))
-;;   :init
-;;   (setq company-backends '(company-capf company-files company-keywords))
-;;   (setq company-frontends
-;;         '(company-pseudo-tooltip-frontend  ; always show candidates in overlay tooltip
-;;           company-echo-metadata-frontend))  ; show selected candidate docs in echo area
-;;   :bind (:map company-active-map
-;;               ("TAB" . company-complete-selection)
-;;               ("<tab>" . company-complete-selection)
-;;               ("C-j" . company-select-next)
-;;               ("C-k" . company-select-previous)
-;;               ("<escape>" . company-abort)))
-
 (use-package corfu
-  ;; :straight (corfu :files (:defaults "extensions/*"))
   :custom
-  (corfu-cycle t)                ;; Enable cycling for corfu-next/previous
-  (corfu-auto t)                 ;; Enable auto completion
-  (corfu-separator ?\s)          ;; Orderless field separator
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-delay 0.24)
   (corfu-auto-prefix 2)
-  (corfu-history-mode 1)
-  ;; (add-to-list 'savehist-additional-variables 'corfu-history)
+  (corfu-separator ?\s)
+  (corfu-quit-at-boundary 'separator)
+  (corfu-quit-no-match 'separator)
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)
+  (corfu-count 16)
   (corfu-min-width 45)
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-max-width 120)
+  (corfu-popupinfo-delay '(0.5 . 1.0))
+  :hook
+  (corfu-mode . corfu-history-mode)
+  (corfu-mode . corfu-popupinfo-mode)
   :init
-  (corfu-popupinfo-mode)
-  (global-corfu-mode))
+  (global-corfu-mode)
+  :config
+  (setq global-corfu-modes '((not help-mode gud-mode vterm-mode) t))
+  (add-to-list 'completion-category-overrides `(lsp-capf (styles ,@completion-styles)))
+  (with-eval-after-load 'savehist
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 (use-package dabbrev
-  ;; Swap M-/ and C-M-/
   :bind (("M-/" . dabbrev-completion)
          ("C-M-/" . dabbrev-expand))
   :config
+  (defvar my/corfu-buffer-scanning-size-limit (* 1 1024 1024))
+  (defun my/corfu-dabbrev-friend-buffer-p (other-buffer)
+    (< (buffer-size other-buffer) my/corfu-buffer-scanning-size-limit))
+  (setq dabbrev-friend-buffer-function #'my/corfu-dabbrev-friend-buffer-p
+        dabbrev-upcase-means-case-search t)
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
   (add-to-list 'dabbrev-ignored-buffer-modes 'authinfo-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
 
-;; (use-package cape
-;;   :init
-;;   (add-to-list 'completion-at-point-functions #'cape-file)
-;;   (add-to-list 'completion-at-point-functions #'cape-keyword))
+(use-package cape
+  :init
+  (add-hook 'prog-mode-hook
+            (defun my/corfu-add-cape-file-h ()
+              (add-hook 'completion-at-point-functions #'cape-file -10 t)))
+  (add-hook 'org-mode-hook
+            (defun my/corfu-add-cape-elisp-block-h ()
+              (add-hook 'completion-at-point-functions #'cape-elisp-block 0 t)))
+  (setq cape-dabbrev-check-other-buffers t)
+  (dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook
+                                 comint-mode-hook minibuffer-setup-hook eshell-mode-hook))
+    (add-hook hook
+              (defun my/corfu-add-cape-dabbrev-h ()
+                (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t))))
+  :config
+  (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
+  (advice-add #'lsp-completion-at-point :around #'cape-wrap-nonexclusive)
+  (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
+  (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
 
 (use-package kind-icon
   :config
@@ -88,11 +87,4 @@
   (add-hook 'counsel-load-theme #'(lambda () (interactive) (kind-icon-reset-cache)))
   (add-hook 'load-theme         #'(lambda () (interactive) (kind-icon-reset-cache))))
 
-;; (use-package consult
-;;   :bind (;; ("C-s"   . consult-line)
-;;          ("C-x b" . consult-buffer)
-;;          ("M-y"   . consult-yank-pop)
-;;          ("C-c g" . consult-ripgrep)))
-
 (provide 'mod-completion)
-;;; mod-completion.el ends here

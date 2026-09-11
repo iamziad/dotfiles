@@ -11,6 +11,7 @@
 ;; (require 'mod-flymake)
 (require 'mod-lsp)
 ;; (require 'mod-eglot)
+(require 'mod-compile)
 (require 'mod-smartparens)
 (require 'mod-org)
 (require 'mod-literate-programming)
