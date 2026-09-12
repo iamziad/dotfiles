@@ -161,7 +161,6 @@
     btop
     emacs
     emacsPackages.vterm
-    libvterm
     emacs-lsp-booster
     gcc
     gdb
@@ -175,6 +174,7 @@
     mongodb-compass
     (aspellWithDicts (dicts: with dicts; [ en ]))
     zeal
+    dbeaver-bin
   ];
 
   documentation = {
@@ -202,6 +202,29 @@
     cloudflare-warp = {
       enable = true;
       openFirewall = true;
+    };
+
+    mysql = {
+      enable = true;
+      package = pkgs.mariadb;
+
+      ensureDatabases = [ "mydb" ];
+      ensureUsers = [{
+        name = "ziad";
+        ensurePermissions."mydb.*" = "ALL PRIVILEGES";
+      }];
+    };
+
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_18;
+
+      ensureDatabases = [ "mydb" ];
+
+      ensureUsers = [{
+        name = "ziad";
+        ensureDBOwnership = true;
+      }];
     };
   };
 
