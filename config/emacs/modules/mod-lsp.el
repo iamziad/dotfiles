@@ -137,7 +137,13 @@
   :bind (:map lsp-ui-mode-map
               ("C-c l k" . lsp-ui-doc-glance)))
 
-(use-package dap-mode :after lsp-mode :config (dap-auto-configure-mode))
+(use-package dap-mode
+  :after lsp-mode
+  :config
+  (dap-auto-configure-mode)
+  :bind (("<f7>" . dap-step-in)
+         ("<f8>" . dap-next)
+         ("<f9>" . dap-continue)))
 
 (use-package lsp-java
   :ensure t

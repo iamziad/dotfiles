@@ -9,10 +9,14 @@
    'org-babel-load-languages
    '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t))))
 
-;; (use-package verb
-;;   :config
-;;   (with-eval-after-load 'org
-;;     (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+(use-package verb
+  :config
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
+  (define-key verb-response-body-mode-map (kbd "q")
+              (lambda ()
+                (interactive)
+                (quit-window t))))
 
 (provide 'mod-literate-programming)
 ;;; mod-literate-programming.el ends here

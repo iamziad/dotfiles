@@ -65,10 +65,35 @@
 
 (use-package zeal-at-point)
 
-(use-package verb
+(use-package restclient
+  :ensure t
+  :mode ("\\.http\\'" . restclient-mode))
+
+(use-package dired-subtree
+  :commands (dired-subtree-toggle dired-subtree-cycle)
   :config
-  (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+  (setq dired-subtree-line-prefix " ")
+  (setq dired-subtree-use-backgrounds nil))
+
+(use-package nerd-icons :defer t)
+(use-package nerd-icons-dired
+  :commands (nerd-icons-dired-mode))
+(setq dired-sidebar-theme 'nerd-icons)
+
+(use-package dired-sidebar
+  :bind (("C-c e" . dired-sidebar-toggle-sidebar))
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :config
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-font t))
 
 ;;; --------------------------------------------------------------------------
 ;;; Language Specific Indentation Settings

@@ -17,6 +17,8 @@
 (require 'mod-literate-programming)
 (require 'mod-olivetti)
 (require 'mod-shell)
+(require 'mod-vterm)
+;; (require 'mod-eshell)
 (require 'mod-eww)
 (require 'mod-pdf)
 ;; (require 'mod-crux)

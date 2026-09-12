@@ -19,13 +19,13 @@
   :custom
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-auto-delay 0.24)
+  (corfu-auto-delay 0.15)
   (corfu-auto-prefix 2)
   (corfu-separator ?\s)
   (corfu-quit-at-boundary 'separator)
   (corfu-quit-no-match 'separator)
-  (corfu-preselect 'prompt)
-  (corfu-on-exact-match nil)
+  ;; (corfu-preselect 'prompt)
+  ;; (corfu-on-exact-match nil)
   (corfu-count 16)
   (corfu-min-width 45)
   (corfu-max-width 120)
@@ -33,11 +33,15 @@
   :hook
   (corfu-mode . corfu-history-mode)
   (corfu-mode . corfu-popupinfo-mode)
+  (minibuffer-setup . (lambda () (corfu-mode -1)))
   :init
   (global-corfu-mode)
   :config
-  (setq global-corfu-modes '((not help-mode gud-mode vterm-mode) t))
+  (setq global-corfu-modes '((not help-mode gud-mode) t))
   (add-to-list 'completion-category-overrides `(lsp-capf (styles ,@completion-styles)))
+  (add-hook 'minibuffer-setup-hook
+            (lambda ()
+              (corfu-mode -1)))
   (with-eval-after-load 'savehist
     (add-to-list 'savehist-additional-variables 'corfu-history)))
 

@@ -24,7 +24,7 @@
                (display-buffer-reuse-window display-buffer-in-side-window)
                (side . bottom)
                (slot . -2)
-               (window-height . 0.3)))
+               (window-height . 0.4)))
 
 (defun my/compile-autobury-h (buffer msg)
   (when (and (string-match-p "^finished" msg)
@@ -36,5 +36,12 @@
          (unless (eq win (selected-window))
            (quit-window nil win)))))))
 (add-hook 'compilation-finish-functions #'my/compile-autobury-h)
+
+(with-eval-after-load 'compile
+  (add-to-list 'compilation-error-regexp-alist 'node)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(node "^[[:blank:]]*at \\(.*(\\|\\)\\(.+?\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\)"
+                      2 3 4)))
+
 
 (provide 'mod-compile)
