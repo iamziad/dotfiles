@@ -497,6 +497,9 @@
    `(sml/charging ((t (:foreground ,mat-green))))
    `(sml/discharging ((t (:foreground ,mat-orange))))
    `(sml/projectile-replacement-face ((t (:foreground ,mat-teal :weight semi-bold))))
+   ;; perspective.el
+   `(persp-selected-face ((t (:foreground ,blue :weight bold))))
+   ;; eww
    `(eww-default-colors ((t (:background ,bg0 :foreground ,fg0))))
    `(shr-h1 ((t (:foreground ,red :weight bold :height 1.3))))
    `(shr-h2 ((t (:foreground ,orange :weight bold :height 1.2))))
