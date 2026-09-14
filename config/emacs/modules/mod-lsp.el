@@ -42,8 +42,8 @@
              (dolist (ws workspaces)
                (or (cl-some #'lsp-buffer-live-p (lsp--workspace-buffers ws))
                    (with-lsp-workspace ws
-                     (let ((lsp-restart 'ignore))
-                       (funcall fn))))))
+                                       (let ((lsp-restart 'ignore))
+                                         (funcall fn))))))
            lsp--buffer-workspaces))))
 
 (use-package lsp-mode
@@ -173,7 +173,7 @@
              (not (functionp 'json-rpc-connection))
              (executable-find "emacs-lsp-booster"))
         (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))
+          (when-let* ((command-from-exec-path (executable-find (car orig-result))))
             (setcar orig-result command-from-exec-path))
           (message "Using emacs-lsp-booster for %s!" orig-result)
           (cons "emacs-lsp-booster" orig-result))

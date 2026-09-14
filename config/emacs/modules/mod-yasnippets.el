@@ -1,4 +1,4 @@
-;;; mod-yasnippets.el
+;;; mod-yasnippets.el -*- lexical-binding: t; -*-
 
 (use-package yasnippet
   :ensure t

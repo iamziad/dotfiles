@@ -50,8 +50,8 @@
   (setq dashboard-show-shortcuts t)
   (setq dashboard-items '((recents  . 5)
                           (projects . 5)
-                          (bookmarks . 5)
-                          (agenda . 5))))
+                          ;; (agenda . 5)
+                          (bookmarks . 5))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Modules & Custom-file Load
@@ -323,8 +323,8 @@
     ("<tab>" . dired-subtree-toggle))
   :config
   ;; Fix "no icons in subtree" issue.
-  (defadvice dired-subtree-toggle
-      (after add-icons activate) (revert-buffer)))
+  (advice-add dired-subtree-toggle
+              (after add-icons activate) (revert-buffer)))
 
 (use-package image-dired
   :ensure nil

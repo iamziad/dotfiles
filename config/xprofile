@@ -1,0 +1,13 @@
+# Sourced by most X session wrappers before the window manager starts.
+# Same values as home.nix's home.sessionVariables. Also set system-wide
+# in /etc/environment by arch/install.sh as a fallback in case your
+# session wrapper doesn't source ~/.xprofile (check /etc/X11/xinit or
+# your `ly` session's Exec= line if variables aren't showing up).
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+export EDITOR="emacsclient"
+export TERMINAL="alacritty"

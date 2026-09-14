@@ -1,4 +1,4 @@
-;;; mod-flycheck.el
+;;; mod-flycheck.el -*- lexical-binding: t; -*-
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode)

@@ -1,4 +1,4 @@
-;;; mod-pdf.el
+;;; mod-pdf.el -*- lexical-binding: t; -*-
 
 (use-package pdf-tools
   :ensure t

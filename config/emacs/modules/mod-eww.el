@@ -1,4 +1,4 @@
-;;; mod-eww.el
+;;; mod-eww.el -*- lexical-binding: t; -*-
 
 (use-package eww
   :straight nil

@@ -1,0 +1,6 @@
+i3lock-color
+xautolock
+xkb-switch
+xcolor
+gromit-mpx
+emacs-lsp-booster

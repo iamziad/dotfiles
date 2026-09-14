@@ -1,0 +1,15 @@
+# --- Vim ---
+*.swp
+*.swo
+*~
+.netrwhist
+undo/
+
+# --- Emacs ---
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list/
+tramp
+.\#*

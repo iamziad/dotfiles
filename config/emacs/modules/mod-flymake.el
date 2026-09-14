@@ -1,4 +1,4 @@
-;;; mod-flymake.el
+;;; mod-flymake.el -*- lexical-binding: t; -*-
 
 (use-package flymake
   :straight nil

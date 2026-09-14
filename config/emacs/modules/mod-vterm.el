@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;;------------------------------------------------------------------------------
 ;; Vterm
 ;;------------------------------------------------------------------------------
@@ -26,7 +27,7 @@
 
 (defun my/project-root ()
   "Return the root of the current project, or DEFAULT-DIRECTORY if none."
-  (if-let ((proj (project-current)))
+  (if-let* ((proj (project-current)))
       (project-root proj)
     default-directory))
 

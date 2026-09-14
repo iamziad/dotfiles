@@ -1,4 +1,4 @@
-;;; mod-apheleia.el
+;;; mod-apheleia.el -*- lexical-binding: t; -*-
 
 (use-package apheleia
   :ensure t

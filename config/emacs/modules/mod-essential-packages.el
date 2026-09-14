@@ -1,4 +1,4 @@
-;;; mod-essential-packages.el
+;;; mod-essential-packages.el -*- lexical-binding: t; -*-
 
 ;;; --------------------------------------------------------------------------
 

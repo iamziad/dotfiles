@@ -6,7 +6,7 @@
 set $mod Mod4
 
 # Xresources
-# exec --no-startup-id xrdb -merge "$HOME/.Xresources"
+exec --no-startup-id xrdb -merge "$HOME/.Xresources"
 
 set $SCRIPTS_GLOBAL  /home/ziad/.local/bin/scripts
 set $TERM            alacritty
@@ -16,8 +16,8 @@ set $FONT            JetBrainsMonoNerd Font
 # set $LOCK            i3lock
 
 # Monitors
-set $pri HDMI-1
-set $sec DP-1
+set $pri HDMI-A-0
+set $sec DisplayPort-0
 
 # Workspaces
 set $ws1  "1"
@@ -117,6 +117,13 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 exec --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY XDG_SESSION_ID XDG_RUNTIME_DIR
 exec --no-startup-id dbus-update-activation-environment --systemd --all
 exec --no-startup-id systemctl --user start graphical-session.target
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+
+# Keyboard layout + repeat rate — on NixOS this was services.xserver.xkb /
+# autoRepeatDelay+Interval (set once at the Xorg-server level). Plain Arch
+# has no such layer, so i3 sets it itself on every start/reload instead.
+exec_always --no-startup-id setxkbmap -layout us,ara -option grp:win_space_toggle,ctrl:nocaps
+exec_always --no-startup-id xset r rate 230 35
 exec --no-startup-id my-xautolock
 exec --no-startup-id ~/.screenlayout/dual.sh
 
@@ -125,6 +132,13 @@ exec_always --no-startup-id my-random-wallpaper
 exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- my-i3lock
 exec        --no-startup-id redshift-gtk
 exec        --no-startup-id xsettingsd
+exec        --no-startup-id emacs ---daemon
+
+# On NixOS these two were home-manager systemd --user services
+# (services.dunst / services.picom). Plain Arch has no such module,
+# so i3 starts them directly instead.
+exec        --no-startup-id dunst
+exec        --no-startup-id picom --config ~/.config/picom/picom.conf
 
 # ============================================================
 #  Window Rules
