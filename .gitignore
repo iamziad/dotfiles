@@ -12,7 +12,7 @@ config/emacs/*
 !config/emacs/themes/
 !config/emacs/init.el
 !config/emacs/early-init.el
-!config/emacs/var/dape/adapters
+!config/emacs/var/dape/adapters/
 
 # Vim
 config/vim/plugged/

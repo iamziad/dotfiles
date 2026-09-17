@@ -14,10 +14,14 @@
          (go-ts-mode         . eglot-ensure)
          (web-mode           . eglot-ensure)
          (bash-ts-mode       . eglot-ensure)
+         (sql-mode           . eglot-ensure)
          (nix-mode           . eglot-ensure))
   :config
   (setq eglot-ignored-server-capabilities '(:semanticTokensProvider :documentHighlightProvider))
   (setq eglot-sync-connect nil)
+  (add-to-list 'eglot-stay-out-of 'flymake)
+  (add-to-list 'eglot-server-programs
+               '(sql-mode . ("sqls")))
   :bind (:map eglot-mode-map
               ("M-."     . xref-find-definitions)
               ("M-,"     . xref-find-references)
