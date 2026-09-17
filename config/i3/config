@@ -132,7 +132,7 @@ exec_always --no-startup-id my-random-wallpaper
 exec        --no-startup-id xss-lock -l --transfer-sleep-lock -- my-i3lock
 exec        --no-startup-id redshift-gtk
 exec        --no-startup-id xsettingsd
-exec        --no-startup-id emacs ---daemon
+exec        --no-startup-id emacs --daemon
 
 # On NixOS these two were home-manager systemd --user services
 # (services.dunst / services.picom). Plain Arch has no such module,
@@ -315,7 +315,7 @@ bindsym $mod+Shift+c exec i3-msg reload
 bindsym $mod+Shift+r restart
 # bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 ##
-bindsym F1           exec thunar
+bindsym F1           exec pcmanfm
 bindsym F2           exec qalculate-gtk
 bindsym F4           exec spotify
 bindsym F5           exec --no-startup-id xcolor -s clipboard

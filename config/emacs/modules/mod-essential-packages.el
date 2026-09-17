@@ -8,6 +8,8 @@
   (diminish 'visual-line-mode)
   (diminish 'eldoc-mode))
 
+;;; --------------------------------------------------------------------------
+
 (use-package beacon
   :diminish beacon-mode
   :init
@@ -49,6 +51,16 @@
   (persp-mode-prefix-key (kbd "C-c C-p"))
   :init
   (persp-mode))
+
+;;; --------------------------------------------------------------------------
+
+(use-package smartparens
+  :diminish 'smartparens-mode
+  :hook (prog-mode . smartparens-mode)
+  :config
+  (require 'smartparens-config)
+  :bind
+  ("C-c s r" . sp-rewrap-sexp))
 
 ;;; --------------------------------------------------------------------------
 

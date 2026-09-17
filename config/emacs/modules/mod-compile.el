@@ -26,16 +26,11 @@
                (slot . -2)
                (window-height . 0.4)))
 
-(defun my/compile-autobury-h (buffer msg)
-  (when (and (string-match-p "^finished" msg)
-             (not (eq (window-buffer (selected-window)) buffer)))
-    (run-with-timer
-     1 nil
-     (lambda ()
-       (when-let* ((win (get-buffer-window buffer)))
-         (unless (eq win (selected-window))
-           (quit-window nil win)))))))
-(add-hook 'compilation-finish-functions #'my/compile-autobury-h)
+;; خلي الفوكس ينتقل للـ compile window لما يظهر
+(advice-add 'compilation-start :after
+            (defun my/compile-select-window-a (&rest _)
+              (when-let* ((win (get-buffer-window "*compilation*" t)))
+                (select-window win))))
 
 (with-eval-after-load 'compile
   (add-to-list 'compilation-error-regexp-alist 'node)

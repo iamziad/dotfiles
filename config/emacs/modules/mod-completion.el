@@ -3,6 +3,9 @@
 (use-package vertico
   :init
   (vertico-mode)
+  :config
+  (setq vertico-cycle t
+        vertico-count 12)
   :bind (:map vertico-map
               ("C-j" . vertico-next)
               ("C-k" . vertico-previous)))

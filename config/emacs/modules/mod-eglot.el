@@ -15,25 +15,45 @@
          (web-mode           . eglot-ensure)
          (bash-ts-mode       . eglot-ensure)
          (nix-mode           . eglot-ensure))
+  :config
+  (setq eglot-ignored-server-capabilities '(:semanticTokensProvider :documentHighlightProvider))
+  (setq eglot-sync-connect nil)
   :bind (:map eglot-mode-map
               ("M-."     . xref-find-definitions)
               ("M-,"     . xref-find-references)
               ("C-c l r" . eglot-rename)
               ("M-RET"   . eglot-code-actions)
-              ("C-c l k" . eldoc-box-help-at-point))
-  :custom
-  (eglot-autoshutdown t)
-  (eglot-sync-connect nil)
-  (eglot-events-buffer-size 0)
-  (eglot-extend-to-xref t)
-  (eglot-ignored-server-capabilities '(:documentHighlightProvider))
-  )
+              ("C-c l k" . eldoc-box-help-at-point)))
 
-;; (use-package flycheck-eglot
-;;   :ensure t
-;;   :after (flycheck eglot)
-;;   :config
-;;   (global-flycheck-eglot-mode 1))
+;; ;; Left and right side windows occupy full frame height
+(use-package emacs
+  :custom
+  (window-sides-vertical t))
+
+(use-package flycheck-eglot
+  :ensure t
+  :after (flycheck eglot)
+  :config
+  (global-flycheck-eglot-mode 1))
+
+(use-package flycheck-inline
+  :ensure t
+  :hook
+  (flycheck-eglot-mode . flycheck-inline-mode))
+
+;; (use-package repeat
+;;   :custom
+;;   (repeat-mode +1))
+
+;; ;; Debuging
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '((java-mode java-ts-mode) .
+                 ("jdtls"
+                  :initializationOptions
+                  (:bundles ["/home/ziad/.m2/repository/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.2/com.microsoft.java.debug.plugin-0.53.2.jar"])))))
+
 
 (provide 'mod-eglot)
 ;;; mod-eglot.el ends here

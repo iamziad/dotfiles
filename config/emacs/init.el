@@ -23,6 +23,10 @@
 
 ;; Integrate with use-package
 (straight-use-package 'use-package)
+(use-package project
+  :straight (:type built-in))
+(use-package xref
+  :straight (:type built-in))
 
 (setq straight-use-package-by-default t
       use-package-verbose nil
@@ -46,6 +50,8 @@
   :ensure t
   :config
   (dashboard-setup-startup-hook)
+  (setq dashboard-display-icons-p t)
+  (setq dashboard-icon-type 'nerd-icons)
   (setq dashboard-center-content t)
   (setq dashboard-show-shortcuts t)
   (setq dashboard-items '((recents  . 5)
@@ -110,6 +116,7 @@
   (delete-old-versions t)
   (large-file-warning-threshold (* 50 1024 1024))
   (vc-follow-symlinks t)
+  (global-so-long-mode 1)  ;; Optimize minified/very-long-line files
 
   ;; Prompts & Behavior
   (use-dialog-box nil)
@@ -177,6 +184,21 @@
 (add-hook 'text-mode-hook #'my/word-includes-hyphen)
 (add-hook 'prog-mode-hook #'my/word-includes-hyphen)
 
+(use-package undo-fu-session
+  :hook (after-init . undo-fu-session-global-mode)
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+
+(use-package project
+  :straight nil
+  :config
+  (setq project-vc-extra-root-markers '(".git" "Makefile" "compile_commands.json"))
+  (defun my/project-try-local-root (dir)
+    (let ((root (or (locate-dominating-file dir "pom.xml")
+                    (locate-dominating-file dir "package.json"))))
+      (and root (cons 'transient root))))
+  (add-to-list 'project-find-functions #'my/project-try-local-root))
+
 ;;; --------------------------------------------------------------------------
 ;;; Keybindings
 ;;; --------------------------------------------------------------------------
@@ -188,6 +210,9 @@
 ;; (windmove-default-keybindings 'shift)
 
 (bind-keys
+ ("C-/"           . undo)
+ ("C-?"           . undo-redo)
+ ;;
  ("C-q C-h"       . windmove-left)
  ("C-q C-j"       . windmove-down)
  ("C-q C-k"       . windmove-up)
@@ -198,9 +223,12 @@
  ("M-s k"         . windmove-swap-states-up)
  ("M-s l"         . windmove-swap-states-right)
  ;;
- ("C-c C-k C-n"       . tab-new)
- ("C-c C-k C-k"       . tab-close)
- ("C-c C-k C-o"       . tab-close-other)
+ ("C-c C-k C-n"   . tab-new)
+ ("C-c C-k C-k"   . tab-close)
+ ("C-c C-k C-o"   . tab-close-other)
+ ;;
+ ("C-c h"         . persp-prev)
+ ("C-c l"         . persp-next)
  ;;
  ("C-a"           . my/smart-move-beginning-of-line)
  ("C-o"           . my/smart-open-line)
@@ -264,20 +292,71 @@
 (blink-cursor-mode -1)
 
 ;; Fonts
-(defvar my/font-family "JetBrainsMono Nerd Font")
-(defvar my/font-size 110)
 
-(defun my/apply-fonts (&optional frame)
-  (when (display-graphic-p frame)
-    (set-face-attribute 'default frame :family my/font-family :height my/font-size :weight 'normal)
-    (set-face-attribute 'fixed-pitch frame :family my/font-family :height my/font-size :weight 'normal)
-    (set-face-attribute 'variable-pitch frame :family "PlaywriteGBJ" :height 120)
-    (set-fontset-font t 'arabic (font-spec :family "Cairo" :size 15) frame)))
+(defcustom my/font (font-spec :family "JetBrainsMono Nerd Font" :size 15)
+  "Font for the `default' and `fixed-pitch' faces."
+  :type '(restricted-sexp :match-alternatives (fontp stringp null))
+  :group 'my)
 
-(my/apply-fonts)
+(defcustom my/variable-pitch-font (font-spec :family "Dejavu Sans" :size 14)
+  "Font for the `variable-pitch' face."
+  :type '(restricted-sexp :match-alternatives (fontp stringp null))
+  :group 'my)
+
+(defcustom my/serif-font (font-spec :family "Noto Serif" :size 14)
+  "Font for the `fixed-pitch-serif' face. Same format as `my/font'."
+  :type '(restricted-sexp :match-alternatives (fontp stringp null))
+  :group 'my)
+
+(defcustom my/symbol-font (font-spec :family "Noto Sans Symbols 2")
+  "Fallback font for symbol/mathematical glyphs outside `my/font'."
+  :type '(restricted-sexp :match-alternatives (fontp stringp null))
+  :group 'my)
+
+(defcustom my/arabic-font (font-spec :family "Cairo" :size 15)
+  "Font used specifically for the Arabic script, via `set-fontset-font'.
+JetBrains Mono (and most programming fonts) either lack Arabic glyphs
+entirely or render them without proper shaping; Cairo is a proper
+Arabic-native font and looks right for comments, org notes, and prose."
+  :type '(restricted-sexp :match-alternatives (fontp stringp null))
+  :group 'my)
+
+(defun my/init-fonts-h (&optional reload)
+  (dolist (map `((default . ,my/font)
+                 (fixed-pitch . ,my/font)
+                 (fixed-pitch-serif . ,my/serif-font)
+                 (variable-pitch . ,my/variable-pitch-font)))
+    (when-let* ((face (car map))
+                (font (cdr map)))
+      (when (display-multi-font-p)
+        (set-face-attribute face nil :width 'normal :weight 'normal
+                            :slant 'normal :font font))))
+  (when (and (fboundp 'set-fontset-font)
+             (or reload (not (get 'my/font 'initialized))))
+    ;; Nerd Fonts pack their icon glyphs into these Private Use Areas. This
+    ;; registers a fallback so icon glyphs still render even in faces/modes
+    ;; that aren't using the Nerd Font directly.
+    (dolist (range '((#xe000 . #xf8ff) (#xf0000 . #xfffff)))
+      (set-fontset-font t range "Symbols Nerd Font Mono"))
+    (when my/symbol-font
+      (dolist (script '(symbol mathematical))
+        (set-fontset-font t script my/symbol-font)))
+    (when my/arabic-font
+      (set-fontset-font t 'arabic my/arabic-font)))
+  (put 'my/font 'initialized t))
+
+(defun my/reload-font ()
+  "Reload fonts after changing `my/font' et al. interactively."
+  (interactive)
+  (my/init-fonts-h 'reload))
+
+;; Apply once at startup, and again for every subsequent frame (relevant to
+;; `emacsclient -c' / daemon workflows, where frames are created well after
+;; init.el has finished running).
 (if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'my/apply-fonts)
-  (add-to-list 'default-frame-alist (cons 'font (format "%s-%d" my/font-family (/ my/font-size 10)))))
+    (add-hook 'server-after-make-frame-hook #'my/init-fonts-h)
+  (add-hook 'emacs-startup-hook #'my/init-fonts-h))
+(add-hook 'after-make-frame-functions (lambda (_frame) (my/init-fonts-h)))
 
 (setq text-scale-mode-step 1.1)
 
@@ -290,6 +369,18 @@
 (load-theme my/theme t)
 (require 'gruvbox-toggle)
 
+;;; Icons
+
+(use-package nerd-icons
+  :if (display-graphic-p))
+
+(use-package nerd-icons-completion
+  :after marginalia
+  :config (nerd-icons-completion-mode 1))
+
+(use-package nerd-icons-dired
+  :hook (dired-mode . nerd-icons-dired-mode))
+
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative
       display-line-numbers-width 2
@@ -297,62 +388,13 @@
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
-(setq-default fill-column 80)
+;; (setq-default fill-column 80)
 ;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Modeline & Fringe
 (column-number-mode 1)
 (size-indication-mode 1)
 (fringe-mode '(8 . 0))
-
-;;; --------------------------------------------------------------------------
-;;; Dired
-;;; --------------------------------------------------------------------------
-
-(require 'dired-x)
-
-(setq delete-by-moving-to-trash t)
-
-(use-package dired-subtree
-  :after dired
-  :custom
-  (dired-subtree-use-backgrounds nil)
-  :bind
-  ( :map dired-mode-map
-    ("TAB" . dired-subtree-toggle)
-    ("<tab>" . dired-subtree-toggle))
-  :config
-  ;; Fix "no icons in subtree" issue.
-  (advice-add dired-subtree-toggle
-              (after add-icons activate) (revert-buffer)))
-
-(use-package image-dired
-  :ensure nil
-  :config
-  (setq image-dired-thumbnail-storage 'standard))
-;; :bind (:map dired-mode-map
-;;             ("C-d i" . image-dired)))
-
-(defun my/dired-open-xdg ()
-  (interactive)
-  (let ((file (dired-get-file-for-visit)))
-    (call-process "xdg-open" nil 0 nil file)))
-
-(with-eval-after-load 'dired
-  (keymap-set dired-mode-map "o" #'my/dired-open-xdg)
-  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-  (setq-default dired-dwim-target t)
-  (setq dired-listing-switches "-alh --group-directories-first"
-        dired-mouse-drag-files t))
-
-(defun my/sudo-this-file ()
-  (interactive)
-  (if (file-remote-p buffer-file-name)
-      (find-alternate-file
-       (tramp-file-name-localname
-        (tramp-dissect-file-name buffer-file-name)))
-    (find-alternate-file
-     (concat "/sudo::" buffer-file-name))))
 
 ;;; --------------------------------------------------------------------------
 ;;; Utility Functions

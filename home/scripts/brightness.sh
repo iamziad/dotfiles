@@ -5,7 +5,7 @@ set -euo pipefail
 
 NAME=$1
 SIGN=$2
-CACHE_FILE="/tmp/ddc_bus_${NAME}.txt"
+CACHE_FILE="/home/ziad/ddc_bus_${NAME}.txt"
 
 get_bus() {
     ddcutil detect 2>/dev/null | awk -v name="$NAME" '
@@ -57,7 +57,7 @@ esac
 NEW=$(( NEW < 0   ? 0   : NEW ))
 NEW=$(( NEW > 100 ? 100 : NEW ))
 
-NOTIFY_ID_FILE="/tmp/ddc_notify_${NAME}.txt"
+NOTIFY_ID_FILE="/home/ziad/ddc_notify_${NAME}.txt"
 
 if [[ -f "$NOTIFY_ID_FILE" ]]; then
     NOTIFY_ARGS="-r $(cat "$NOTIFY_ID_FILE")"

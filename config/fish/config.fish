@@ -4,6 +4,8 @@
 
 set -g fish_greeting ""
 
+set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
+fish_add_path $JAVA_HOME/bin
 fish_add_path ~/.local/bin
 fish_add_path node_modules/.bin
 

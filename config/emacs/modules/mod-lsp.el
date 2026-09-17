@@ -42,8 +42,8 @@
              (dolist (ws workspaces)
                (or (cl-some #'lsp-buffer-live-p (lsp--workspace-buffers ws))
                    (with-lsp-workspace ws
-                                       (let ((lsp-restart 'ignore))
-                                         (funcall fn))))))
+                     (let ((lsp-restart 'ignore))
+                       (funcall fn))))))
            lsp--buffer-workspaces))))
 
 (use-package lsp-mode
@@ -61,7 +61,8 @@
          (go-ts-mode         . lsp-deferred)
          (web-mode           . lsp-deferred)
          (bash-ts-mode       . lsp-deferred)
-         (nix-mode           . lsp-deferred))
+         ;; (nix-mode           . lsp-deferred)
+         (sql-mode       . lsp-deferred))
   :bind (:map lsp-mode-map
               ("M-."     . lsp-find-definition)
               ("M-,"     . lsp-find-references)
@@ -73,6 +74,7 @@
   (lsp-keymap-prefix "C-c l")
   (lsp-completion-provider :none)
   (lsp-diagnostics-provider :flycheck)
+  (lsp-enable-dap-auto-configure nil)
   (lsp-session-file (locate-user-emacs-file ".lsp-session"))
   (lsp-log-io nil)
   (lsp-keep-workspace-alive nil)
@@ -137,17 +139,30 @@
   :bind (:map lsp-ui-mode-map
               ("C-c l k" . lsp-ui-doc-glance)))
 
-(use-package dap-mode
-  :after lsp-mode
-  :config
-  (dap-auto-configure-mode)
-  :bind (("<f7>" . dap-step-in)
-         ("<f8>" . dap-next)
-         ("<f9>" . dap-continue)))
-
 (use-package lsp-java
   :ensure t
   :after lsp-mode)
+
+(setq lsp-java-bundles
+      (list "/home/ziad/.m2/repository/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.1/com.microsoft.java.debug.plugin-0.53.1.jar"))
+
+;; (use-package dap-mode
+;;   :after lsp-mode
+;;   :config
+;;   (require 'dap-java)
+;;   (require 'dap-node)
+;;   (dap-auto-configure-mode)
+;;   ;;
+;;   (dap-register-debug-template
+;;    "Node.js :: Debug Current File"
+;;    (list :type "node"
+;;          :request "launch"
+;;          :name "Node::Run Current File"
+;;          :program "${file}"
+;;          :cwd "${workspaceFolder}"))
+;;   :bind (("<f7>" . dap-step-in)
+;;          ("<f8>" . dap-next)
+;;          ("<f9>" . dap-continue)))
 
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
   "Try to parse bytecode instead of json."

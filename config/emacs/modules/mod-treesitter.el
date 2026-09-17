@@ -24,6 +24,7 @@
                (python "https://github.com/tree-sitter/tree-sitter-python")
                (java "https://github.com/tree-sitter/tree-sitter-java")
                (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+               (jsdoc "https://github.com/tree-sitter/tree-sitter-jsdoc")
                (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
                (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
                (json "https://github.com/tree-sitter/tree-sitter-json")

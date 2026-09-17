@@ -7,7 +7,7 @@
 (with-eval-after-load 'org
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t))))
+   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t) (sql . t))))
 
 (use-package verb
   :config
