@@ -150,6 +150,13 @@
   (scroll-conservatively 101)
   (scroll-preserve-screen-position t)
   (isearch-wrap-pause 'no-ding)
+  (pixel-scroll-mode)
+  (setq pixel-dead-time 0) ; Never go back to the old scrolling behaviour.
+  (setq pixel-resolution-fine-flag t) ; Scroll by number of pixels instead of lines (t = frame-char-height pixels).
+  (setq mouse-wheel-scroll-amount '(1)) ; Distance in pixel-resolution to scroll each mouse wheel event.
+  (setq mouse-wheel-progressive-speed nil)
+
+  (setq image-use-external-converter t)
 
   ;; Windows & Buffers
   (window-combination-resize t)
@@ -247,9 +254,6 @@
  ("C-,"           . duplicate-dwim)
  ("C-;"           . comment-line)
  ("C-<tab>"       . mode-line-other-buffer)
- ;;
- ("C-n"           . (lambda () (interactive) (forward-line 5)))
- ("C-p"           . (lambda () (interactive) (forward-line -5)))
  ;;
  ("M-n"           . backward-paragraph)
  ("M-p"           . forward-paragraph)
@@ -362,12 +366,21 @@ Arabic-native font and looks right for comments, org notes, and prose."
 
 ;; Theme
 ;; (use-package zenburn-theme :defer t)
-;; (use-package doom-themes :defer t)
 ;; (straight-use-package 'catppuccin-theme)
 ;; (setq catppuccin-flavor 'frappe)
+(use-package doom-themes)
+
 (defvar my/theme 'gruvbox)
 (load-theme my/theme t)
 (require 'gruvbox-toggle)
+
+(use-package ef-themes
+  :ensure t
+  :init
+  (ef-themes-take-over-modus-themes-mode 1)
+  :config
+  (setq modus-themes-mixed-fonts t)
+  (setq modus-themes-italic-constructs t))
 
 ;;; Icons
 
@@ -378,9 +391,6 @@ Arabic-native font and looks right for comments, org notes, and prose."
   :after marginalia
   :config (nerd-icons-completion-mode 1))
 
-(use-package nerd-icons-dired
-  :hook (dired-mode . nerd-icons-dired-mode))
-
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative
       display-line-numbers-width 2
@@ -388,7 +398,7 @@ Arabic-native font and looks right for comments, org notes, and prose."
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
-;; (setq-default fill-column 80)
+(setq-default fill-column 80)
 ;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Modeline & Fringe

@@ -18,6 +18,7 @@
          (nix-mode           . eglot-ensure))
   :config
   (setq eglot-ignored-server-capabilities '(:semanticTokensProvider :documentHighlightProvider))
+  (setq eglot-report-progress nil)
   (setq eglot-sync-connect nil)
   (add-to-list 'eglot-stay-out-of 'flymake)
   (add-to-list 'eglot-server-programs
@@ -26,13 +27,9 @@
               ("M-."     . xref-find-definitions)
               ("M-,"     . xref-find-references)
               ("C-c l r" . eglot-rename)
+              ("C-c l f" . eglot-format-buffer)
               ("M-RET"   . eglot-code-actions)
               ("C-c l k" . eldoc-box-help-at-point)))
-
-;; ;; Left and right side windows occupy full frame height
-(use-package emacs
-  :custom
-  (window-sides-vertical t))
 
 (use-package flycheck-eglot
   :ensure t
@@ -44,10 +41,6 @@
   :ensure t
   :hook
   (flycheck-eglot-mode . flycheck-inline-mode))
-
-;; (use-package repeat
-;;   :custom
-;;   (repeat-mode +1))
 
 ;; ;; Debuging
 

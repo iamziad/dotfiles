@@ -1,5 +1,8 @@
 ;;; mod-treesitter.el --- Tree-sitter grammars & major modes -*- lexical-binding: t; -*-
 
+(setq warning-suppress-types
+      '((treesit-font-lock-rules-mismatch)))
+
 (use-package treesit
   :straight nil
   :mode (("\\.[cm]?js\\'"      . js-ts-mode)
@@ -57,7 +60,6 @@
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (my/setup-install-grammars))
-
 
 (use-package combobulate
   :hook ((prog-mode . combobulate-mode))

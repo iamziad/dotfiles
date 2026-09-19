@@ -7,6 +7,8 @@
 (define-key my-nav-map (kbd "C-l") #'forward-char)
 (define-key my-nav-map (kbd "C-f") #'forward-word)
 (define-key my-nav-map (kbd "C-b") #'backward-word)
+(define-key my-nav-map (kbd "C-n") (lambda () (interactive) (forward-line 5)))
+(define-key my-nav-map (kbd "C-p") (lambda () (interactive) (forward-line -5)))
 
 (define-minor-mode my-nav-mode
   "Custom navigation mode."

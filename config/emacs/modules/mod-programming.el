@@ -42,7 +42,6 @@
   :diminish highlight-indent-guides-mode
   ;; :hook ((typescript-ts-mode js-ts-mode js-jsx-mode html-ts-mode mhtml-mode
   ;;                            tsx-ts-mode json-ts-mode) . highlight-indent-guides-mode)
-  :hook (prog-mode . highlight-indent-guides-mode)
   :config
   (setq highlight-indent-guides-auto-enabled nil)
   (setq highlight-indent-guides-method 'character)

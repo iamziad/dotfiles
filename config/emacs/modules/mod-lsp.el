@@ -141,28 +141,16 @@
 
 (use-package lsp-java
   :ensure t
-  :after lsp-mode)
-
-(setq lsp-java-bundles
-      (list "/home/ziad/.m2/repository/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.1/com.microsoft.java.debug.plugin-0.53.1.jar"))
-
-;; (use-package dap-mode
-;;   :after lsp-mode
-;;   :config
-;;   (require 'dap-java)
-;;   (require 'dap-node)
-;;   (dap-auto-configure-mode)
-;;   ;;
-;;   (dap-register-debug-template
-;;    "Node.js :: Debug Current File"
-;;    (list :type "node"
-;;          :request "launch"
-;;          :name "Node::Run Current File"
-;;          :program "${file}"
-;;          :cwd "${workspaceFolder}"))
-;;   :bind (("<f7>" . dap-step-in)
-;;          ("<f8>" . dap-next)
-;;          ("<f9>" . dap-continue)))
+  :after lsp-mode
+  :config
+  (setq lsp-java-server-install-dir (expand-file-name "~/.local/share/jdtls-local/"))
+  (setq lsp-java-bundles
+        (list "/home/ziad/.m2/repository/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.2/com.microsoft.java.debug.plugin-0.53.2.jar"))
+  (setq lsp-java-java-path "/usr/lib/jvm/java-25-openjdk/bin/java")
+  (setq lsp-java-configuration-runtimes
+        '[(:name "JavaSE-25"
+                 :path "/usr/lib/jvm/java-25-openjdk"
+                 :default t)]))
 
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
   "Try to parse bytecode instead of json."

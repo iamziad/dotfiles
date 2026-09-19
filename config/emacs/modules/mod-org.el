@@ -15,6 +15,7 @@
  org-pretty-entities t
  org-preview-latex-default-process 'dvisvgm
  org-startup-with-latex-preview t
+ org-image-max-width 450
  org-log-done 'note)
 
 (add-hook 'org-mode-hook

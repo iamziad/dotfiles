@@ -1,5 +1,8 @@
 ;;; mod-sql.el --- SQL Related -*- lexical-binding: t; -*-
 
+(use-package pgsql
+  :ensure t)
+
 (use-package sql-indent
   :hook (sql-mode . sqlind-minor-mode))
 
@@ -40,6 +43,24 @@
           (lambda ()
             (toggle-truncate-lines t)))
 
+;; --- Clutch ---
+
+(use-package clutch
+  :config
+  (setq clutch-connection-alist
+        '(("MyDatabase" . (:backend pg
+                                    :host "127.0.0.1"
+                                    :port 5432
+                                    :user "postgres"
+                                    :password ""
+                                    :database "MyDatabase"))
+          ("talently" . (:backend pg
+                                  :host "127.0.0.1"
+                                  :port 5432
+                                  :user "postgres"
+                                  :password ""
+                                  :database "talently")))))
+
 ;; --- Frequent Connections ---
 
 (setq sql-connection-alist
@@ -57,6 +78,13 @@
          (sql-password "")
          (sql-database "MyDatabase")
          (sql-port 5432))
+        (talently
+         (sql-product 'postgres)
+         (sql-server "127.0.0.1")
+         (sql-user "postgres")
+         (sql-password "")
+         (sql-database "talently")
+         (sql-port 5432))
         (salesdb
          (sql-product 'postgres)
          (sql-server "127.0.0.1")
@@ -64,6 +92,7 @@
          (sql-password "")
          (sql-database "salesdb")
          (sql-port 5432))))
+
 
 ;; --- LSP ---
 
@@ -73,7 +102,10 @@
         ((driver . "postgresql")
          (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=MyDatabase sslmode=disable"))
         ((driver . "postgresql")
+         (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=talently sslmode=disable"))
+        ((driver . "postgresql")
          (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=salesdb sslmode=disable"))))
+
 
 (provide 'mod-sql)
 
