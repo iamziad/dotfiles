@@ -255,8 +255,8 @@
  ("C-;"           . comment-line)
  ("C-<tab>"       . mode-line-other-buffer)
  ;;
- ("M-n"           . backward-paragraph)
- ("M-p"           . forward-paragraph)
+ ("M-p"           . backward-paragraph)
+ ("M-n"           . forward-paragraph)
  ;;
  ("C-x C-="       . (lambda () (interactive) (enlarge-window-horizontally 10)))
  ("C-x C--"       . (lambda () (interactive) (shrink-window-horizontally 10)))
@@ -365,22 +365,20 @@ Arabic-native font and looks right for comments, org notes, and prose."
 (setq text-scale-mode-step 1.1)
 
 ;; Theme
-;; (use-package zenburn-theme :defer t)
 ;; (straight-use-package 'catppuccin-theme)
 ;; (setq catppuccin-flavor 'frappe)
+(use-package zenburn-theme :defer t)
 (use-package doom-themes)
 
 (defvar my/theme 'gruvbox)
 (load-theme my/theme t)
 (require 'gruvbox-toggle)
 
-(use-package ef-themes
-  :ensure t
-  :init
-  (ef-themes-take-over-modus-themes-mode 1)
-  :config
-  (setq modus-themes-mixed-fonts t)
-  (setq modus-themes-italic-constructs t))
+(use-package sweet-theme
+  :ensure t)
+
+(use-package solarized-theme
+  :straight t)
 
 ;;; Icons
 

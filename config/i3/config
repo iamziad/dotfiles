@@ -309,10 +309,10 @@ bindsym $mod+Shift+c exec i3-msg reload
 bindsym $mod+Shift+r restart
 # bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Logout Session?' -B 'Yes, exit i3' 'i3-msg exit'"
 ##
-bindsym F1           exec pcmanfm
+bindsym F1           exec thunar
 bindsym F2           exec qalculate-gtk
+bindsym F3           exec --no-startup-id xcolor -s clipboard
 bindsym F4           exec spotify
-bindsym F5           exec --no-startup-id xcolor -s clipboard
 bindsym $mod+z       exec emacsclient -c
 bindsym $mod+l       exec my-open-dired-home
 bindsym $mod+Shift+g exec --no-startup-id my-toggle-darkmode

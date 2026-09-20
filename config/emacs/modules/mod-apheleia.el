@@ -2,6 +2,7 @@
 
 (use-package apheleia
   :ensure t
+  :diminish apheleia-mode
   :config
   (apheleia-global-mode +1))
 

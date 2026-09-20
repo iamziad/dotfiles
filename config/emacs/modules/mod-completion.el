@@ -90,7 +90,7 @@
   (setq kind-icon-default-style '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.9 :scale 1))
   (setq kind-icon-blend-frac 0.08)
   (setq kind-icon-use-icons nil)
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+  ;; (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (add-hook 'counsel-load-theme #'(lambda () (interactive) (kind-icon-reset-cache)))
   (add-hook 'load-theme         #'(lambda () (interactive) (kind-icon-reset-cache))))
 

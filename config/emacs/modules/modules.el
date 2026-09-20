@@ -1,9 +1,10 @@
 ;;; modules.el --- Module toggle switchboard -*- lexical-binding: t; -*-
 
 (require 'mod-essential-packages)
-;; (require 'mod-navigation)
+(require 'mod-navigation)
 ;; (require 'mod-evil)
-(require 'mod-completion)
+;; (require 'mod-completion)
+(require 'mod-completion-builtin)
 (require 'mod-consult)
 (require 'mod-project)
 (require 'mod-dired)
