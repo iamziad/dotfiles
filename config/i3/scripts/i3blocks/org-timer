@@ -1,0 +1,9 @@
+#!/bin/bash
+
+TIMER=$(emacsclient --eval "(if (and (boundp 'org-timer-start-time) org-timer-start-time) (org-timer-value-string) \"\")" 2>/dev/null | sed 's/^"\(.*\)"$/\1/')
+
+if [ -n "$TIMER" ]; then
+    echo " $TIMER"
+else
+    echo ""
+fi

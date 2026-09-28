@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: toString
+# key: tostr
+# --
+public String toString() {
+$> $0
+}

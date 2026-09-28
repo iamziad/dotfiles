@@ -1,0 +1,37 @@
+;;; modules.el --- Module toggle switchboard -*- lexical-binding: t; -*-
+
+(require 'mod-essential-packages)
+(require 'mod-navigation)
+;; (require 'mod-evil)
+;; (require 'mod-completion-builtin)
+(require 'mod-completion)
+(require 'mod-consult)
+(require 'mod-project)
+(require 'mod-dired)
+(require 'mod-git)
+(require 'mod-treesitter)   ; load before lsp: sets major-mode-remap-alist
+(require 'mod-flycheck)
+(require 'mod-lsp)
+(require 'mod-dap)
+(require 'mod-dape)
+;; (require 'mod-flymake)
+;; (require 'mod-eglot)
+(require 'mod-compile)
+(require 'mod-org)
+(require 'mod-literate-programming)
+(require 'mod-olivetti)
+(require 'mod-shell)
+(require 'mod-vterm)
+;; (require 'mod-eshell)
+(require 'mod-eww)
+(require 'mod-pdf)
+;; (require 'mod-crux)
+(require 'mod-programming)
+(require 'mod-sql)
+(require 'mod-apheleia)
+(require 'mod-yasnippets)
+(require 'mod-web)
+
+(provide 'modules)
+
+;;; modules.el ends here

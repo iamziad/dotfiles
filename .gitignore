@@ -1,0 +1,25 @@
+secrets.nix
+config/alacritty/colors.toml
+
+# Emacs
+*~
+\#*\#
+*.elc
+
+config/emacs/*
+!config/emacs/modules/
+!config/emacs/snippets/
+!config/emacs/themes/
+!config/emacs/init.el
+!config/emacs/early-init.el
+!config/emacs/var/dape/adapters/
+
+# Vim
+config/vim/plugged/
+config/vim/autoload/
+
+# Folder-specific ignore
+.DS_Store
+
+# Tmux plugins
+config/tmux/.tmux/plugins/

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: org-title
+# key: <t
+# --
+
+#+TITLE: ${1: title}
+#+AUTHOR: Ziad Ahmed
+#+DATE: `(format-time-string "%b %d %Y")`
+:PROPERTIES:
+#+OPTIONS:
+:END:
