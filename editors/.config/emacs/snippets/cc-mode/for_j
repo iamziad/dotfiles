@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for_j
+# key: forj
+# --
+for (${1:int} j = ${2:0}; j ${3:< n}; ${4:j++}) {
+$> $0
+}

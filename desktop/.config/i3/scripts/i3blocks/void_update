@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+ICON=" :"
+URGENT_AT=20
+COLOR_ICON="#028a0f"
+COLOR_TEXT="#5294e2"
+
+total=$(xbps-install -Sun 2>/dev/null | awk '$2=="update"' | wc -l)
+
+(( total == 0 )) && exit 33
+
+# full_text="<span color='${COLOR_ICON}'>${ICON}</span> <span color='${COLOR_TEXT}'>${total} updates</span>"
+# short_text="<span color='${COLOR_TEXT}'>${total} upd</span>"
+full_text="<span color='${COLOR_ICON}'>${ICON}</span> <span color='#eeeeee'>${total} updates</span>"
+short_text="<span color='#eeeeee'>${total} upd</span>"
+
+echo "$full_text"
+echo "$short_text"
+echo ""
+
+(( total >= URGENT_AT )) && exit 33
+exit 0

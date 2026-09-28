@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: import_arrays
+# key: iarr
+# --
+import java.util.Arrays;

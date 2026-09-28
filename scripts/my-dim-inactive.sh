@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# monitor-idle-dim.sh — per-monitor idle dimmer for i3/X11 (real hardware
+# my-dim-inactive.sh — per-monitor idle dimmer for i3/X11 (real hardware
 # dimming via DDC/CI, using ddcutil)
 #
 # Watches which output (monitor) the mouse cursor is currently over,
@@ -19,14 +19,14 @@
 # Deps: xrandr, xdotool, ddcutil
 #
 # Usage:
-#   ./monitor-idle-dim.sh XRANDR_NAME:DDC_DISPLAY_NUM [XRANDR_NAME:DDC_DISPLAY_NUM ...]
+#   ./my-dim-inactive.sh XRANDR_NAME:DDC_DISPLAY_NUM [XRANDR_NAME:DDC_DISPLAY_NUM ...]
 #
 # Find the xrandr names with `xrandr --query` and the ddcutil display
 # numbers with `ddcutil detect`. Example:
-#   ./monitor-idle-dim.sh HDMI-1:1 DP-1:2
+#   ./my-dim-inactive.sh HDMI-1:1 DP-1:2
 #
 # Config via env vars:
-#   THRESHOLD=90 DIM_LEVEL=10 NORMAL_LEVEL=100 ./monitor-idle-dim.sh HDMI-1:1 DP-1:2
+#   THRESHOLD=90 DIM_LEVEL=10 NORMAL_LEVEL=100 ./my-dim-inactive.sh HDMI-1:1 DP-1:2
 #
 # If a monitor errors out on setvcp verification (some models do),
 # add --noverify (already the default here) or tweak DDCUTIL_OPTS,
