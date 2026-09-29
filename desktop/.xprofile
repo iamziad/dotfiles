@@ -5,7 +5,3 @@ export XDG_STATE_HOME="$HOME/.local/state"
 
 export EDITOR="emacsclient"
 export TERMINAL="alacritty"
-
-pipewire &
-picom &
-emacs --daemon &
