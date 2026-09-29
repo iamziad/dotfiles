@@ -12,7 +12,7 @@ if ! command -v stow &>/dev/null; then
     exit 1
 fi
 
-PACKAGES=(shell editors git desktop gui)
+PACKAGES=(emacs vim clang-format fish tmux git i3 picom dunst redshift xsettingsd xorg alacritty mimeapps applications gtk scripts)
 [[ $# -gt 0 ]] && PACKAGES=("$@")
 
 # Create real directories first so stow links files, not whole dirs

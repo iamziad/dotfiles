@@ -3,19 +3,30 @@
 Managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level
 directory is a stow package whose contents mirror `$HOME`.
 
-| Package   | Contents                                               |
-| --------- | ------------------------------------------------------ |
-| `shell`   | fish, tmux                                             |
-| `editors` | emacs, vim, clang-format                               |
-| `git`     | git config and global ignore                           |
-| `desktop` | i3, picom, dunst, redshift, xsettingsd, .Xresources, .xprofile |
-| `gui`     | alacritty, GTK settings, mimeapps, .desktop entries    |
-| `scripts` | `my-*` scripts + `scripts.nix` (installed via Nix, **not** stowed) |
+| Package        | Target in `$HOME`                                   |
+| -------------- | --------------------------------------------------- |
+| `emacs`        | `.config/emacs`                                     |
+| `vim`          | `.config/vim`                                       |
+| `clang-format` | `.clang-format`                                     |
+| `fish`         | `.config/fish`                                      |
+| `tmux`         | `.config/tmux`                                      |
+| `git`          | `.config/git`                                       |
+| `i3`           | `.config/i3` (incl. i3blocks scripts)               |
+| `picom`        | `.config/picom`                                     |
+| `dunst`        | `.config/dunst`                                     |
+| `alacritty`    | `.config/alacritty`                                 |
+| `xsettingsd`   | `.config/xsettingsd`                                |
+| `redshift`     | `.config/redshift.conf`                             |
+| `mimeapps`     | `.config/mimeapps.list`                             |
+| `gtk`          | `.config/gtk-3.0`, `.config/gtk-4.0`                |
+| `xorg`         | `.Xresources`, `.xprofile`                          |
+| `applications` | `.local/share/applications/*.desktop`               |
+| `scripts`      | `.local/bin/my-*`                                   |
 
 ```sh
-./deploy.sh            # stow all packages
-./deploy.sh shell git  # only some
-stow -D -t ~ gui       # unlink one package
+./deploy.sh              # stow all packages
+./deploy.sh fish git     # only some
+stow -D -t ~ i3          # unlink one package
 ```
 
 All personal scripts are prefixed with `my-` (e.g. `my-screenshot`).

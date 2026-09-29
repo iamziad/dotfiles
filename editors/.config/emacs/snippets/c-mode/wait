@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: wait
-# key: wait
-# --
-#include <sys/wait.h>
