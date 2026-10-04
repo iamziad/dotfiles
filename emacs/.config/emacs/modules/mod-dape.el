@@ -6,7 +6,7 @@
   (setq dape-buffer-window-arrangement 'left)
   ;; (require 'dape-variable-inspect)
   ;; (require 'dape-scope-collapse)
-  (setq dape-inlay-hints t)                        ; قيم المتغيرات جنب الكود
+  (setq dape-inlay-hints t)
   (setq dape-info-variable-table-row-config '((name . 30) (value . 80) (type . 15)))
 
   (setf (alist-get 'jdtls dape-configs)

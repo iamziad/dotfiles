@@ -1,11 +1,36 @@
 ;;; mod-programming.el --- programming configuration -*- lexical-binding: t; -*-
 
+;;; --------------------------------------------------------------------------
+;;; Languages
+;;; --------------------------------------------------------------------------
+
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'"
+  :hook (nix-mode . (lambda ()
+                      (add-hook 'before-save-hook #'nix-mode-format nil t))))
+
+;;; --------------------------------------------------------------------------
+;;; General
+;;; --------------------------------------------------------------------------
+
 ;; Basic Indentation & Formatting
 (setq-default indent-tabs-mode nil
               tab-width 4
               standard-indent 4
               c-basic-offset 4
               compilation-scroll-output t)
+
+(setq treesit-font-lock-level 4
+      js-indent-level 2
+      typescript-ts-mode-indent-offset 2
+      json-ts-mode-indent-offset 2
+      css-indent-offset 2
+      java-ts-mode-indent-offset 4
+      c-ts-mode-indent-offset 4
+      c-ts-mode-indent-style 'k&r
+      c-basic-offset 4
+      c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "k&r")))
 
 ;; Dev tools
 (setq gdb-many-windows t
@@ -35,6 +60,12 @@
 ;; Misc
 (global-subword-mode +1)
 
+(use-package apheleia
+  :ensure t
+  :diminish apheleia-mode
+  :config
+  (apheleia-global-mode +1))
+
 (use-package hl-todo
   :init (global-hl-todo-mode 1))
 
@@ -62,85 +93,9 @@
           js-ts-mode
           tsx-ts-mode) . auto-rename-tag-mode))
 
-(use-package zeal-at-point)
-
 (use-package restclient
   :ensure t
   :mode ("\\.http\\'" . restclient-mode))
-
-(use-package dired-subtree
-  :commands (dired-subtree-toggle dired-subtree-cycle)
-  :config
-  (setq dired-subtree-line-prefix " ")
-  (setq dired-subtree-use-backgrounds nil))
-
-(use-package nerd-icons :defer t)
-(use-package nerd-icons-dired
-  :commands (nerd-icons-dired-mode))
-(setq dired-sidebar-theme 'nerd-icons)
-
-(use-package dired-sidebar
-  :bind (("C-c e" . dired-sidebar-toggle-sidebar))
-  :ensure t
-  :commands (dired-sidebar-toggle-sidebar)
-  :init
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode))))
-  :config
-  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-  (setq dired-sidebar-use-term-integration t)
-  (setq dired-sidebar-use-custom-font t))
-
-;;; --------------------------------------------------------------------------
-;;; Language Specific Indentation Settings
-;;; --------------------------------------------------------------------------
-
-;; C / C++
-(setq c-default-style "k&r"
-      c-ts-mode-indent-offset 4
-      c-ts-mode-indent-style 'k&r)
-
-(add-hook 'c-ts-base-mode-hook (lambda ()
-                                 (local-set-key (kbd "RET")
-                                                #'reindent-then-newline-and-indent)))
-
-;; Java
-(setq java-ts-mode-indent-offset 4)
-
-;; JavaScript / TypeScript
-
-(setq js-indent-level 2
-      typescript-ts-mode-indent-offset 2)
-
-;; `with-eval-after-load' only takes one feature, so the old version silently
-;; only ever ran for `js-mode' and never bound M-. in the other three modes.
-(with-eval-after-load 'js-mode
-  (define-key js-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
-(with-eval-after-load 'typescript-ts-mode
-  (define-key typescript-ts-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
-(with-eval-after-load 'tsx-ts-mode
-  (define-key tsx-ts-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
-(with-eval-after-load 'web-mode
-  (define-key web-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
-
-
-;; HTML / CSS
-(setq sgml-basic-offset 2
-      css-indent-offset 2
-      css-ts-mode-indent-offset 2)
-
-;;; --------------------------------------------------------------------------
-;;; Extra Language Modes
-;;; --------------------------------------------------------------------------
-
-(use-package nix-mode
-  :ensure t
-  :mode "\\.nix\\'"
-  :hook (nix-mode . (lambda ()
-                      (add-hook 'before-save-hook #'nix-mode-format nil t))))
 
 ;;; --------------------------------------------------------------------------
 ;;; GDB Multiple Windows

@@ -15,9 +15,6 @@
   :lighter ""
   :keymap my-nav-map)
 
-;; Modes where C-h/C-j/C-k/C-l/C-f/C-b are meaningful REPL/terminal keys
-;; and shouldn't be shadowed. Add to this list whenever you find another
-;; mode with the same problem - this is the single place to check.
 (defvar my-nav-excluded-modes
   '(term-mode vterm-mode shell-mode comint-mode eshell-mode))
 
@@ -40,9 +37,6 @@
 (add-hook 'minibuffer-setup-hook #'my-setup-minibuffer-navigation)
 
 ;; --- Known per-mode conflicts ---------------------------------------------
-;; Keep every "unbind C-j/C-k because mode X uses it" patch here, next to
-;; the feature that causes the need for it, instead of scattered across
-;; each mode's own module.
 (with-eval-after-load 'magit
   (define-key magit-hunk-section-map (kbd "C-j") nil)
   (define-key magit-diff-section-base-map (kbd "C-j") nil)

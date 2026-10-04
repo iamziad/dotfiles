@@ -21,8 +21,8 @@
 (use-package corfu
   :custom
   (corfu-cycle t)
-  (corfu-auto t)
-  ;; (corfu-auto-delay 0.15)
+  ;; (corfu-auto t)
+  (corfu-auto-delay 0.15)
   (corfu-auto-prefix 2)
   (corfu-separator ?\s)
   (corfu-quit-at-boundary 'separator)
@@ -46,7 +46,19 @@
             (lambda ()
               (corfu-mode -1)))
   (with-eval-after-load 'savehist
-    (add-to-list 'savehist-additional-variables 'corfu-history)))
+    (add-to-list 'savehist-additional-variables 'corfu-history))
+
+  (defun my/corfu-enable-auto ()
+    (setq-local corfu-auto t))
+
+  (dolist (hook '(html-mode-hook
+                  mhtml-mode-hook
+                  css-mode-hook
+                  scss-mode-hook
+                  web-mode-hook
+                  html-ts-mode-hook
+                  css-ts-mode-hook))
+    (add-hook hook #'my/corfu-enable-auto)))
 
 (use-package dabbrev
   :bind (("M-/" . dabbrev-completion)

@@ -50,4 +50,5 @@ set -gx TERMINAL alacritty
 if status is-interactive
     # direnv hook fish | source
 end
+
 fnm env --use-on-cd | source

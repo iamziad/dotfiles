@@ -14,7 +14,9 @@
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
   :config
   ;; (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (keymap-set dired-mode-map "o" #'dired-open-with))
+  (with-eval-after-load 'dired
+    (put 'dired-jump 'repeat-map nil))
+  (keymap-set dired-mode-map "b" #'dired-open-with))
 
 (use-package async
   :ensure t
@@ -55,21 +57,7 @@
 ;; :bind (:map dired-mode-map
 ;;             ("C-d i" . image-dired)))
 
-(defun my/dired-open-xdg ()
-  (interactive)
-  (let ((file (dired-get-file-for-visit)))
-    (call-process "xdg-open" nil 0 nil file)))
-
 (use-package dired-open-with
   :ensure t)
-
-(defun my/sudo-this-file ()
-  (interactive)
-  (if (file-remote-p buffer-file-name)
-      (find-alternate-file
-       (tramp-file-name-localname
-        (tramp-dissect-file-name buffer-file-name)))
-    (find-alternate-file
-     (concat "/sudo::" buffer-file-name))))
 
 (provide 'mod-dired)

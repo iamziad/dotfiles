@@ -1,6 +1,6 @@
 ;;; mod-web.el  -*- lexical-binding: t; -*-
 
-
+;;;
 (use-package add-node-modules-path
   :ensure t
   :hook ((js-mode . add-node-modules-path)
@@ -11,6 +11,7 @@
          (json-ts-mode . add-node-modules-path)
          (web-mode . add-node-modules-path)))
 
+;;;
 (use-package web-mode
   :ensure t
   :mode ("\\.phtml\\'"
@@ -33,6 +34,7 @@
   (web-mode-css-indent-offset 2)
   (web-mode-code-indent-offset 2)
   ;; Let smartparens handle pairing instead of web-mode's built-in
+  (web-mode-enable-auto-closing t)
   (web-mode-enable-auto-pairing nil)
   (web-mode-enable-current-element-highlight t)
   (web-mode-enable-current-column-highlight t)
@@ -70,7 +72,7 @@
     (sp-local-tag "=" "<%= " " %>")
     (sp-local-tag "#" "<%# " " %>")))
 
-
+;;;
 (use-package emmet-mode
   :ensure t
   :hook ((html-ts-mode web-mode css-ts-mode sgml-mode mhtml-mode html-mode css-mode) . emmet-mode)
@@ -80,7 +82,10 @@
   (define-key emmet-mode-keymap (kbd "TAB") 'emmet-expand-line)
   (with-eval-after-load 'emmet-mode
     (define-key emmet-mode-keymap (kbd "C-j") nil)))
+;;;
+(use-package json-snatcher)
 
+;;;
 (use-package rainbow-mode
   :ensure t
   :defer t

@@ -2,7 +2,7 @@
 # $1 = "full" | "select"
 # $2 = "clip"  | "save"
 
-SAVE_DIR="$HOME/Pictures/screenshots"
+SAVE_DIR="$HOME/pics/screenshots"
 TMP="/tmp/screenshot_$(date +%s).png"
 
 mkdir -p "$SAVE_DIR"

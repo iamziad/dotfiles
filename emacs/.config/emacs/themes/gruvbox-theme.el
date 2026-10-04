@@ -197,31 +197,31 @@
    `(diff-header ((t (:background ,bg2 :foreground ,fg0 :weight bold))))
    `(diff-file-header ((t (:background ,bg2 :foreground ,fg0 :weight bold))))
    `(diff-hunk-header ((t (:background ,bg2 :foreground ,yellow))))
-   ;; `(diff-hl-insert
-   ;;   ((t (:foreground ,green :background ,bg0-soft))))
-   ;; `(diff-hl-delete
-   ;;   ((t (:foreground ,red :background ,bg0-soft))))
-   ;; `(diff-hl-change
-   ;;   ((t (:foreground ,blue :background ,bg0-soft))))
-   ;; `(diff-hl-margin-insert
-   ;;   ((t (:foreground ,green :background ,bg0-soft))))
-   ;; `(diff-hl-margin-delete
-   ;;   ((t (:foreground ,red :background ,bg0-soft))))
-   ;; `(diff-hl-margin-change
-   ;;   ((t (:foreground ,blue :background ,bg0-soft))))
    `(diff-hl-insert
-     ((t (:foreground ,green :background ,green))))
+     ((t (:foreground ,green :background ,bg-green))))
    `(diff-hl-delete
-     ((t (:foreground ,red :background ,red))))
+     ((t (:foreground ,red :background ,bg-red))))
    `(diff-hl-change
-     ((t (:foreground ,blue :background ,blue))))
+     ((t (:foreground ,blue :background ,bg-blue))))
    `(diff-hl-margin-insert
-     ((t (:foreground ,green :background ,green))))
+     ((t (:foreground ,green :background ,bg-green))))
    `(diff-hl-margin-delete
-     ((t (:foreground ,red :background ,red))))
+     ((t (:foreground ,red :background ,bg-red))))
    `(diff-hl-margin-change
-     ((t (:foreground ,blue :background ,blue))))
-   `(diff-hl-reverted-hunk-highlight ((t (:background ,bg-yellow))))
+     ((t (:foreground ,blue :background ,bg-blue))))
+   ;; `(diff-hl-insert
+   ;;   ((t (:foreground ,green :background ,green))))
+   ;; `(diff-hl-delete
+   ;;   ((t (:foreground ,red :background ,red))))
+   ;; `(diff-hl-change
+   ;;   ((t (:foreground ,blue :background ,blue))))
+   ;; `(diff-hl-margin-insert
+   ;;   ((t (:foreground ,green :background ,green))))
+   ;; `(diff-hl-margin-delete
+   ;;   ((t (:foreground ,red :background ,red))))
+   ;; `(diff-hl-margin-change
+   ;;   ((t (:foreground ,blue :background ,blue))))
+   ;; `(diff-hl-reverted-hunk-highlight ((t (:background ,bg-yellow))))
    `(magit-section-heading ((t (:foreground ,aqua :weight semi-bold :extend t))))
    `(magit-section-heading-selection ((t (:foreground ,orange :weight semi-bold :extend t))))
    `(magit-section-secondary-heading ((t (:foreground ,purple :weight semi-bold :extend t))))

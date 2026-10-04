@@ -5,21 +5,20 @@ config/alacritty/colors.toml
 *~
 \#*\#
 *.elc
-
-config/emacs/*
-!config/emacs/modules/
-!config/emacs/snippets/
-!config/emacs/themes/
-!config/emacs/init.el
-!config/emacs/early-init.el
-!config/emacs/var/dape/adapters/
+emacs/*
+emacs/modules/
+emacs/snippets/
+emacs/themes/
+emacs/init.el
+emacs/early-init.el
+emacs/var/dape/adapters/
 
 # Vim
-config/vim/plugged/
-config/vim/autoload/
+vim/plugged/
+vim/autoload/
 
 # Folder-specific ignore
 .DS_Store
 
 # Tmux plugins
-config/tmux/.tmux/plugins/
+tmux/.tmux/plugins/

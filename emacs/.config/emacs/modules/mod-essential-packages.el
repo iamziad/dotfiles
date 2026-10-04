@@ -19,22 +19,9 @@
 
 ;;; --------------------------------------------------------------------------
 
-(use-package beacon
-  :diminish beacon-mode
-  :init
-  (beacon-mode 1)
-
-  :config
-  (add-hook 'restclient-mode-hook
-            (lambda ()
-              (beacon-mode -1)))
-
-  (add-hook 'restclient-mode-hook
-            (lambda ()
-              (add-hook 'kill-buffer-hook
-                        (lambda ()
-                          (beacon-mode 1))
-                        nil t))))
+(use-package devdocs
+  :ensure t
+  :bind ("C-c C-d" . devdocs-lookup))
 
 ;;; --------------------------------------------------------------------------
 
@@ -50,16 +37,6 @@
   (gcmh-mode 1)
   (setq gcmh-idle-delay 5
         gcmh-high-cons-threshold (* 64 1024 1024)))
-
-;;; --------------------------------------------------------------------------
-
-(use-package perspective
-  :bind
-  ("C-x C-b" . persp-list-buffers)
-  :custom
-  (persp-mode-prefix-key (kbd "C-c C-p"))
-  :init
-  (persp-mode))
 
 ;;; --------------------------------------------------------------------------
 
@@ -81,10 +58,10 @@
 
 ;;; --------------------------------------------------------------------------
 
-(use-package anzu
-  :ensure t
-  :diminish anzu-mode
-  :config (global-anzu-mode 1))
+(use-package reverse-im
+  :demand t
+  :custom (reverse-im-input-methods '("arabic"))
+  :config (reverse-im-mode 1))
 
 ;;; --------------------------------------------------------------------------
 
@@ -104,12 +81,12 @@
 
 ;;; --------------------------------------------------------------------------
 
-;; (use-package ace-window
-;;   :ensure t
-;;   :bind (("M-o" . ace-window)
-;;          ("M-s" . ace-swap-window))
-;;   :config
-;;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+(use-package ace-window
+  :ensure t
+  :bind (("M-o" . ace-window)
+         ("M-s s" . ace-swap-window))
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 ;;; --------------------------------------------------------------------------
 
@@ -137,14 +114,16 @@
 
 ;;; --------------------------------------------------------------------------
 
-(use-package smart-hungry-delete
-  :ensure t
-  :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-         ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-         ([remap delete-char] . smart-hungry-delete-forward-char))
-  :init (smart-hungry-delete-add-default-hooks))
+(use-package avy
+  :bind
+  (("C-c a"         . avy-goto-char)))
 
 ;;; --------------------------------------------------------------------------
+
+(use-package undo-fu-session
+  :hook (after-init . undo-fu-session-global-mode)
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
 
 (provide 'mod-essential-packages)
 ;;; mod-essential-packages.el ends here

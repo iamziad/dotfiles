@@ -2,8 +2,7 @@
 
 
 (use-package jsonrpc
-  )
-
+  :straight t)
 
 (use-package eglot
   :straight nil

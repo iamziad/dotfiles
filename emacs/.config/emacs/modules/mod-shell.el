@@ -1,15 +1,17 @@
 ;;; mod-shell.el -*- lexical-binding: t; -*-
 
+;; GUI Emacs from a desktop launcher misses the shell PATH (node, jdtls, clangd).
 (use-package exec-path-from-shell
-  :ensure t
-  :config
-  (when (or (memq window-system '(x mac))
-            (daemonp))
-    (exec-path-from-shell-initialize)))
+  :if (memq window-system '(mac ns x pgtk))
+  :demand t
+  :custom
+  (exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-variables '("PATH" "MANPATH" "JAVA_HOME"))
+  :config (exec-path-from-shell-initialize))
 
-(use-package envrc
-  :straight t
-  :hook (after-init . envrc-global-mode))
+;; (use-package envrc
+;;   :straight t
+;;   :hook (after-init . envrc-global-mode))
 
 (use-package fish-mode
   :straight t

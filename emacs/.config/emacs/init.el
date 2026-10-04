@@ -32,15 +32,6 @@
       use-package-verbose nil
       use-package-expand-minimally t)
 
-;; Load modules
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-
-;; Manage temp files
-(defvar treesit-auto-install-grammar nil)
-
 (use-package no-littering
   :config
   (setq auto-save-file-name-transforms
@@ -59,6 +50,11 @@
                           ;; (agenda . 5)
                           (bookmarks . 5))))
 
+;; Load modules
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 ;;; --------------------------------------------------------------------------
 ;;; Modules & Custom-file Load
 ;;; --------------------------------------------------------------------------
@@ -76,34 +72,14 @@
   :ensure nil
   :init
   ;; Language & Encoding
-  (set-language-environment "UTF-8")
-  (set-default-coding-systems 'utf-8)
-  (prefer-coding-system 'utf-8)
   (setq default-input-method "arabic")
 
   ;; Aliases & Keymaps
   (defalias 'yes-or-no-p 'y-or-n-p)
   (global-set-key [remap dabbrev-expand] #'hippie-expand)
 
-  ;; Modes activation
-  (which-key-mode 1)
-  (savehist-mode 1)
-  (save-place-mode 1)
-  (recentf-mode 1)
-  (winner-mode 1)
-  (delete-selection-mode 1)
-  (global-auto-revert-mode 1)
   (setq auto-revert-use-notify t)
-  (xterm-mouse-mode 1)
-  (auto-save-visited-mode 1)
-  (global-visual-line-mode 1)
-  (electric-pair-mode 1)
-  (electric-indent-mode 1)
-  (show-paren-mode 1)
-  (global-so-long-mode 1)
-  (context-menu-mode 1)
   (setq whitespace-global-modes '(prog-mode))
-  (global-whitespace-mode 1)
 
   :custom
   ;; Input & Files
@@ -117,7 +93,6 @@
   (delete-old-versions t)
   (large-file-warning-threshold (* 50 1024 1024))
   (vc-follow-symlinks t)
-  (global-so-long-mode 1)  ;; Optimize minified/very-long-line files
 
   ;; Prompts & Behavior
   (use-dialog-box nil)
@@ -151,12 +126,10 @@
   (scroll-conservatively 101)
   (scroll-preserve-screen-position t)
   (isearch-wrap-pause 'no-ding)
-  (pixel-scroll-mode)
-  (setq pixel-dead-time 0) ; Never go back to the old scrolling behaviour.
-  (setq pixel-resolution-fine-flag t) ; Scroll by number of pixels instead of lines (t = frame-char-height pixels).
-  (setq mouse-wheel-scroll-amount '(1)) ; Distance in pixel-resolution to scroll each mouse wheel event.
-  (setq mouse-wheel-progressive-speed nil)
 
+  (isearch-lazy-count t)
+  (lazy-count-prefix-format "(%s/%s) ")
+  (pixel-scroll-mode)
   (setq image-use-external-converter t)
 
   ;; Windows & Buffers
@@ -179,23 +152,37 @@
                         (when (and isearch-forward (not isearch-mode-end-hook-quit))
                           (goto-char isearch-other-end)))))
 
-;; Tabs
-(setq tab-bar-show 1)
-(dotimes (i 9)
-  (global-set-key
-   (kbd (format "M-%d" (1+ i)))
-   `(lambda () (interactive) (tab-bar-select-tab ,(1+ i)))))
+;; Built-in modes, enabled after init.
+(dolist (mode '(recentf-mode
+                savehist-mode
+                save-place-mode
+                global-auto-revert-mode
+                delete-selection-mode
+                electric-pair-mode
+                electric-indent-mode
+                global-subword-mode
+                repeat-mode
+                winner-mode
+                global-so-long-mode
+                column-number-mode
+                size-indication-mode
+                minibuffer-depth-indicate-mode
+                show-paren-mode
+                context-menu-mode))
+  (add-hook 'after-init-hook mode))
 
-(defun my/word-includes-hyphen ()
-  (modify-syntax-entry ?- "w"))
-
-(add-hook 'text-mode-hook #'my/word-includes-hyphen)
-(add-hook 'prog-mode-hook #'my/word-includes-hyphen)
-
-(use-package undo-fu-session
-  :hook (after-init . undo-fu-session-global-mode)
-  :config
-  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+(require 'so-long)
+(setq so-long-variable-overrides
+      (append '((truncate-lines . t)
+                (bidi-inhibit-bpa . t)
+                (line-move-visual . nil))
+              so-long-variable-overrides)
+      so-long-minor-modes
+      (append '(font-lock-mode
+                display-line-numbers-mode
+                hl-line-mode
+                show-paren-mode)
+              so-long-minor-modes))
 
 (use-package project
   :straight nil
@@ -207,87 +194,64 @@
       (and root (cons 'transient root))))
   (add-to-list 'project-find-functions #'my/project-try-local-root))
 
+(setq project-switch-commands
+      '((project-find-file    "File"    ?f)
+        (project-find-dir    "Directory"    ?d)
+        (consult-ripgrep      "Ripgrep" ?r)
+        (magit-project-status "Magit"   ?m)
+        (project-compile      "Compile" ?c)
+        (my/vterm-toggle      "Terminal" ?t)))
+
 ;;; --------------------------------------------------------------------------
 ;;; Keybindings
 ;;; --------------------------------------------------------------------------
 
-;; Unsets
-(keymap-global-unset "C-q")
-
-;; Windmove
-;; (windmove-default-keybindings 'shift)
-
 (bind-keys
- ("C-c r"         . recompile)
- ;;
- ("C-/"           . undo)
+ ("C-/"           . undo-only)
  ("C-?"           . undo-redo)
- ;;
- ("C-q C-h"       . windmove-left)
- ("C-q C-j"       . windmove-down)
- ("C-q C-k"       . windmove-up)
- ("C-q C-l"       . windmove-right)
- ;;
- ("M-s h"         . windmove-swap-states-left)
- ("M-s j"         . windmove-swap-states-down)
- ("M-s k"         . windmove-swap-states-up)
- ("M-s l"         . windmove-swap-states-right)
- ;;
- ("C-c C-k C-n"   . tab-new)
- ("C-c C-k C-k"   . tab-close)
- ("C-c C-k C-o"   . tab-close-other)
- ;;
- ("C-c h"         . persp-prev)
- ("C-c l"         . persp-next)
- ;;
- ("C-a"           . my/smart-move-beginning-of-line)
- ("C-o"           . my/smart-open-line)
- ;;
- ("M-k"           . (lambda () (interactive)
-                      (delete-region (line-beginning-position) (line-end-position))))
+ ("M-j"           . recenter-top-bottom)
+ ("C-c p k"       . eldoc-doc-buffer)
+ ;; Compile & run
+ ("C-c r"         . recompile)
+ ("C-c c"         . compile)
+ ("C-c p c"       . project-compile)
+ ;; Windows, buffers, tabs
+ ("C-x k"         . kill-current-buffer)
+ ("C-x C-k"       . kill-buffer-and-window)
+ ("C-<tab>"       . mode-line-other-buffer)
+ ;; Editing
+ ("C-a"           . crux-move-beginning-of-line)
+ ("C-,"           . duplicate-dwim)
  ("C-<backspace>" . my/backward-delete-word)
  ("M-d"           . my/delete-word)
- ("C-M-d"         . sp-delete-word)
- ("<M-backspace>" . sp-backward-delete-word)
- ;;
- ("C-c C-x r"     . rename-visited-file)
- ("C-c C-x d"     . delete-visited-file)
- ("C-x C-k"       . kill-buffer-and-window)
- ;;
- ("C-,"           . duplicate-dwim)
- ("C-;"           . comment-line)
- ("C-<tab>"       . mode-line-other-buffer)
- ;;
+ ("C-c f"         . find-file-at-point)
+ ;; Paragraphs
+ ("C-n"           . forward-paragraph)
+ ("C-p"           . backward-paragraph)
  ("M-p"           . backward-paragraph)
  ("M-n"           . forward-paragraph)
- ;;
- ("C-x C-="       . (lambda () (interactive) (enlarge-window-horizontally 10)))
- ("C-x C--"       . (lambda () (interactive) (shrink-window-horizontally 10)))
- ("C-x ="         . global-text-scale-adjust)
- ;;
- ("M-="           . text-scale-increase)
- ("M--"           . text-scale-decrease)
- ("M-0"           . (lambda () (interactive) (text-scale-set 0)))
- ;;
  ("C-}"           . forward-paragraph)
- ("C-{"           . backward-paragraph)
- ;;
- ("C-c p t"       . my/toggle-transparency)
- ("C-c p k"       . eldoc-doc-buffer)
- ("M-r"           . recenter-top-bottom)
- ("C-c f"         . find-file-at-point)
- ("C-c c"         . compile)
- ("M-o"           . delete-other-windows))
+ ("C-{"           . backward-paragraph))
 
+(use-package crux
+  :bind (("M-k"          . crux-kill-whole-line)
+         ("C-^"          . crux-top-join-line)
+         ("C-c n"        . crux-cleanup-buffer-or-region)
+         ("C-c K"        . crux-kill-other-buffers)
+         ("C-c U"        . crux-reopen-as-root)
+         ("C-c C-x r"    . crux-rename-file-and-buffer)
+         ("C-c C-x d"    . crux-delete-file-and-buffer)))
 
-;; Leader Map
+;; Leader
 (bind-keys :prefix-map my-leader-map
            :prefix "C-z"
-           ("h"     . help-command)
-           ("c"     . org-capture)
-           ("t"     . org-babel-tangle)
-           ("s"     . org-download-clipboard)
-           ("m l" . magit-list-repositories))
+           ("h"   . help-command)
+           ("c"   . org-capture)
+           ("t"   . org-babel-tangle)
+           ("s"   . org-download-clipboard)
+           ("m l" . magit-list-repositories)
+           ("r"   . my/quick-mark)
+           ("j"   . my/quick-jump))
 
 ;;; --------------------------------------------------------------------------
 ;;; UI, Theme & Fonts
@@ -299,97 +263,47 @@
 (blink-cursor-mode -1)
 
 ;; Fonts
-
-(defcustom my/font (font-spec :family "JetBrainsMono Nerd Font" :size 15)
-  "Font for the `default' and `fixed-pitch' faces."
-  :type '(restricted-sexp :match-alternatives (fontp stringp null))
-  :group 'my)
-
-(defcustom my/variable-pitch-font (font-spec :family "Dejavu Sans" :size 14)
-  "Font for the `variable-pitch' face."
-  :type '(restricted-sexp :match-alternatives (fontp stringp null))
-  :group 'my)
-
-(defcustom my/serif-font (font-spec :family "Noto Serif" :size 14)
-  "Font for the `fixed-pitch-serif' face. Same format as `my/font'."
-  :type '(restricted-sexp :match-alternatives (fontp stringp null))
-  :group 'my)
-
-(defcustom my/symbol-font (font-spec :family "Noto Sans Symbols 2")
-  "Fallback font for symbol/mathematical glyphs outside `my/font'."
-  :type '(restricted-sexp :match-alternatives (fontp stringp null))
-  :group 'my)
-
-(defcustom my/arabic-font (font-spec :family "Cairo" :size 15)
-  "Font used specifically for the Arabic script, via `set-fontset-font'.
-JetBrains Mono (and most programming fonts) either lack Arabic glyphs
-entirely or render them without proper shaping; Cairo is a proper
-Arabic-native font and looks right for comments, org notes, and prose."
-  :type '(restricted-sexp :match-alternatives (fontp stringp null))
-  :group 'my)
-
-(defun my/init-fonts-h (&optional reload)
-  (dolist (map `((default . ,my/font)
-                 (fixed-pitch . ,my/font)
-                 (fixed-pitch-serif . ,my/serif-font)
-                 (variable-pitch . ,my/variable-pitch-font)))
-    (when-let* ((face (car map))
-                (font (cdr map)))
-      (when (display-multi-font-p)
-        (set-face-attribute face nil :width 'normal :weight 'normal
-                            :slant 'normal :font font))))
-  (when (and (fboundp 'set-fontset-font)
-             (or reload (not (get 'my/font 'initialized))))
-    ;; Nerd Fonts pack their icon glyphs into these Private Use Areas. This
-    ;; registers a fallback so icon glyphs still render even in faces/modes
-    ;; that aren't using the Nerd Font directly.
-    (dolist (range '((#xe000 . #xf8ff) (#xf0000 . #xfffff)))
-      (set-fontset-font t range "Symbols Nerd Font Mono"))
-    (when my/symbol-font
-      (dolist (script '(symbol mathematical))
-        (set-fontset-font t script my/symbol-font)))
-    (when my/arabic-font
-      (set-fontset-font t 'arabic my/arabic-font)))
-  (put 'my/font 'initialized t))
-
-(defun my/reload-font ()
-  "Reload fonts after changing `my/font' et al. interactively."
-  (interactive)
-  (my/init-fonts-h 'reload))
-
-;; Apply once at startup, and again for every subsequent frame (relevant to
-;; `emacsclient -c' / daemon workflows, where frames are created well after
-;; init.el has finished running).
-(if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'my/init-fonts-h)
-  (add-hook 'emacs-startup-hook #'my/init-fonts-h))
-(add-hook 'after-make-frame-functions (lambda (_frame) (my/init-fonts-h)))
-
+(defvar my/font                (font-spec :family "Iosevka" :size 17))
+(defvar my/variable-pitch-font (font-spec :family "DejaVu Sans" :size 14))
+(defvar my/serif-font          (font-spec :family "Noto Serif" :size 14))
+(defvar my/arabic-font         (font-spec :family "Cairo" :size 15))
+(defvar my/symbol-font         (font-spec :family "Noto Sans Symbols 2"))
 (setq text-scale-mode-step 1.1)
 
+(defun my/setup-fonts (&optional frame)
+  "Apply fonts to FRAME (or the selected frame) if it is graphical."
+  (let ((frame (or frame (selected-frame))))
+    (when (display-graphic-p frame)
+      (set-face-attribute 'default          nil :font my/font)
+      (set-face-attribute 'fixed-pitch      nil :font my/font)
+      (set-face-attribute 'fixed-pitch-serif nil :font my/serif-font)
+      (set-face-attribute 'variable-pitch   nil :font my/variable-pitch-font)
+      ;; Nerd Font icons live in these Private Use Areas.
+      (dolist (range '((#xe000 . #xf8ff) (#xf0000 . #xfffff)))
+        (set-fontset-font t range "Symbols Nerd Font Mono"))
+      (set-fontset-font t 'symbol       my/symbol-font)
+      (set-fontset-font t 'mathematical my/symbol-font)
+      (set-fontset-font t 'arabic       my/arabic-font))))
+
+(my/setup-fonts)
+(add-hook 'after-make-frame-functions #'my/setup-fonts)
 
 ;; Theme
-;; (straight-use-package 'catppuccin-theme)
-;; (setq catppuccin-flavor 'frappe)
-(use-package zenburn-theme)
-(use-package doom-themes)
-(use-package sweet-theme)
 (defvar my/theme 'gruvbox)
-(load-theme my/theme)
+(use-package zenburn-theme :demand t)
+(condition-case _err
+    (load-theme my/theme t)
+  (error (load-theme 'zenburn t)))
 
 ;;; Icons
-
 (use-package nerd-icons
   :if (display-graphic-p))
-
-(use-package nerd-icons-completion
-  :after marginalia
-  :config (nerd-icons-completion-mode 1))
 
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative
       display-line-numbers-width 2
       display-line-numbers-width-start t)
+(setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
@@ -399,58 +313,40 @@ Arabic-native font and looks right for comments, org notes, and prose."
 ;; Modeline & Fringe
 (column-number-mode 1)
 (size-indication-mode 1)
-(fringe-mode '(8 . 0))
+;; (fringe-mode '(8 . 0))
 
 ;;; --------------------------------------------------------------------------
 ;;; Utility Functions
 ;;; --------------------------------------------------------------------------
 
-;; Transparency
-(defun my/toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha-background)))
-    (set-frame-parameter nil 'alpha-background (if (or (null alpha) (= alpha 100)) 90 100))))
-
-(defun my/smart-move-beginning-of-line ()
-  (interactive)
-  (let ((old-point (point)))
-    (back-to-indentation)
-    (when (= old-point (point))
-      (move-beginning-of-line 1))))
-
-(defun my/smart-open-line ()
-  (interactive)
-  (move-end-of-line 1)
-  (newline-and-indent))
-
 ;; https://emacs.stackexchange.com/questions/22266/backspace-without-adding-to-kill-ring
 (defun my/delete-word (arg)
-  "Delete characters forward until encountering the end of a word.
-With argument, do this that many times.
-This command does not push text to `kill-ring'."
+  "Delete forward to the end of a word, without touching `kill-ring'."
   (interactive "p")
-  (delete-region
-   (point)
-   (progn
-     (forward-word arg)
-     (point))))
+  (delete-region (point) (progn (forward-word arg) (point))))
 
 (defun my/backward-delete-word (arg)
-  "Delete characters backward until encountering the beginning of a word.
-With argument, do this that many times.
-This command does not push text to `kill-ring'."
+  "Delete backward to the start of a word, without touching `kill-ring'."
   (interactive "p")
   (my/delete-word (- arg)))
 
 (defun my/delete-line-backward ()
-  "Delete text between the beginning of the line to the cursor position.
-This command does not push text to `kill-ring'."
+  "Delete from line start to point, without touching `kill-ring'."
   (interactive)
-  (let (p1 p2)
-    (setq p1 (point))
+  (let ((p1 (point)))
     (beginning-of-line 1)
-    (setq p2 (point))
-    (delete-region p1 p2)))
+    (delete-region (point) p1)))
+
+(defun my/quick-mark (char)
+  "Save current position in register CHAR."
+  (interactive (list (read-char "Mark to register: ")))
+  (point-to-register char)
+  (message "Saved to register %c" char))
+
+(defun my/quick-jump (char)
+  "Jump to the position stored in register CHAR."
+  (interactive (list (read-char "Jump to register: ")))
+  (jump-to-register char))
 
 ;;; --------------------------------------------------------------------------
 (provide 'init)
