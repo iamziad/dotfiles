@@ -10,6 +10,12 @@
   :hook (nix-mode . (lambda ()
                       (add-hook 'before-save-hook #'nix-mode-format nil t))))
 
+(use-package fish-mode
+  :straight t
+  :mode (("\\.fish\\'" . fish-mode))
+  :hook (fish-mode . (lambda ()
+                       (add-hook 'before-save-hook 'fish_indent-before-save))))
+
 ;;; --------------------------------------------------------------------------
 ;;; General
 ;;; --------------------------------------------------------------------------
@@ -21,15 +27,13 @@
               c-basic-offset 4
               compilation-scroll-output t)
 
-(setq treesit-font-lock-level 4
-      js-indent-level 2
+(setq js-indent-level 2
       typescript-ts-mode-indent-offset 2
       json-ts-mode-indent-offset 2
       css-indent-offset 2
       java-ts-mode-indent-offset 4
       c-ts-mode-indent-offset 4
       c-ts-mode-indent-style 'k&r
-      c-basic-offset 4
       c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "k&r")))
 
 ;; Dev tools
@@ -60,6 +64,24 @@
 ;; Misc
 (global-subword-mode +1)
 
+(use-package flycheck
+  :ensure t
+  :hook (prog-mode . flycheck-mode)
+  :config
+  (setq flycheck-display-errors-delay 0.2)
+  (with-eval-after-load 'flycheck
+    (add-hook 'eldoc-documentation-functions #'flycheck-eldoc nil t))
+  :bind
+  (("C-c C-e n" . flycheck-next-error)
+   ("C-c C-e p" . flycheck-previous-error)
+   ("C-c C-e l" . flycheck-list-errors)
+   ))
+
+(use-package flycheck-inline
+  :ensure t
+  :hook
+  (flycheck-mode . flycheck-inline-mode))
+
 (use-package apheleia
   :ensure t
   :diminish apheleia-mode
@@ -69,18 +91,8 @@
 (use-package hl-todo
   :init (global-hl-todo-mode 1))
 
-(use-package highlight-indent-guides
-  :diminish highlight-indent-guides-mode
-  ;; :hook ((typescript-ts-mode js-ts-mode js-jsx-mode html-ts-mode mhtml-mode
-  ;;                            tsx-ts-mode json-ts-mode) . highlight-indent-guides-mode)
-  :config
-  (setq highlight-indent-guides-auto-enabled nil)
-  (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-responsive 'top))
-
-(use-package rainbow-delimiters
-  :ensure t
-  :hook (prog-mode . rainbow-delimiters-mode))
+;; (use-package rainbow-delimiters
+;;   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package auto-rename-tag
   :diminish auto-rename-tag-mode
@@ -93,9 +105,30 @@
           js-ts-mode
           tsx-ts-mode) . auto-rename-tag-mode))
 
-(use-package restclient
-  :ensure t
-  :mode ("\\.http\\'" . restclient-mode))
+(use-package ligature
+  :config
+  ;; Enable the "www" ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+  ;; Enable traditional ligature support in eww-mode, if the
+  ;; `variable-pitch' face supports it
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  ;; Enable all Cascadia Code ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://"))
+  ;; Enables ligature checks globally in all buffers. You can also do it
+  ;; per mode with `ligature-mode'.
+  (global-ligature-mode t))
 
 ;;; --------------------------------------------------------------------------
 ;;; GDB Multiple Windows

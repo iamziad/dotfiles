@@ -7,37 +7,16 @@
   (compilation-ask-about-save nil)
   (compilation-max-output-line-length nil)
   (compilation-scroll-output 'first-error)
-  (compilation-environment '("TERM=xterm-256color" "FORCE_COLOR=1"))
-  :config
-  (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
-  (add-hook 'prog-mode-hook #'my/guess-compile-command)
-
-  (autoload 'comint-truncate-buffer "comint" nil t)
-  (defvar my/compile-buffer-max-size (* 80 comint-buffer-maximum-size))
-  (add-hook 'compilation-filter-hook
-            (defun my/compile-truncate-buffer-h (&optional _string)
-              (when (> (buffer-size) my/compile-buffer-max-size)
-                (let ((gc-cons-threshold most-positive-fixnum))
-                  (with-silent-modifications
-                    (comint-truncate-buffer)))))))
-
-(add-to-list 'display-buffer-alist
-             '("\\*compilation\\*"
-               (display-buffer-reuse-window display-buffer-in-side-window)
-               (side . bottom)
-               (slot . -2)
-               (window-height . 0.5)))
-
-(advice-add 'compilation-start :after
-            (defun my/compile-select-window-a (&rest _)
-              (when-let* ((win (get-buffer-window "*compilation*" t)))
-                (select-window win))))
-
-(with-eval-after-load 'compile
-  (add-to-list 'compilation-error-regexp-alist 'node)
-  (add-to-list 'compilation-error-regexp-alist-alist
-               '(node "^[[:blank:]]*at \\(.*(\\|\\)\\(.+?\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\)"
-                      2 3 4)))
+  ;; (display-buffer-alist
+  ;;  '(("\\*compilation\\*" (display-buffer-reuse-window display-buffer-in-side-window)
+  ;;     (side . bottom) (slot . -2) (window-height . 0.45))))
+  :hook ((prog-mode . my/guess-compile-command)
+         (compilation-filter . ansi-color-compilation-filter))
+  :init
+  (advice-add 'compilation-start :after
+              (lambda (&rest _)
+                (when-let ((w (get-buffer-window "*compilation*")))
+                  (select-window w)))))
 
 (defun my/guess-compile-command ()
   "Set a buffer-local `compile-command' from the nearest build file."

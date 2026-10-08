@@ -1,7 +1,3 @@
-# Translated from home/shell/fish.nix + home/shell/aliases.nix.
-# Dropped on purpose (no Nix on this machine): nix_shell_indicator,
-# the `nrs` (nixos-rebuild) and `hms` (home-manager switch) abbrs.
-
 set -g fish_greeting ""
 
 set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk
@@ -49,6 +45,10 @@ set -gx TERMINAL alacritty
 
 if status is-interactive
     # direnv hook fish | source
+end
+
+function fish_prompt
+    echo (set_color grey)(date +%H:%M) (set_color 87d7af)(prompt_pwd) (set_color ffafff)(fish_git_prompt) (set_color ffafff)'| '
 end
 
 fnm env --use-on-cd | source

@@ -35,5 +35,17 @@ else
     icon=" "; color="#eeeeee"
 fi
 
+# if printf '%s' "$vol_raw" | grep -q MUTED; then
+#     icon="VOL:"; color="#928374"
+# elif [ "$percent" -eq 0 ]; then
+#     icon="VOL:"; color="#928374"
+# elif [ "$percent" -lt 35 ]; then
+#     icon="VOL:"; color="#eeeeee"
+# elif [ "$percent" -lt 70 ]; then
+#     icon="VOL:"; color="#eeeeee"
+# else
+#     icon="VOL:"; color="#eeeeee"
+# fi
+
 echo "<span color='$color'>$icon $percent%</span>"
 echo "$icon $percent%"

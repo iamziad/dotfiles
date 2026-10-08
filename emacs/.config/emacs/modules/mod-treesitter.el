@@ -4,9 +4,10 @@
       '((treesit-font-lock-rules-mismatch)))
 
 (use-package treesit-auto
-  :demand t
   :custom (treesit-auto-install 'prompt)
-  :config (global-treesit-auto-mode))
+  :config
+  (setq treesit-font-lock-level 4)
+  (global-treesit-auto-mode))
 
 (use-package combobulate
   :hook ((prog-mode . combobulate-mode))

@@ -14,8 +14,8 @@ emacs/early-init.el
 emacs/var/dape/adapters/
 
 # Vim
-vim/plugged/
-vim/autoload/
+autoload/
+plugged/
 
 # Folder-specific ignore
 .DS_Store

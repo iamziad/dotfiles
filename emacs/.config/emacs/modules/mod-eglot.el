@@ -1,6 +1,5 @@
 ;;; mod-eglot.el --- LSP client (eglot) -*- lexical-binding: t; -*-
 
-
 (use-package jsonrpc
   :straight t)
 

@@ -21,7 +21,6 @@
 (use-package corfu
   :custom
   (corfu-cycle t)
-  ;; (corfu-auto t)
   (corfu-auto-delay 0.15)
   (corfu-auto-prefix 2)
   (corfu-separator ?\s)
@@ -51,11 +50,13 @@
   (defun my/corfu-enable-auto ()
     (setq-local corfu-auto t))
 
-  (dolist (hook '(html-mode-hook
+  (dolist (hook '(emacs-lisp-mode-hook
+                  html-mode-hook
                   mhtml-mode-hook
                   css-mode-hook
                   scss-mode-hook
                   web-mode-hook
+                  conf-mode
                   html-ts-mode-hook
                   css-ts-mode-hook))
     (add-hook hook #'my/corfu-enable-auto)))

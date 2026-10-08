@@ -23,5 +23,5 @@ if [[ "$status" == *"[MUTED]"* ]]; then
 else
     echo ""
     echo ""
-    echo "#b8bb26"
+    echo "#00ff00"
 fi

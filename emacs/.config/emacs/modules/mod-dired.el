@@ -5,13 +5,15 @@
 (use-package dired
   :straight nil
   :custom
-  (dired-listing-switches "-lh --group-directories-first")
+  (dired-listing-switches "-alh --group-directories-first")
   (dired-dwim-target t)
   (delete-by-moving-to-trash t)
   (dired-kill-when-opening-new-dired-buffer t)
   (dired-auto-revert-buffer t)
   (dired-mouse-drag-files t)
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+  (setq image-dired-thumb-size 250)
+  (setq image-dired-thumbnail-storage 'standard)
   :config
   ;; (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (with-eval-after-load 'dired
@@ -49,13 +51,11 @@
 (use-package nerd-icons-dired
   :hook (dired-mode . nerd-icons-dired-mode))
 
-(use-package image-dired
-  :ensure nil
-  :config
-  (setq image-dired-thumb-size 250)
-  (setq image-dired-thumbnail-storage 'standard))
-;; :bind (:map dired-mode-map
-;;             ("C-d i" . image-dired)))
+(use-package dired-git-info
+  :custom
+  (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable)
+  (with-eval-after-load 'dired
+    (define-key dired-mode-map ")" 'dired-git-info-mode)))
 
 (use-package dired-open-with
   :ensure t)

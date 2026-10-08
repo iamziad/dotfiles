@@ -27,6 +27,10 @@
     (url-copy-file url file t)
     (find-file file)))
 
+(use-package nov
+  :straight t
+  :mode ("\\.epub\\'" . nov-mode))
+
 (provide 'mod-pdf)
 
 ;;; mod-pdf.el ends here

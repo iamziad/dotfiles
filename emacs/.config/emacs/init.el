@@ -130,7 +130,11 @@
   (isearch-lazy-count t)
   (lazy-count-prefix-format "(%s/%s) ")
   (pixel-scroll-mode)
-  (setq image-use-external-converter t)
+  (image-use-external-converter t)
+
+  ;; Eldoc
+  (eldoc-echo-area-use-multiline-p nil)
+  (eldoc-display-functions '(eldoc-display-in-echo-area))
 
   ;; Windows & Buffers
   (window-combination-resize t)
@@ -168,6 +172,7 @@
                 size-indication-mode
                 minibuffer-depth-indicate-mode
                 show-paren-mode
+                which-key-mode
                 context-menu-mode))
   (add-hook 'after-init-hook mode))
 
@@ -183,24 +188,6 @@
                 hl-line-mode
                 show-paren-mode)
               so-long-minor-modes))
-
-(use-package project
-  :straight nil
-  :config
-  (setq project-vc-extra-root-markers '(".git" "Makefile" "compile_commands.json"))
-  (defun my/project-try-local-root (dir)
-    (let ((root (or (locate-dominating-file dir "pom.xml")
-                    (locate-dominating-file dir "package.json"))))
-      (and root (cons 'transient root))))
-  (add-to-list 'project-find-functions #'my/project-try-local-root))
-
-(setq project-switch-commands
-      '((project-find-file    "File"    ?f)
-        (project-find-dir    "Directory"    ?d)
-        (consult-ripgrep      "Ripgrep" ?r)
-        (magit-project-status "Magit"   ?m)
-        (project-compile      "Compile" ?c)
-        (my/vterm-toggle      "Terminal" ?t)))
 
 ;;; --------------------------------------------------------------------------
 ;;; Keybindings
@@ -253,6 +240,17 @@
            ("r"   . my/quick-mark)
            ("j"   . my/quick-jump))
 
+(use-package mistty
+  :bind (("C-c j" . mistty)
+         ;; bind here the shortcuts you'd like the
+         ;; shell to handle instead of Emacs.
+         :map mistty-prompt-map
+         ;; fish: directory history
+         ("M-<up>" . mistty-send-key)
+         ("M-<down>" . mistty-send-key)
+         ("M-<left>" . mistty-send-key)
+         ("M-<right>" . mistty-send-key)))
+
 ;;; --------------------------------------------------------------------------
 ;;; UI, Theme & Fonts
 ;;; --------------------------------------------------------------------------
@@ -263,9 +261,9 @@
 (blink-cursor-mode -1)
 
 ;; Fonts
-(defvar my/font                (font-spec :family "Iosevka" :size 17))
-(defvar my/variable-pitch-font (font-spec :family "DejaVu Sans" :size 14))
-(defvar my/serif-font          (font-spec :family "Noto Serif" :size 14))
+(defvar my/font                (font-spec :family "JetBrainsMono Nerd Font" :size 15))
+(defvar my/variable-pitch-font (font-spec :family "Noto Sans" :size 16))
+(defvar my/serif-font          (font-spec :family "Noto Serif" :size 16))
 (defvar my/arabic-font         (font-spec :family "Cairo" :size 15))
 (defvar my/symbol-font         (font-spec :family "Noto Sans Symbols 2"))
 (setq text-scale-mode-step 1.1)
@@ -307,13 +305,12 @@
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
-(setq-default fill-column 80)
-;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(setq-default fill-column 100)
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Modeline & Fringe
 (column-number-mode 1)
 (size-indication-mode 1)
-;; (fringe-mode '(8 . 0))
 
 ;;; --------------------------------------------------------------------------
 ;;; Utility Functions
@@ -347,6 +344,20 @@
   "Jump to the position stored in register CHAR."
   (interactive (list (read-char "Jump to register: ")))
   (jump-to-register char))
+
+(defun my/set-font (family size)
+  "Pick an installed font family and size, apply immediately."
+  (interactive
+   (list (completing-read "Font family: " (font-family-list))
+         (read-number "Size (pt): " 12)))
+  (set-face-attribute 'default nil :family family :height (* size 10)))
+
+(defun my/eldoc-toggle-multiline ()
+  "Toggle eldoc echo area between one line and multiline."
+  (interactive)
+  (setq eldoc-echo-area-use-multiline-p
+        (if (eq eldoc-echo-area-use-multiline-p nil) t nil))
+  (message "eldoc multiline: %s" eldoc-echo-area-use-multiline-p))
 
 ;;; --------------------------------------------------------------------------
 (provide 'init)

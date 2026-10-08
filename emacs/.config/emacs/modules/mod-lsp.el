@@ -1,8 +1,21 @@
-;;; mod-lsp.el --- LSP setup -*- lexical-binding: t; -*-
+;; -*- lexical-binding: t; -*-
+
+(use-package mason
+  :config
+  (mason-ensure
+   (lambda ()
+     (dolist (pkg '("clangd" "jdtls" "typescript-language-server"
+                    "bash-language-server" "html-lsp" "css-lsp" "json-lsp"
+                    "prettier" "clang-format" "google-java-format"))
+       (unless (mason-installed-p pkg)
+         (ignore-errors (mason-install pkg)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package lsp-mode
   :diminish "LSP"
   :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (dired-mode . lsp-dired-mode)
          (c-ts-mode          . lsp-deferred)
          (c++-ts-mode        . lsp-deferred)
          (java-ts-mode       . lsp-deferred)
@@ -32,9 +45,30 @@
   (lsp-modeline-diagnostics-enable nil)
   (lsp-modeline-workspace-status-enable nil)
   (lsp-signature-doc-lines 1)
-  (lsp-eldoc-render-all nil)
+  ;; abuse Eldoc
+  (lsp-eldoc-enable-hover t)
+  (lsp-eldoc-render-all t)
+  (lsp-signature-auto-activate t)
+  (lsp-signature-render-documentation t)
+  (eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  ;;
   (lsp-semantic-tokens-enable nil)
   (lsp-enable-dap-auto-configure t)
+  :bind
+  (:map lsp-mode-map
+        ("M-RET" . lsp-execute-code-action)
+        ("C-c l a" . lsp-execute-code-action)
+        ("C-c l b" . lsp-headerline-breadcrumb-mode)
+        ("C-c l d" . lsp-find-definition)
+        ("C-c l r" . lsp-find-references)
+        ("C-c l i" . lsp-find-implementation)
+        ("C-c l t" . lsp-find-type-definition)
+        ("C-c l h" . lsp-describe-thing-at-point)
+        ("C-c l R" . lsp-rename)
+        ("C-c l s" . lsp-signature-activate)
+        ("C-c l f" . lsp-format-buffer)
+        ("C-c l F" . lsp-format-region)
+        ("C-c l e" . lsp-ui-flycheck-list))
   :init
   (setq lsp-use-plists t)
   :bind (:map lsp-mode-map
@@ -60,44 +94,56 @@
   :bind (:map lsp-ui-mode-map
               ("C-c l k" . lsp-ui-doc-glance)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my/lsp-booster-json-parse (old-fn &rest args)
+  "Read the booster's bytecode instead of JSON when it is present."
+  (or (when (equal (following-char) ?#)
+        (let ((bytecode (read (current-buffer))))
+          (when (byte-code-function-p bytecode)
+            (funcall bytecode))))
+      (apply old-fn args)))
+(advice-add 'json-parse-buffer :around #'my/lsp-booster-json-parse)
+
+(defun my/lsp-booster-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster to the server command."
+  (let ((orig (funcall old-fn cmd test?)))
+    (if (and (not test?)
+             (not (file-remote-p default-directory))
+             lsp-use-plists
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let* ((resolved (executable-find (car orig))))
+            (setcar orig resolved))
+          (cons "emacs-lsp-booster" orig))
+      orig)))
+(advice-add 'lsp-resolve-final-command :around #'my/lsp-booster-final-command)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-hook 'lsp-diagnostics-mode-hook
+          (lambda ()
+            (when (flycheck-valid-checker-p 'lsp)
+              (flycheck-add-next-checker 'lsp 'javascript-eslint))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package lsp-java
   :after lsp-mode
   :config
-  (setq lsp-java-server-install-dir (expand-file-name "~/.local/share/jdtls-local/")
-        lsp-java-java-path "/usr/lib/jvm/java-25-openjdk/bin/java"
-        lsp-java-configuration-runtimes
-        '[(:name "JavaSE-25"
-                 :path "/usr/lib/jvm/java-25-openjdk"
-                 :default t)])
-  (let ((dap-jar "/home/ziad/.m2/repository/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.2/com.microsoft.java.debug.plugin-0.53.2.jar"))
+  ;;
+  (setq lsp-java-server-install-dir (expand-file-name "packages/jdtls/" mason-dir))
+  ;;
+  (let ((jvm "/usr/lib/jvm/java-25-openjdk"))
+    (when (file-directory-p jvm)
+      (setq lsp-java-java-path (concat jvm "/bin/java")
+            lsp-java-configuration-runtimes
+            `[(:name "JavaSE-25" :path ,jvm :default t)])))
+  ;;
+  (let ((dap-jar (expand-file-name
+                  "share/java-debug-adapter/com.microsoft.java.debug.plugin.jar"
+                  mason-dir)))
     (when (file-exists-p dap-jar)
-      (setq lsp-java-bundles (list dap-jar)))))
-
-;; emacs-lsp-booster: faster JSON parsing from language servers.
-;; Only active when the `emacs-lsp-booster' binary is on PATH.
-(when (executable-find "emacs-lsp-booster")
-  (defun my/lsp-booster--json-parse (old-fn &rest args)
-    "Read bytecode from the booster instead of JSON when present."
-    (or (when (equal (following-char) ?#)
-          (let ((bytecode (read (current-buffer))))
-            (when (byte-code-function-p bytecode)
-              (funcall bytecode))))
-        (apply old-fn args)))
-  (advice-add (if (fboundp 'json-parse-buffer) 'json-parse-buffer 'json-read)
-              :around #'my/lsp-booster--json-parse)
-
-  (defun my/lsp-booster--final-command (old-fn cmd &optional test?)
-    "Prepend emacs-lsp-booster to the server command."
-    (let ((orig (funcall old-fn cmd test?)))
-      (if (and (not test?)
-               (not (file-remote-p default-directory))
-               lsp-use-plists)
-          (progn
-            (when-let* ((resolved (executable-find (car orig))))
-              (setcar orig resolved))
-            (cons "emacs-lsp-booster" orig))
-        orig)))
-  (advice-add 'lsp-resolve-final-command :around #'my/lsp-booster--final-command))
+      (setq lsp-java-bundles (list (file-truename dap-jar))))))
 
 (provide 'mod-lsp)
-;;; mod-lsp.el ends here

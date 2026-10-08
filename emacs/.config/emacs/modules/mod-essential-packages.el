@@ -19,6 +19,14 @@
 
 ;;; --------------------------------------------------------------------------
 
+(use-package yasnippet
+  :ensure t
+  :config
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+  (yas-global-mode 1))
+
+;;; --------------------------------------------------------------------------
+
 (use-package devdocs
   :ensure t
   :bind ("C-c C-d" . devdocs-lookup))
@@ -58,10 +66,10 @@
 
 ;;; --------------------------------------------------------------------------
 
-(use-package reverse-im
-  :demand t
-  :custom (reverse-im-input-methods '("arabic"))
-  :config (reverse-im-mode 1))
+;; (use-package reverse-im
+;;   :demand t
+;;   :custom (reverse-im-input-methods '("arabic"))
+;;   :config (reverse-im-mode 1))
 
 ;;; --------------------------------------------------------------------------
 
