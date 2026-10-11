@@ -17,22 +17,22 @@ opacity = 1.0
 history = 5000
 
 [font]
-size = 11.5
+size = 12
 
 [font.normal]
-family = "JetBrainsMono Nerd Font"
+family = "FiraCode Nerd Font"
 style = "Regular"
 
 [font.bold]
-family = "JetBrainsMono Nerd Font"
+family = "FiraCode Nerd Font"
 style = "Bold"
 
 [font.italic]
-family = "JetBrainsMono Nerd Font"
+family = "FiraCode Nerd Font"
 style = "Italic"
 
 [font.bold_italic]
-family = "JetBrainsMono Nerd Font"
+family = "FiraCode Nerd Font"
 style = "Bold Italic"
 
 [cursor]

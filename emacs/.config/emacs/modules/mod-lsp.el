@@ -146,4 +146,8 @@
     (when (file-exists-p dap-jar)
       (setq lsp-java-bundles (list (file-truename dap-jar))))))
 
+(with-eval-after-load 'apheleia
+  (setf (alist-get 'google-java-format apheleia-formatters)
+        '("google-java-format" "--aosp" "-")))
+
 (provide 'mod-lsp)

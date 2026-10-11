@@ -49,6 +49,8 @@
   (setq dired-sidebar-use-custom-font t))
 
 (use-package nerd-icons-dired
+  :config
+  (setq nerd-icons-scale-factor 1.05)
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-git-info

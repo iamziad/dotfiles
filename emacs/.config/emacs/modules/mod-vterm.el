@@ -1,9 +1,12 @@
 ;;; -*- lexical-binding: t; -*-
 
-
 (use-package vterm
-  :init (setq vterm-always-compile-module t)
-  :custom (vterm-max-scrollback 10000)
+  :init
+  (setq vterm-always-compile-module t
+        vterm-copy-exclude-prompt t
+        vterm-kill-buffer-on-exit t
+        vterm-max-scrollback 10000
+        vterm-timer-delay 0.01)
   :config
   (add-hook 'vterm-mode-hook            ; killing a vterm shouldn't nag
             (lambda ()
@@ -54,9 +57,9 @@
     (switch-to-buffer (get-buffer buf-name))))
 
 
+(keymap-global-set "C-`"     #'my/vterm-toggle)  ; same buffer, bottom panel
+(keymap-global-set "C-c C-m" #'my/vterm-project) ; project vterm, full window
 (keymap-global-set "C-c t o" #'vterm-other-window)
 (keymap-global-set "C-c t n" #'my/vterm-new)
-(keymap-global-set "C-c k" #'my/vterm-project) ; project vterm, full window
-(keymap-global-set "C-`"   #'my/vterm-toggle)  ; same buffer, bottom panel
 
 (provide 'mod-vterm)

@@ -4,6 +4,7 @@
 (require 'mod-navigation)
 ;; (require 'mod-evil)
 ;; (require 'mod-completion-builtin)
+(require 'mod-linux)
 (require 'mod-dired)
 (require 'mod-completion)
 (require 'mod-consult)
@@ -23,6 +24,7 @@
 (require 'mod-literate-programming)
 (require 'mod-olivetti)
 (require 'mod-vterm)
+;; (require 'mod-eshell)
 (require 'mod-eww)
 (require 'mod-pdf)
 

@@ -48,7 +48,58 @@ if status is-interactive
 end
 
 function fish_prompt
-    echo (set_color grey)(date +%H:%M) (set_color 87d7af)(prompt_pwd) (set_color ffafff)(fish_git_prompt) (set_color ffafff)'| '
+    set -l last_status $status
+    set -l last_duration $CMD_DURATION
+
+    set_color b8bb26
+    echo -n (whoami)
+    set_color normal
+    echo -n '@'
+    set_color b8bb26
+    echo -n $hostname
+    set_color normal
+    echo -n ' '
+
+    set_color 83a598
+    echo -n (prompt_pwd)
+    set_color normal
+
+    set -l branch (git branch --show-current 2>/dev/null)
+    if test -n "$branch"
+        set -l dirty ""
+        if not git diff --quiet 2>/dev/null
+            set dirty "*"
+        else if not git diff --cached --quiet 2>/dev/null
+            set dirty "*"
+        end
+        set_color fabd2f
+        echo -n " ($branch$dirty)"
+        set_color normal
+    end
+
+    if test "$last_duration" -gt 300
+        set_color 928374
+        if test "$last_duration" -ge 1000
+            set -l secs (math "$last_duration / 1000")
+            printf " %.1fs" (math "$last_duration / 1000")
+        else
+            printf " %dms" $last_duration
+        end
+        set_color normal
+    end
+    if test $last_status -ne 0
+        set_color fb4934
+        echo -n " [$last_status]"
+        set_color normal
+    end
+
+    if test $last_status -eq 0
+        set_color b8bb26
+    else
+        set_color fb4934
+    end
+    echo -n ' $ '
+    set_color normal
 end
 
 fnm env --use-on-cd | source

@@ -5,9 +5,9 @@ set $mod Mod4
 exec --no-startup-id xrdb -merge "$HOME/.Xresources"
 
 set $TERM            alacritty
-set $LAUNCHER        i3-dmenu-desktop --dmenu="dmenu -i -fn IosevkaTerm:size=11"
+set $LAUNCHER        i3-dmenu-desktop --dmenu="dmenu -i -fn monospace:size=11"
 set $BAR             i3blocks
-set $FONT            JetBrainsMono Nerd Font
+set $FONT            FiraCode Nerd Font
 # set $LOCK            i3lock
 
 # Monitors
@@ -27,7 +27,7 @@ set $ws9  "9"
 set $ws10 "10"
 
 #  Appearance
-font pango:$FONT 9
+font pango:$FONT SemiBold 9
 hide_edge_borders smart
 
 set $GAPS_OUTER 0px
@@ -121,15 +121,15 @@ for_window [window_type="dialog"]                       $FLOAT
 for_window [instance="spterm"] $FLOAT, move scratchpad, border pixel 3
 
 #  Focus
-bindsym Control+$mod+h     focus left
-bindsym Control+$mod+j     focus down
-bindsym Control+$mod+k     focus up
-bindsym Control+$mod+l     focus right
+bindsym $mod+h     focus left
+bindsym $mod+j     focus down
+bindsym $mod+k     focus up
+bindsym $mod+l     focus right
 
-bindsym Control+$mod+Left  focus left
-bindsym Control+$mod+Down  focus down
-bindsym Control+$mod+Up    focus up
-bindsym Control+$mod+Right focus right
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
 
 bindsym $mod+o focus mode_toggle
 
@@ -149,8 +149,8 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # Layout controls
-bindsym $mod+h       split h
-bindsym $mod+v       split v
+bindsym $mod+Control+h       split h
+bindsym $mod+Control+v       split v
 bindsym $mod+f       fullscreen toggle
 bindsym $mod+s       layout stacking
 bindsym $mod+w       layout tabbed
@@ -219,7 +219,7 @@ bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDI
 bindsym XF86AudioMute        exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle           && pkill -RTMIN+10 i3blocks
 
 # Mic
-bindsym $mod+m exec --no-startup-id sh -c 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+10 i3blocks'
+bindsym $mod+Control+m exec --no-startup-id sh -c 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && pkill -RTMIN+10 i3blocks'
 
 # Brightness
 bindsym $mod+F5 exec --no-startup-id my-brightness Samsung -
@@ -252,7 +252,7 @@ bindsym $mod+ctrl+Print  exec --no-startup-id my-screenshot select save
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus [class="^(?!spterm$).*"] scratchpad show
 
-bindsym $mod+k exec i3-msg '[class="spterm"] scratchpad show' || exec $TERM -o "window.opacity=0.95" --class spterm -e tmux new-session -A -s scratch
+bindsym $mod+m exec i3-msg '[class="spterm"] scratchpad show' || exec $TERM -o "window.opacity=0.95" --class spterm -e tmux new-session -A -s scratch
 for_window [class="spterm"] floating enable, move scratchpad
 
 #  Startup

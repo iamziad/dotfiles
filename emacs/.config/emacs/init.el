@@ -52,6 +52,7 @@
 
 ;; Load modules
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
@@ -80,6 +81,7 @@
 
   (setq auto-revert-use-notify t)
   (setq whitespace-global-modes '(prog-mode))
+  (setq eshell-banner-message "")
 
   :custom
   ;; Input & Files
@@ -121,12 +123,12 @@
   (select-active-regions nil)
 
   ;; Scrolling
-  (isearch-allow-scroll t)
-  (scroll-margin 3)
-  (scroll-conservatively 101)
-  (scroll-preserve-screen-position t)
-  (isearch-wrap-pause 'no-ding)
+  (scroll-margin 0)
+  (scroll-conservatively 100000)
+  (scroll-preserve-screen-position 1)
 
+  (isearch-allow-scroll t)
+  (isearch-wrap-pause 'no-ding)
   (isearch-lazy-count t)
   (lazy-count-prefix-format "(%s/%s) ")
   (pixel-scroll-mode)
@@ -197,13 +199,11 @@
  ("C-/"           . undo-only)
  ("C-?"           . undo-redo)
  ("M-j"           . recenter-top-bottom)
- ("C-c p k"       . eldoc-doc-buffer)
+ ("C-c C-f"       . find-file-other-window)
  ;; Compile & run
  ("C-c r"         . recompile)
  ("C-c c"         . compile)
- ("C-c p c"       . project-compile)
  ;; Windows, buffers, tabs
- ("C-x k"         . kill-current-buffer)
  ("C-x C-k"       . kill-buffer-and-window)
  ("C-<tab>"       . mode-line-other-buffer)
  ;; Editing
@@ -216,9 +216,7 @@
  ("C-n"           . forward-paragraph)
  ("C-p"           . backward-paragraph)
  ("M-p"           . backward-paragraph)
- ("M-n"           . forward-paragraph)
- ("C-}"           . forward-paragraph)
- ("C-{"           . backward-paragraph))
+ ("M-n"           . forward-paragraph))
 
 (use-package crux
   :bind (("M-k"          . crux-kill-whole-line)
@@ -228,6 +226,20 @@
          ("C-c U"        . crux-reopen-as-root)
          ("C-c C-x r"    . crux-rename-file-and-buffer)
          ("C-c C-x d"    . crux-delete-file-and-buffer)))
+
+(use-package smartparens
+  ;; :diminish 'smartparens-mode
+  :hook (prog-mode . smartparens-mode)
+  :config
+  (require 'smartparens-config)
+  :bind
+  ("C-c s r"   . sp-rewrap-sexp)
+  ("C-c s u"   . sp-unwarp-sexp)
+  ("C-c s w r" . sp-wrap-round)
+  ("C-c s w c" . sp-wrap-curly)
+  ("C-c s w s" . sp-wrap-square)
+  ("C-c s c"   . sp-change-inner)
+  ("M-m"       . sp-delete-sexp))
 
 ;; Leader
 (bind-keys :prefix-map my-leader-map
@@ -240,17 +252,6 @@
            ("r"   . my/quick-mark)
            ("j"   . my/quick-jump))
 
-(use-package mistty
-  :bind (("C-c j" . mistty)
-         ;; bind here the shortcuts you'd like the
-         ;; shell to handle instead of Emacs.
-         :map mistty-prompt-map
-         ;; fish: directory history
-         ("M-<up>" . mistty-send-key)
-         ("M-<down>" . mistty-send-key)
-         ("M-<left>" . mistty-send-key)
-         ("M-<right>" . mistty-send-key)))
-
 ;;; --------------------------------------------------------------------------
 ;;; UI, Theme & Fonts
 ;;; --------------------------------------------------------------------------
@@ -261,30 +262,30 @@
 (blink-cursor-mode -1)
 
 ;; Fonts
-(defvar my/font                (font-spec :family "JetBrainsMono Nerd Font" :size 15))
-(defvar my/variable-pitch-font (font-spec :family "Noto Sans" :size 16))
-(defvar my/serif-font          (font-spec :family "Noto Serif" :size 16))
-(defvar my/arabic-font         (font-spec :family "Cairo" :size 15))
-(defvar my/symbol-font         (font-spec :family "Noto Sans Symbols 2"))
-(setq text-scale-mode-step 1.1)
+(set-face-attribute 'default nil
+                    :family "FiraCode Nerd Font Mono"
+                    :height 120)
+(set-face-attribute 'fixed-pitch nil
+                    :family "FiraCode Nerd Font Mono"
+                    :height 120)
+(set-face-attribute 'fixed-pitch-serif nil
+                    :family "Noto Serif"
+                    :height 120)
+(set-face-attribute 'variable-pitch nil
+                    :family "Noto Sans"
+                    :height 120)
 
-(defun my/setup-fonts (&optional frame)
-  "Apply fonts to FRAME (or the selected frame) if it is graphical."
+(defun my/setup-arabic-font (&optional frame)
   (let ((frame (or frame (selected-frame))))
     (when (display-graphic-p frame)
-      (set-face-attribute 'default          nil :font my/font)
-      (set-face-attribute 'fixed-pitch      nil :font my/font)
-      (set-face-attribute 'fixed-pitch-serif nil :font my/serif-font)
-      (set-face-attribute 'variable-pitch   nil :font my/variable-pitch-font)
-      ;; Nerd Font icons live in these Private Use Areas.
-      (dolist (range '((#xe000 . #xf8ff) (#xf0000 . #xfffff)))
-        (set-fontset-font t range "Symbols Nerd Font Mono"))
-      (set-fontset-font t 'symbol       my/symbol-font)
-      (set-fontset-font t 'mathematical my/symbol-font)
-      (set-fontset-font t 'arabic       my/arabic-font))))
+      (with-selected-frame frame
+        (set-fontset-font t 'arabic (font-spec :family "" :size 20))))))
 
-(my/setup-fonts)
-(add-hook 'after-make-frame-functions #'my/setup-fonts)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'my/setup-arabic-font)
+  (my/setup-arabic-font))
+
+(setq text-scale-mode-step 1.1)
 
 ;; Theme
 (defvar my/theme 'gruvbox)
@@ -292,10 +293,6 @@
 (condition-case _err
     (load-theme my/theme t)
   (error (load-theme 'zenburn t)))
-
-;;; Icons
-(use-package nerd-icons
-  :if (display-graphic-p))
 
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative

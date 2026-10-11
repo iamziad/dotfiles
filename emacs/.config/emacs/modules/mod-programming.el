@@ -43,6 +43,7 @@
 ;; Makefiles MUST use real tabs
 (add-hook 'makefile-mode-hook (lambda () (setq indent-tabs-mode t)))
 
+;; Close bidi support in prog-mode
 (add-hook 'prog-mode-hook
           (lambda ()
             (setq bidi-paragraph-direction 'left-to-right

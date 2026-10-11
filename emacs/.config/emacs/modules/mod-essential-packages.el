@@ -14,6 +14,7 @@
 (use-package diminish
   :ensure t
   :config
+  (diminish 'which-key-mode)
   (diminish 'visual-line-mode)
   (diminish 'eldoc-mode))
 
@@ -45,16 +46,6 @@
   (gcmh-mode 1)
   (setq gcmh-idle-delay 5
         gcmh-high-cons-threshold (* 64 1024 1024)))
-
-;;; --------------------------------------------------------------------------
-
-(use-package smartparens
-  :diminish 'smartparens-mode
-  :hook (prog-mode . smartparens-mode)
-  :config
-  (require 'smartparens-config)
-  :bind
-  ("C-c s r" . sp-rewrap-sexp))
 
 ;;; --------------------------------------------------------------------------
 
