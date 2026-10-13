@@ -15,6 +15,7 @@ alias mvn 'mvn -gs $XDG_CONFIG_HOME/maven/settings.xml'
 abbr -a c 'xclip -selection clipboard'
 
 abbr -a gs 'git status'
+abbr -a gss 'git status --short'
 abbr -a ga 'git add'
 abbr -a gc 'git commit'
 abbr -a gl 'git log'

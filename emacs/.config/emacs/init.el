@@ -51,7 +51,7 @@
                           (bookmarks . 5))))
 
 ;; Load modules
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+;; (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -191,6 +191,10 @@
                 show-paren-mode)
               so-long-minor-modes))
 
+
+;; Tabs
+(setq tab-bar-show 1)
+
 ;;; --------------------------------------------------------------------------
 ;;; Keybindings
 ;;; --------------------------------------------------------------------------
@@ -215,8 +219,9 @@
  ;; Paragraphs
  ("C-n"           . forward-paragraph)
  ("C-p"           . backward-paragraph)
- ("M-p"           . backward-paragraph)
- ("M-n"           . forward-paragraph))
+ ;; Tabs
+ ("C-x t h"           . tab-previous)
+ ("C-x t l"           . tab-next))
 
 (use-package crux
   :bind (("M-k"          . crux-kill-whole-line)
@@ -228,13 +233,25 @@
          ("C-c C-x d"    . crux-delete-file-and-buffer)))
 
 (use-package smartparens
-  ;; :diminish 'smartparens-mode
-  :hook (prog-mode . smartparens-mode)
+  :hook (web-mode . smartparens-mode)
   :config
   (require 'smartparens-config)
+
+  ;; ERB/EJS-style template tags
+  (sp-with-modes '(web-mode)
+                 (sp-local-pair "%" "%"
+                                :unless '(sp-in-string-p)
+                                :post-handlers '(((lambda (&rest _ignored)
+                                                    (just-one-space)
+                                                    (save-excursion (insert " ")))
+                                                  "SPC" "=" "#")))
+                 (sp-local-tag "%" "<% "  " %>")
+                 (sp-local-tag "=" "<%= " " %>")
+                 (sp-local-tag "#" "<%# " " %>"))
+
   :bind
   ("C-c s r"   . sp-rewrap-sexp)
-  ("C-c s u"   . sp-unwarp-sexp)
+  ("C-c s u"   . sp-unwrap-sexp)
   ("C-c s w r" . sp-wrap-round)
   ("C-c s w c" . sp-wrap-curly)
   ("C-c s w s" . sp-wrap-square)
@@ -288,11 +305,38 @@
 (setq text-scale-mode-step 1.1)
 
 ;; Theme
-(defvar my/theme 'gruvbox)
-(use-package zenburn-theme :demand t)
-(condition-case _err
-    (load-theme my/theme t)
-  (error (load-theme 'zenburn t)))
+;; (defvar my/theme 'gruvbox)
+;; (use-package zenburn-theme :demand t)
+;; (condition-case _err
+;;     (load-theme my/theme t)
+;;   (error (load-theme 'zenburn t)))
+
+
+(use-package doom-themes
+  :ensure t
+  :config
+  (defun my/apply-custom-faces ()
+    (custom-set-faces
+     `(font-lock-misc-punctuation-face
+       ((t (:foreground ,(doom-color 'orange)))))))
+
+  (defun my/load-theme (theme)
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme t)
+    (my/apply-custom-faces))
+
+  (defun toggle-theme (&optional mode)
+    "Switch theme. MODE can be `light', `dark', or nil to toggle."
+    (interactive)
+    (my/load-theme
+     (pcase mode
+       ('light 'doom-gruvbox-light)
+       ('dark  'doom-gruvbox)
+       (_ (if (member 'doom-gruvbox custom-enabled-themes)
+              'doom-gruvbox-light
+            'doom-gruvbox)))))
+
+  (my/load-theme 'doom-gruvbox))
 
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative
@@ -302,8 +346,8 @@
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
-(setq-default fill-column 100)
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+;; (setq-default fill-column 100)
+;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Modeline & Fringe
 (column-number-mode 1)
@@ -348,13 +392,6 @@
    (list (completing-read "Font family: " (font-family-list))
          (read-number "Size (pt): " 12)))
   (set-face-attribute 'default nil :family family :height (* size 10)))
-
-(defun my/eldoc-toggle-multiline ()
-  "Toggle eldoc echo area between one line and multiline."
-  (interactive)
-  (setq eldoc-echo-area-use-multiline-p
-        (if (eq eldoc-echo-area-use-multiline-p nil) t nil))
-  (message "eldoc multiline: %s" eldoc-echo-area-use-multiline-p))
 
 ;;; --------------------------------------------------------------------------
 (provide 'init)

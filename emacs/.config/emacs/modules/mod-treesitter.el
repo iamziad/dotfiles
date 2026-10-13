@@ -1,16 +1,30 @@
 ;;; mod-treesitter.el --- Tree-sitter grammars & major modes -*- lexical-binding: t; -*-
 
+
 (setq warning-suppress-types
       '((treesit-font-lock-rules-mismatch)))
 
+(defvar my/treesit-modes
+  '((html       . html-ts-mode)
+    (css        . css-ts-mode)
+    (javascript . js-ts-mode)
+    (typescript . typescript-ts-mode)
+    (tsx        . tsx-ts-mode)
+    (json       . json-ts-mode)))
+
 (use-package treesit-auto
-  :custom (treesit-auto-install 'prompt)
+  :custom
+  (treesit-auto-install 'prompt)
+  (treesit-auto-langs (mapcar #'car my/treesit-modes))
   :config
   (setq treesit-font-lock-level 4)
   (global-treesit-auto-mode))
 
+
 (use-package combobulate
-  :hook ((prog-mode . combobulate-mode))
+  :init
+  (dolist (mode (mapcar #'cdr my/treesit-modes))
+    (add-hook (intern (format "%s-hook" mode)) #'combobulate-mode))
   :bind
   (:map combobulate-mode-map
         ;; Navigation

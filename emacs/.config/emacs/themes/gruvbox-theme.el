@@ -143,7 +143,7 @@
    `(font-lock-bracket-face ((t (:foreground ,fg1))))
    `(font-lock-delimiter-face ((t (:foreground ,orange))))
    `(font-lock-punctuation-face ((t (:foreground ,fg1))))
-   `(font-lock-misc-punctuation-face ((t (:foreground ,fg1))))
+   `(font-lock-misc-punctuation-face ((t (:foreground ,orange))))
    `(font-lock-property-name-face ((t (:foreground ,blue))))
    `(font-lock-property-use-face ((t (:foreground ,blue))))
    `(font-lock-number-face ((t (:foreground ,purple))))

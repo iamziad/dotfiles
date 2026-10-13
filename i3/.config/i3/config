@@ -27,7 +27,7 @@ set $ws9  "9"
 set $ws10 "10"
 
 #  Appearance
-font pango:$FONT SemiBold 9
+font pango:$FONT 10
 hide_edge_borders smart
 
 set $GAPS_OUTER 0px

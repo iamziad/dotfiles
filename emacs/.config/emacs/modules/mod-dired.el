@@ -15,10 +15,8 @@
   (setq image-dired-thumb-size 250)
   (setq image-dired-thumbnail-storage 'standard)
   :config
-  ;; (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (with-eval-after-load 'dired
-    (put 'dired-jump 'repeat-map nil))
-  (keymap-set dired-mode-map "b" #'dired-open-with))
+    (put 'dired-jump 'repeat-map nil)))
 
 (use-package async
   :ensure t
@@ -58,8 +56,5 @@
   (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable)
   (with-eval-after-load 'dired
     (define-key dired-mode-map ")" 'dired-git-info-mode)))
-
-(use-package dired-open-with
-  :ensure t)
 
 (provide 'mod-dired)

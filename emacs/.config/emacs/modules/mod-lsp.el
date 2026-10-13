@@ -13,46 +13,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package lsp-mode
-  :diminish "LSP"
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  (dolist (mode (mapcar #'cdr my/treesit-modes))
+    (add-hook (intern (format "%s-hook" mode)) #'lsp-deferred))
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (dired-mode . lsp-dired-mode)
-         (c-ts-mode          . lsp-deferred)
-         (c++-ts-mode        . lsp-deferred)
-         (java-ts-mode       . lsp-deferred)
-         (js-ts-mode         . lsp-deferred)
-         (typescript-ts-mode . lsp-deferred)
-         (json-ts-mode       . lsp-deferred)
-         (tsx-ts-mode        . lsp-deferred)
-         (html-ts-mode       . lsp-deferred)
-         (css-ts-mode        . lsp-deferred)
-         (go-ts-mode         . lsp-deferred)
-         (bash-ts-mode       . lsp-deferred)
-         (sql-mode           . lsp-deferred))
+         (c-mode          . lsp-deferred)
+         (java-mode          . lsp-deferred)
+         )
   :custom
-  (lsp-keymap-prefix "C-c l")
-  (lsp-completion-provider :none)            ; corfu + cape handle completion
-  (lsp-diagnostics-provider :flycheck)
   (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-  (lsp-idle-delay 0.1)
-  (lsp-enable-file-watchers nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-indentation nil)
-  (lsp-enable-links nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-text-document-color nil)
+  (lsp-completion-provider :none)
+  (lsp-diagnostics-provider :flycheck)
+  (lsp-idle-delay 0.5)
   (lsp-headerline-breadcrumb-enable nil)
-  (lsp-modeline-diagnostics-enable nil)
-  (lsp-modeline-workspace-status-enable nil)
-  (lsp-signature-doc-lines 1)
-  ;; abuse Eldoc
-  (lsp-eldoc-enable-hover t)
-  (lsp-eldoc-render-all t)
-  (lsp-signature-auto-activate t)
-  (lsp-signature-render-documentation t)
-  (eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-  ;;
-  (lsp-semantic-tokens-enable nil)
+  (lsp-enable-on-type-formatting nil)
+  (lsp-enable-text-document-color nil)
   (lsp-enable-dap-auto-configure t)
   :bind
   (:map lsp-mode-map

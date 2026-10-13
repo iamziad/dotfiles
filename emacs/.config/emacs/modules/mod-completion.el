@@ -59,7 +59,11 @@
                   conf-mode
                   html-ts-mode-hook
                   css-ts-mode-hook))
-    (add-hook hook #'my/corfu-enable-auto)))
+    (add-hook hook #'my/corfu-enable-auto))
+
+  (with-eval-after-load 'cc-mode
+    (define-key c-mode-base-map (kbd "TAB") #'indent-for-tab-command))
+  )
 
 (use-package dabbrev
   :bind (("M-/" . dabbrev-completion)
