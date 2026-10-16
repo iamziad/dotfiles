@@ -78,16 +78,16 @@ function fish_prompt
         set_color normal
     end
 
-    if test "$last_duration" -gt 300
+    if test "$last_duration" -gt 300; and test "$last_duration" -le 300000
         set_color 928374
         if test "$last_duration" -ge 1000
-            set -l secs (math "$last_duration / 1000")
             printf " %.1fs" (math "$last_duration / 1000")
         else
             printf " %dms" $last_duration
         end
         set_color normal
     end
+
     if test $last_status -ne 0
         set_color fb4934
         echo -n " [$last_status]"

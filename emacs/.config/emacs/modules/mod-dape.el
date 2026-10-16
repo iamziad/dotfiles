@@ -3,7 +3,7 @@
 (use-package dape
   :ensure t
   :config
-  (setq dape-buffer-window-arrangement 'left)
+  (setq dape-buffer-window-arrangement 'right)
   ;; (require 'dape-variable-inspect)
   ;; (require 'dape-scope-collapse)
   (setq dape-inlay-hints t)

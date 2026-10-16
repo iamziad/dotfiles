@@ -216,9 +216,6 @@
  ("C-<backspace>" . my/backward-delete-word)
  ("M-d"           . my/delete-word)
  ("C-c f"         . find-file-at-point)
- ;; Paragraphs
- ("C-n"           . forward-paragraph)
- ("C-p"           . backward-paragraph)
  ;; Tabs
  ("C-x t h"           . tab-previous)
  ("C-x t l"           . tab-next))
@@ -280,10 +277,10 @@
 
 ;; Fonts
 (set-face-attribute 'default nil
-                    :family "FiraCode Nerd Font Mono"
+                    :family "Fira Code"
                     :height 120)
 (set-face-attribute 'fixed-pitch nil
-                    :family "FiraCode Nerd Font Mono"
+                    :family "Fira Code"
                     :height 120)
 (set-face-attribute 'fixed-pitch-serif nil
                     :family "Noto Serif"
@@ -304,21 +301,16 @@
 
 (setq text-scale-mode-step 1.1)
 
-;; Theme
-;; (defvar my/theme 'gruvbox)
-;; (use-package zenburn-theme :demand t)
-;; (condition-case _err
-;;     (load-theme my/theme t)
-;;   (error (load-theme 'zenburn t)))
-
-
+;; Themes
 (use-package doom-themes
   :ensure t
   :config
   (defun my/apply-custom-faces ()
     (custom-set-faces
-     `(font-lock-misc-punctuation-face
-       ((t (:foreground ,(doom-color 'orange)))))))
+     `(font-lock-misc-punctuation-face ((t (:foreground ,(doom-color 'orange)))))
+     `(lsp-signature-highlight-function-argument ((t (:foreground ,(doom-color 'yellow)))))
+     `(flycheck-inline-error ((t (:foreground ,(doom-color 'red) :weight normal))))
+     ))
 
   (defun my/load-theme (theme)
     (mapc #'disable-theme custom-enabled-themes)
@@ -337,6 +329,7 @@
             'doom-gruvbox)))))
 
   (my/load-theme 'doom-gruvbox))
+
 
 ;; Line numbers & Column indicator
 (setq display-line-numbers-type 'relative

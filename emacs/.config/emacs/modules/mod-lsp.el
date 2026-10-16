@@ -33,17 +33,20 @@
   (lsp-enable-on-type-formatting nil)
   (lsp-enable-text-document-color nil)
   (lsp-enable-dap-auto-configure t)
+  :config
+  (setq max-mini-window-height 1
+        eldoc-echo-area-use-multiline-p nil)
   :bind
   (:map lsp-mode-map
         ("M-RET" . lsp-execute-code-action)
         ("C-c l a" . lsp-execute-code-action)
         ("C-c l b" . lsp-headerline-breadcrumb-mode)
         ("C-c l d" . lsp-find-definition)
-        ("C-c l r" . lsp-find-references)
+        ("C-c l R" . lsp-find-references)
         ("C-c l i" . lsp-find-implementation)
         ("C-c l t" . lsp-find-type-definition)
         ("C-c l h" . lsp-describe-thing-at-point)
-        ("C-c l R" . lsp-rename)
+        ("C-c l r" . lsp-rename)
         ("C-c l s" . lsp-signature-activate)
         ("C-c l f" . lsp-format-buffer)
         ("C-c l F" . lsp-format-region)

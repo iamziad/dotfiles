@@ -70,7 +70,14 @@
   (with-eval-after-load 'emmet-mode
     (define-key emmet-mode-keymap (kbd "C-j") nil)))
 ;;;
-(use-package json-snatcher)
+(use-package json-snatcher
+  :config
+  (defun js-mode-bindings ()
+    "Sets a hotkey for using the json-snatcher plugin"
+	(when (string-match  "\\.json$" (buffer-name))
+      (local-set-key (kbd "C-c C-g") 'jsons-print-path)))
+  (add-hook 'js-mode-hook 'js-mode-bindings)
+  (add-hook 'js2-mode-hook 'js-mode-bindings))
 
 ;;;
 (use-package rainbow-mode

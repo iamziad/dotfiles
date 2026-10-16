@@ -11,6 +11,7 @@
 
 (use-package verb
   :config
+  (setq verb-json-use-mode 'json-ts-mode)
   (with-eval-after-load 'org
     (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
   (define-key verb-response-body-mode-map (kbd "q")

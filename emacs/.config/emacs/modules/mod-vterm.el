@@ -51,15 +51,32 @@
   (interactive "sBuffer name: ")
   (let* ((root (if-let* ((pr (project-current))) (project-root pr) default-directory))
          (project-name (abbreviate-file-name root))
-         (buf-name (format "*vterm: %s - %s*" project-name name)))
+         (buf-name (format "*vterm: %s => %s*" project-name name)))
     (unless (get-buffer buf-name)
       (save-window-excursion (vterm buf-name)))
     (switch-to-buffer (get-buffer buf-name))))
 
+(defun my/switch-to-vterm-eshell ()
+  "List and switch to an existing vterm or eshell buffer."
+  (interactive)
+  (let* ((buffers (seq-filter (lambda (buf)
+                                (with-current-buffer buf
+                                  (or (eq major-mode 'vterm-mode)
+                                      (eq major-mode 'eshell-mode))))
+                              (buffer-list)))
+         (names (mapcar (lambda (buf) (cons (buffer-name buf) buf)) buffers)))
+    (if (not names)
+        (message "No vterm or eshell buffers found")
+      (let* ((selected (completing-read "Switch to buffer: " names))
+             (buf (alist-get selected names nil nil #'string=)))
+        (switch-to-buffer buf)))))
+
 
 (keymap-global-set "C-`"     #'my/vterm-toggle)  ; same buffer, bottom panel
-(keymap-global-set "C-c C-m" #'my/vterm-project) ; project vterm, full window
+(keymap-global-set "C-x m" #'my/vterm-project) ; project vterm, full window
 (keymap-global-set "C-c t o" #'vterm-other-window)
 (keymap-global-set "C-c t n" #'my/vterm-new)
+(keymap-global-set "C-c t s" #'my/switch-to-vterm-eshell)
+(keymap-global-set "C-c t e" #'eshell)
 
 (provide 'mod-vterm)
