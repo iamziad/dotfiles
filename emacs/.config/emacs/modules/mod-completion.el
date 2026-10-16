@@ -56,6 +56,8 @@
                   css-mode-hook
                   scss-mode-hook
                   web-mode-hook
+                  js-jsx-mode
+                  tsx-ts-mode
                   conf-mode
                   html-ts-mode-hook
                   css-ts-mode-hook))

@@ -4,12 +4,17 @@
 (use-package add-node-modules-path
   :ensure t
   :hook ((js-mode . add-node-modules-path)
+         (js-jsx-mode . add-node-modules-path)
          (js-ts-mode . add-node-modules-path)
          (typescript-mode . add-node-modules-path)
          (typescript-ts-mode . add-node-modules-path)
          (tsx-ts-mode . add-node-modules-path)
          (json-ts-mode . add-node-modules-path)
          (web-mode . add-node-modules-path)))
+
+(use-package js-jsx-mode
+  :straight nil
+  :mode ("\\.jsx\\'"))
 
 ;;;
 (use-package web-mode
@@ -52,12 +57,7 @@
         ("C-c C-e r" . web-mode-element-rename)
         ("C-c C-e k" . web-mode-element-kill)
         ("C-c C-e i" . web-mode-element-insert-at-point)
-        ("C-c C-e t" . web-mode-element-transpose)
-
-        ;; Tag Closing & Folding
-        ("C-c C-f"   . web-mode-tag-match)
-        ("C-c /"     . web-mode-element-close)
-        ("C-c C-e f" . web-mode-element-children-fold-or-unfold)))
+        ("C-c C-e t" . web-mode-element-transpose)))
 
 ;;;
 (use-package emmet-mode

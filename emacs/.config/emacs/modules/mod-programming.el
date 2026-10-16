@@ -70,8 +70,6 @@
   :hook (prog-mode . flycheck-mode)
   :config
   (setq flycheck-display-errors-delay 0.2)
-  (with-eval-after-load 'flycheck
-    (add-hook 'eldoc-documentation-functions #'flycheck-eldoc nil t))
   :bind
   (("C-c C-e n" . flycheck-next-error)
    ("C-c C-e p" . flycheck-previous-error)

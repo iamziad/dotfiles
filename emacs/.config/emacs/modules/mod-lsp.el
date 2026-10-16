@@ -23,6 +23,11 @@
          (dired-mode . lsp-dired-mode)
          (c-mode          . lsp-deferred)
          (java-mode          . lsp-deferred)
+         (js-mode          . lsp-deferred)
+         (js-jsx-mode          . lsp-deferred)
+         (web-mode          . lsp-deferred)
+         (html-mode          . lsp-deferred)
+         (css-mode          . lsp-deferred)
          )
   :custom
   (lsp-session-file (locate-user-emacs-file ".lsp-session"))

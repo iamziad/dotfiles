@@ -29,7 +29,7 @@
         (setq-local compile-command "./gradlew build"))
        ((has "CMakeLists.txt") (setq-local compile-command "cmake --build build"))
        ((has "Makefile")       (setq-local compile-command "make -k"))
-       ((and buffer-file-name (derived-mode-p 'c-mode 'c-ts-mode))
+       ((and buffer-file-name (derived-mode-p 'c-mode))
         (setq-local compile-command
                     (format "gcc -Wall -Wextra -g -o %s %s"
                             (shell-quote-argument (file-name-base buffer-file-name))

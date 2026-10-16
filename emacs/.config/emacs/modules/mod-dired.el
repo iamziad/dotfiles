@@ -23,38 +23,24 @@
   :init
   (dired-async-mode 1))
 
-(use-package dired-subtree
-  :commands (dired-subtree-toggle dired-subtree-cycle)
-  :bind (:map dired-mode-map
-              ("<tab>" . dired-subtree-toggle))
-  :config
-  (setq dired-subtree-line-prefix "  ")
-  (setq dired-subtree-use-backgrounds nil))
-
-(use-package dired-sidebar
-  :bind (("C-c e" . dired-sidebar-toggle-sidebar))
+(use-package dired-open-with
   :ensure t
-  :commands (dired-sidebar-toggle-sidebar)
-  :init
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode))))
-  :config
-  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-  (setq dired-sidebar-use-term-integration t)
-  (setq dired-sidebar-use-custom-font t))
+  :after dired
+  :bind
+  (:map dired-mode-map
+        ("b" . dired-open-with)))
 
 (use-package nerd-icons-dired
   :config
-  (setq nerd-icons-scale-factor 1.05)
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-git-info
+  :ensure t
+  :after dired
   :custom
-  (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable)
-  (with-eval-after-load 'dired
-    (define-key dired-mode-map ")" 'dired-git-info-mode)))
+  (dgi-auto-hide-details-p nil)
+  :bind
+  (:map dired-mode-map
+        (")" . dired-git-info-mode)))
 
 (provide 'mod-dired)

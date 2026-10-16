@@ -107,6 +107,32 @@
 
 ;;; --------------------------------------------------------------------------
 
+(use-package symbol-overlay
+  :ensure t
+  :bind
+  (("M-n" . symbol-overlay-jump-next)
+   ("M-p" . symbol-overlay-jump-prev))
+  :hook
+  (prog-mode . symbol-overlay-mode))
+
+;;; --------------------------------------------------------------------------
+
+(use-package nerd-icons
+  :ensure t)
+
+(use-package neotree
+  :ensure t
+  :bind
+  ("C-c e" . neotree-toggle)
+  :config
+  (setq neo-window-width 33)
+  (setq neo-theme
+        (if (display-graphic-p)
+            'nerd-icons
+          'arrow)))
+
+;;; --------------------------------------------------------------------------
+
 (use-package flyspell
   :ensure t
   :hook ((git-commit-mode org-mode markdown-mode) . flyspell-mode))
