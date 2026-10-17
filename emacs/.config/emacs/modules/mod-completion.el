@@ -40,7 +40,7 @@
   (global-corfu-mode)
   :config
   (setq global-corfu-modes '((not help-mode gud-mode) t))
-  (add-to-list 'completion-category-overrides `(lsp-capf (styles ,@completion-styles)))
+  (add-to-list 'completion-category-overrides `(eglot (styles ,@completion-styles)))
   (add-hook 'minibuffer-setup-hook
             (lambda ()
               (corfu-mode -1)))
@@ -51,6 +51,8 @@
     (setq-local corfu-auto t))
 
   (dolist (hook '(emacs-lisp-mode-hook
+                  c-mode
+                  c-ts-mode
                   html-mode-hook
                   mhtml-mode-hook
                   css-mode-hook
@@ -97,10 +99,12 @@
               (defun my/corfu-add-cape-dabbrev-h ()
                 (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t))))
   :config
-  (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
-  (advice-add #'lsp-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
+  ;; lsp-mode's `lsp-completion-at-point' advice dropped — that function no
+  ;; longer exists now that lsp-mode is gone; eglot's equivalent is advised
+  ;; below instead.
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
+  (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
 
 (use-package kind-icon

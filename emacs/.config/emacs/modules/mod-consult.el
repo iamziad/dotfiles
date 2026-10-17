@@ -11,11 +11,9 @@
          ("M-g f"   . consult-flymake)
          ("M-s r"   . consult-ripgrep)
          ("M-s g"   . consult-git-grep)
-         ("M-s l"   . consult-line))
-  :init
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref))
-
-(use-package consult-lsp)
+         ("M-s l"   . consult-line)))
+;; :init
+;; (setq xref-show-xrefs-function #'consult-xref
+;;       xref-show-definitions-function #'consult-xref))
 
 (provide 'mod-consult)

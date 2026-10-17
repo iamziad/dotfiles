@@ -67,9 +67,10 @@
 
 (use-package flycheck
   :ensure t
-  :hook (prog-mode . flycheck-mode)
+  :hook (prog-mode . global-flycheck-eglot-mode)
   :config
-  (setq flycheck-display-errors-delay 0.2)
+  (setq flycheck-eglot-exclusive t)
+  (setq flycheck-display-errors-delay 0.1)
   :bind
   (("C-c C-e n" . flycheck-next-error)
    ("C-c C-e p" . flycheck-previous-error)

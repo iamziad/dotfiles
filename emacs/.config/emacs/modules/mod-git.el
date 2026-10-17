@@ -15,7 +15,7 @@
          (dired-mode          . diff-hl-dired-mode)
          (magit-pre-refresh   . diff-hl-magit-pre-refresh)
          (magit-post-refresh  . diff-hl-magit-post-refresh))
-  :bind(("C-c d h" . diff-hl-show-hunk))
+  :bind(("C-c d g" . diff-hl-show-hunk))
   :custom
   (diff-hl-update-async t)
   (diff-hl-flydiff-delay 0.5)

@@ -62,7 +62,10 @@
 ;;;
 (use-package emmet-mode
   :ensure t
-  :hook ((html-ts-mode web-mode css-ts-mode sgml-mode mhtml-mode html-mode css-mode) . emmet-mode)
+  :hook ((html-ts-mode web-mode
+                       css-ts-mode sgml-mode
+                       mhtml-mode html-mode
+                       css-mode js-jsx-mode tsx-ts-mode) . emmet-mode)
   :config
   (setq emmet-move-cursor-between-quotes t)
   (add-to-list 'emmet-css-major-modes 'css-ts-mode)
@@ -77,12 +80,14 @@
 	(when (string-match  "\\.json$" (buffer-name))
       (local-set-key (kbd "C-c C-g") 'jsons-print-path)))
   (add-hook 'js-mode-hook 'js-mode-bindings)
+  (add-hook 'js-ts-mode-hook 'js-mode-bindings)
+  (add-hook 'typescript-ts-mode-hook 'js-mode-bindings)
+  (add-hook 'tsx-ts-mode-hook 'js-mode-bindings)
+  (add-hook 'js-jsx-mode-hook 'js-mode-bindings)
   (add-hook 'js2-mode-hook 'js-mode-bindings))
 
 ;;;
 (use-package rainbow-mode
-  :ensure t
-  :defer t
   :config
   (rainbow-mode +1))
 
