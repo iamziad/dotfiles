@@ -1,38 +1,47 @@
-;;; early-init.el -*- lexical-binding: t; -*-
+;;; early-init.el -*- lexical-binding: t -*-
 
-(setq gc-cons-percentage 1.0
-      gc-cons-threshold most-positive-fixnum)
+;;;; Package
 
-(setq read-process-output-max (* 64 1024))
+;; straight.el manages packages; let package.el stay out of the way.
+(setq package-enable-at-startup nil)
 
-(defvar my/file-name-handler-alist-backup file-name-handler-alist)
-(setq file-name-handler-alist nil)
+;;;; Garbage collection
+
+;; Raise the GC threshold while Emacs starts up, then restore it.
+(setq gc-cons-threshold (* 128 1024 1024)
+      gc-cons-percentage 0.6)
+
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq file-name-handler-alist my/file-name-handler-alist-backup)))
+            (setq gc-cons-threshold (* 32 1024 1024)
+                  gc-cons-percentage 0.1)))
 
-(setq inhibit-compact-font-caches t)
-(setq-default bidi-inhibit-bpa t)
+;;;; Startup UI
 
-(setq auto-mode-case-fold nil)
-
-(setq ad-redefinition-action 'accept)
-
-(unless init-file-debug
-  (setq native-comp-async-report-warnings-errors nil
-        native-comp-warning-on-missing-source nil))
-
-(setq package-enable-at-startup nil)
+;; Keep the initial frame quiet: no chrome and no flashing white frame.
+(setq inhibit-startup-screen t
+      initial-scratch-message nil
+      inhibit-startup-echo-area-message user-login-name)
 
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-(setq fast-but-imprecise-scrolling t
-      frame-inhibit-implied-resize t
-      frame-resize-pixelwise t
-      idle-update-delay 1.0
-      inhibit-startup-screen t
-      inhibit-startup-echo-area-message user-login-name
-      initial-scratch-message nil)
+(push '(cursor-type . box) default-frame-alist)
+(push '(cursor-in-non-selected-windows . nil) default-frame-alist)
 
-(setenv "LSP_USE_PLISTS" "true")
+;; Pixelwise resizing from the very first frame.
+(push '(left-fringe . 0) default-frame-alist)
+(push '(right-fringe . 0) default-frame-alist)
+
+(when (eq system-type 'gnu/linux)
+  (setq x-gtk-use-system-tooltips nil))
+
+;;;; Process performance
+
+;; Subprocesses inherit more headroom and don't slow down Emacs.
+(setq read-process-output-max (* 1024 1024))
+
+(setq process-adaptive-read-buffering nil)
+
+(provide 'early-init)
+;;; early-init.el ends here

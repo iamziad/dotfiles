@@ -13,7 +13,7 @@ set $pri HDMI-A-0
 set $sec DisplayPort-0
 
 # Appearance
-font pango:Fira Code 10
+font pango:JetBrainsMono Nerd Font 9
 hide_edge_borders smart
 
 gaps outer 0
