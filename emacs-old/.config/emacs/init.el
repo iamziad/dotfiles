@@ -229,31 +229,16 @@
          ("C-c C-x r"    . crux-rename-file-and-buffer)
          ("C-c C-x d"    . crux-delete-file-and-buffer)))
 
-(use-package smartparens
-  :hook (web-mode . smartparens-mode)
-  :config
-  (require 'smartparens-config)
-
-  ;; ERB/EJS-style template tags
-  (sp-with-modes '(web-mode)
-                 (sp-local-pair "%" "%"
-                                :unless '(sp-in-string-p)
-                                :post-handlers '(((lambda (&rest _ignored)
-                                                    (just-one-space)
-                                                    (save-excursion (insert " ")))
-                                                  "SPC" "=" "#")))
-                 (sp-local-tag "%" "<% "  " %>")
-                 (sp-local-tag "=" "<%= " " %>")
-                 (sp-local-tag "#" "<%# " " %>"))
-
+(use-package puni
+  :straight t
+  :hook (prog-mode . puni-mode)
   :bind
-  ("C-c s r"   . sp-rewrap-sexp)
-  ("C-c s u"   . sp-unwrap-sexp)
-  ("C-c s w r" . sp-wrap-round)
-  ("C-c s w c" . sp-wrap-curly)
-  ("C-c s w s" . sp-wrap-square)
-  ("C-c s c"   . sp-change-inner)
-  ("M-m"       . sp-delete-sexp))
+  (("C-c s u"   . puni-splice)
+   ("C-c s w r" . puni-wrap-round)
+   ("C-c s w c" . puni-wrap-curly)
+   ("C-c s w s" . puni-wrap-square)
+   ("M-i"       . puni-change-inner)
+   ("M-o"       . tab-to-tab-stop)))
 
 ;; Leader
 (bind-keys :prefix-map my-leader-map

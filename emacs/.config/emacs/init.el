@@ -29,6 +29,11 @@
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
+;;;; Local Packages
+
+(add-to-list 'load-path
+             (expand-file-name "lisp" user-emacs-directory))
+
 ;;;; Custom file
 
 (use-package cus-edit
@@ -112,10 +117,8 @@
 (setq
  inhibit-startup-screen t
  initial-scratch-message nil
- frame-title-format "Emacs"
  use-short-answers t
  enable-recursive-minibuffers t
- tab-always-indent 'complete
  completion-ignore-case t
  read-buffer-completion-ignore-case t
  read-file-name-completion-ignore-case t
@@ -137,16 +140,43 @@
  load-prefer-newer t)
 
 ;; Language & Encoding
-(setq default-input-method "arabic"
-      eshell-banner-message "")
+(setq default-input-method "arabic")
 
 ;; Aliases & Keybindings
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; Windows & Buffer
 (when (window-system)
   (setq x-gtk-use-system-tooltips nil
         cursor-type 'box
         cursor-in-non-selected-windows nil))
+
+(setq window-combination-resize t)
+(setq switch-to-buffer-obey-display-actions t)
+(advice-add 'split-window-right :filter-return
+            (lambda (window)
+              (select-window window)))
+
+(use-package windmove
+  :straight nil
+  :config
+  (defvar-keymap my/windmove-repeat-map
+    :repeat t
+    "h" #'windmove-left
+    "l" #'windmove-right
+    "k" #'windmove-up
+    "j" #'windmove-down)
+
+  (dolist (cmd '(windmove-left
+                 windmove-right
+                 windmove-up
+                 windmove-down))
+    (put cmd 'repeat-map 'my/windmove-repeat-map))
+
+  (global-set-key (kbd "C-c w h") #'windmove-left)
+  (global-set-key (kbd "C-c w l") #'windmove-right)
+  (global-set-key (kbd "C-c w k") #'windmove-up)
+  (global-set-key (kbd "C-c w j") #'windmove-down))
 
 ;; Clipboard & Selection
 (setq select-enable-clipboard t
@@ -154,7 +184,7 @@
       select-active-regions nil)
 
 ;; Scrolling & Search
-(setq scroll-margin 0
+(setq scroll-margin 1
       isearch-allow-scroll t
       isearch-wrap-pause 'no-ding
       isearch-lazy-count t
@@ -183,10 +213,11 @@
       global-auto-revert-non-file-buffers t
       global-auto-revert-ignore-remote t)
 
+;; Modes to on
 (add-hook
  'after-init-hook
  (lambda ()
-   (dolist (mode '(hl-line-mode
+   (dolist (mode '(global-hl-line-mode
                    recentf-mode
                    savehist-mode
                    save-place-mode
@@ -199,7 +230,6 @@
                    winner-mode
                    global-so-long-mode
                    column-number-mode
-                   size-indication-mode
                    minibuffer-depth-indicate-mode
                    show-paren-mode
                    which-key-mode
@@ -207,9 +237,87 @@
                    context-menu-mode))
      (funcall mode 1))))
 
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+;; Modes to off
+(dolist (mode '(menu-bar-mode
+                tool-bar-mode
+                scroll-bar-mode
+                size-indication-mode))
+  (funcall mode -1))
+
+(use-package diminish
+  :ensure t)
+
+(with-eval-after-load 'which-key
+  (diminish 'which-key-mode))
+
+(with-eval-after-load 'simple
+  (diminish 'visual-line-mode))
+
+(with-eval-after-load 'eldoc
+  (diminish 'eldoc-mode))
+
+(with-eval-after-load 'subword
+  (diminish 'subword-mode))
+
+;; Tabs
+
+(use-package sort-tab
+  :straight nil
+  :config
+  (require 'sort-tab)
+  (sort-tab-mode 1))
+
+(global-set-key (kbd "M-1") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-2") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-3") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-4") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-5") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-6") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-7") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-8") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-9") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "M-0") 'sort-tab-select-visible-tab)
+(global-set-key (kbd "C-x t C") 'sort-tab-close-all-tabs)
+(global-set-key (kbd "C-x t q") 'sort-tab-close-mode-tabs)
+(global-set-key (kbd "C-x t c") 'sort-tab-close-current-tab)
+
+;;;; Dired
+
+(require 'dired-x)
+
+(use-package dired
+  :straight nil
+  :custom
+  (dired-listing-switches "-alh --group-directories-first")
+  (dired-dwim-target t)
+  (delete-by-moving-to-trash t)
+  (dired-kill-when-opening-new-dired-buffer t)
+  (dired-auto-revert-buffer t)
+  (dired-mouse-drag-files t)
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+  (setq image-dired-thumb-size 250)
+  (setq image-dired-thumbnail-storage 'standard)
+  :config
+  (with-eval-after-load 'dired
+    (put 'dired-jump 'repeat-map nil)))
+
+(use-package async
+  :ensure t
+  :init
+  (dired-async-mode 1))
+
+(use-package dired-git-info
+  :ensure t
+  :after dired
+  :custom
+  (dgi-auto-hide-details-p nil)
+  :bind
+  (:map dired-mode-map
+        (")" . dired-git-info-mode)))
+
+(use-package nerd-icons-dired
+  :config
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 ;;;; Remote files
 
@@ -223,6 +331,13 @@
 (setq flyspell-issue-message-flag nil
       flyspell-issue-welcome-flag nil
       ispell-silently-savep t)
+
+(use-package flyspell
+  :straight t
+  :when (or (executable-find "ispell")
+            (executable-find "aspell")
+            (executable-find "hunspell"))
+  :hook ((org-mode git-commit-mode markdown-mode) . flyspell-mode))
 
 ;;;; Disabled commands
 
@@ -240,6 +355,8 @@
  ("C-c C-f"       . find-file-other-window)
  ("C-}"           . forward-paragraph)
  ("C-{"           . backward-paragraph)
+ ("C-c e"         . eshell)
+ ("C-x C-b"       . ibuffer)
  ;; Compile & run
  ("C-c c"         . compile)
  ("C-c C"         . recompile)
@@ -253,97 +370,13 @@
  ("C-x t h"       . tab-previous)
  ("C-x t l"       . tab-next))
 
-;;;; External edits
-
-;; When a file changes outside Emacs, recenter on the changed lines and
-;; pulse them; lines that were deleted are shown in red as a "ghost" block
-;; until point moves or the buffer is edited.
-
-(defvar-local my/revert-snapshot nil)
-
-(defun my/revert-snapshot-before ()
-  (setq my/revert-snapshot (buffer-string)))
-
-(defface my/revert-ghost-face
-  '((t :inherit diff-removed :extend t))
-  "Face for lines deleted from outside Emacs.")
-
-(defvar-local my/revert-ghosts nil)
-(defvar-local my/revert-ghost-point nil)
-
-(defun my/revert-clear-ghosts (&rest _)
-  "Remove the ghost overlays showing externally deleted lines."
-  (mapc #'delete-overlay my/revert-ghosts)
-  (setq my/revert-ghosts nil)
-  (remove-hook 'post-command-hook #'my/revert-ghost-clear-on-move t)
-  (remove-hook 'after-change-functions #'my/revert-clear-ghosts t))
-
-(defun my/revert-ghost-clear-on-move ()
-  (unless (eq (point) my/revert-ghost-point)
-    (my/revert-clear-ghosts)))
-
-(defun my/revert-show-ghost-lines (pos lines)
-  "Show LINES, deleted at POS, until point moves or the buffer is edited."
-  (let ((overlay (make-overlay pos pos)))
-    (overlay-put overlay 'before-string
-                 (propertize (concat (mapconcat #'identity lines "\n") "\n")
-                             'face 'my/revert-ghost-face))
-    (push overlay my/revert-ghosts)
-    (add-hook 'post-command-hook #'my/revert-ghost-clear-on-move nil t)
-    (add-hook 'after-change-functions #'my/revert-clear-ghosts nil t)))
-
-(defun my/revert-flash-after ()
-  "Recenter on and pulse the lines that changed during a revert.
-Externally deleted lines are shown in red until point moves."
-  (let ((old my/revert-snapshot))
-    (setq my/revert-snapshot nil)
-    (my/revert-clear-ghosts)
-    (when (and old (not (string= old (buffer-string))) (get-buffer-window))
-      (let* ((old-lines (split-string old "\n"))
-             (new-lines (split-string (buffer-string) "\n"))
-             (prefix 0) (suffix 0))
-        ;; Skip the common prefix and suffix of lines.
-        (while (and (< prefix (length old-lines)) (< prefix (length new-lines))
-                    (string= (nth prefix old-lines) (nth prefix new-lines)))
-          (setq prefix (1+ prefix)))
-        (while (and (< suffix (- (length old-lines) prefix))
-                    (< suffix (- (length new-lines) prefix))
-                    (string= (nth (- (length old-lines) suffix 1) old-lines)
-                             (nth (- (length new-lines) suffix 1) new-lines)))
-          (setq suffix (1+ suffix)))
-        (let ((start (save-excursion (goto-char (point-min))
-                                     (forward-line prefix) (point)))
-              (end (save-excursion (goto-char (point-min))
-                                   (forward-line (- (length new-lines) suffix))
-                                   (point))))
-          ;; A pure deletion leaves no new text behind; show the removed lines
-          ;; as a red ghost block and flash the line at the deletion point.
-          (when (= end start)
-            (my/revert-show-ghost-lines
-             start (cl-subseq old-lines prefix (- (length old-lines) suffix)))
-            (goto-char start)
-            (setq start (line-beginning-position))
-            (setq end (line-end-position))
-            (when (= end start)
-              (setq start (line-beginning-position 0))
-              (setq end (save-excursion (goto-char start) (line-end-position)))))
-          (require 'pulse)
-          (with-selected-window (get-buffer-window)
-            (goto-char start)
-            (recenter))
-          (pulse-momentary-highlight-region start end)
-          (setq my/revert-ghost-point (point)))))))
-
-(add-hook 'before-revert-hook #'my/revert-snapshot-before)
-(add-hook 'after-revert-hook #'my/revert-flash-after)
-
 ;;;; Tools
 
-;; Shared helpers: the mason package installer and the tree-sitter support
-;; used by the language sections further down.
-
 (defconst my/mason-dir
-  (expand-file-name "mason" user-emacs-directory))
+  (file-name-as-directory
+   (if (boundp 'mason-dir)
+       mason-dir
+     (expand-file-name "mason" user-emacs-directory))))
 
 (defvar my/mason-packages nil
   "Language servers installed by `my/mason-install-missing'.
@@ -380,7 +413,9 @@ Each language section adds its own packages with `my/mason-use'.")
 
 (use-package mason
   :straight (mason :type git :host github :repo "mason-org/mason.el")
-  :commands (mason-manager mason-install mason-installed-p mason-setup))
+  :commands (mason-manager mason-install mason-installed-p mason-setup)
+  :init
+  (mason-setup))
 
 ;;;; Tree-sitter
 
@@ -417,10 +452,19 @@ Each language section adds its own packages with `my/mason-use'.")
 
 (setq which-key-idle-delay 0.4)
 
+(setopt tab-always-indent 'complete
+        completion-styles '(basic partial-completion flex)
+        completion-auto-select 'second-tab
+        completions-format 'vertical
+        completions-max-height 12
+        completions-detailed t
+        completions-header-format nil
+        completion-show-help nil)
+
 (use-package vertico
   :custom
   (vertico-scroll-margin 0)
-  (vertico-count 15)
+  (vertico-count 12)
   (vertico-resize t)
   (vertico-cycle t)
   :init
@@ -435,7 +479,6 @@ Each language section adds its own packages with `my/mason-use'.")
 
 (use-package consult
   :bind (("C-x b" . consult-buffer)
-         ("C-c s" . consult-line)
          ("C-c S" . consult-ripgrep)
          ("C-c i" . consult-imenu)
          ("M-g g" . consult-goto-line)
@@ -445,21 +488,117 @@ Each language section adds its own packages with `my/mason-use'.")
   :config
   (marginalia-mode 1))
 
+;;;; ibuffer
+
+;; Group buffers by project
+;; (use-package ibuffer-project
+;;   :straight t
+;;   :demand t
+;;   :init
+;;   (setq ibuffer-project-use-cache t)
+;;   :config
+;;   (add-hook 'ibuffer-hook
+;;             (lambda ()
+;;               (setq ibuffer-filter-groups
+;;                     (ibuffer-project-generate-filter-groups))
+;;               (unless (eq ibuffer-sorting-mode
+;;                           'project-file-relative)
+;;                 (ibuffer-do-sort-by-project-file-relative)))))
+
+(use-package nerd-icons)
+
+(use-package nerd-icons-ibuffer
+  :straight t
+  :after (nerd-icons ibuffer-project)
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode)
+  :custom
+  (nerd-icons-ibuffer-color-icon t)
+  (nerd-icons-ibuffer-icon-size 1.0)
+  (nerd-icons-ibuffer-formats
+   '((mark modified read-only locked " "
+           (icon 2 2) " "
+           (name 24 24 :left :elide) " "
+           (size-h 9 -1 :right) " "
+           (mode+ 16 16 :left :elide) " "
+           project-file-relative)
+     (mark " " (name 16 -1) " " filename))))
+
 ;;;; Git
 
 (use-package magit
-  :bind ("C-x g" . magit-status))
+  :straight t
+  :after transient
+  :commands (magit-status)
+  :hook ((magit-mode git-commit-mode) . (lambda () (variable-pitch-mode -1)))
+  :bind (("C-x g" . magit-status)
+         ("C-x v" . magit-diff-visit-file-other-window)))
+
+(setq magit-repository-directories '(("~/Projects"  . 2)))
 
 (use-package diff-hl
-  :config
-  (global-diff-hl-mode 1)
+  :straight t
   :bind (("M-{" . diff-hl-previous-hunk)
-         ("M-}" . diff-hl-next-hunk)))
+         ("M-}" . diff-hl-next-hunk))
+  :init
+  (global-diff-hl-mode)
+  :custom
+  (diff-hl-update-async t)
+  :config
+  (diff-hl-flydiff-mode 1))
+
+;;;; Project Management
+
+(use-package projectile
+  :ensure t
+  :init
+  (setq projectile-project-search-path '("~/Projects/"))
+  :config
+  (define-key projectile-mode-map
+              (kbd "C-x p")
+              'projectile-command-map)
+  :bind
+  ("C-c p" . proced)
+  (projectile-mode 1))
 
 ;;;; Editing utilities
 
-(use-package hl-todo
-  :hook ((prog-mode yaml-mode conf-mode) . hl-todo-mode))
+(use-package smartparens
+  :straight t
+  :bind (("C-c s r"   . sp-rewrap-sexp)
+         ("C-c s u"   . sp-unwrap-sexp)
+         ("C-c s w r" . sp-wrap-round)
+         ("C-c s w c" . sp-wrap-curly)
+         ("C-c s w s" . sp-wrap-square)
+         ("C-c s c"   . sp-change-inner)
+         ("M-m"       . sp-delete-sexp))
+  :config
+  (require 'smartparens-config)
+  (sp-with-modes '(web-mode)
+                 (sp-local-pair "%" "%" :unless '(sp-in-string-p) ...)
+                 (sp-local-tag "%" "<% "  " %>")
+                 (sp-local-tag "=" "<%= " " %>")
+                 (sp-local-tag "#" "<%# " " %>")))
+
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C->"     . mc/mark-next-like-this)
+         ("C-<"     . mc/mark-previous-like-this)
+         ("C-M-<"   . mc/skip-to-previous-like-this)
+         ("C-M->"   . mc/skip-to-next-like-this)
+         ("C-c m d" . mc/mark-all-dwim)
+         ("C-c m a" . mc/mark-all-like-this)
+         ("C-c m n" . electric-newline-and-maybe-indent)
+         ("C-c m e" . mc/edit-lines))
+  :config
+  (require 'mc-hide-unmatched-lines-mode)
+  (setq mc/always-run-for-all t))
+
+(use-package drag-stuff
+  :straight t
+  :diminish drag-stuff-mode
+  :config
+  (drag-stuff-global-mode 1)
+  (drag-stuff-define-keys))
 
 (use-package smart-hungry-delete
   :straight t
@@ -483,11 +622,54 @@ Each language section adds its own packages with `my/mason-use'.")
   (when (executable-find "direnv")
     (envrc-global-mode 1)))
 
-;;;; LSP
+(use-package hl-todo
+  :hook ((prog-mode yaml-mode conf-mode) . hl-todo-mode))
 
 (use-package yasnippet
+  :ensure t
   :config
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
   (yas-global-mode 1))
+
+;;;; Compile
+
+(use-package compile
+  :ensure nil
+  :custom
+  (compilation-always-kill t)
+  (compilation-ask-about-save nil)
+  (compilation-max-output-line-length nil)
+  (compilation-scroll-output 'first-error)
+  ;; (display-buffer-alist
+  ;;  '(("\\*compilation\\*" (display-buffer-reuse-window display-buffer-in-side-window)
+  ;;     (side . bottom) (slot . -2) (window-height . 0.45))))
+  :hook ((prog-mode . my/guess-compile-command)
+         (compilation-filter . ansi-color-compilation-filter))
+  :init
+  (advice-add 'compilation-start :after
+              (lambda (&rest _)
+                (when-let ((w (get-buffer-window "*compilation*")))
+                  (select-window w)))))
+
+(defun my/guess-compile-command ()
+  "Set a buffer-local `compile-command' from the nearest build file."
+  (unless (file-remote-p default-directory)
+    (cl-flet ((has (f) (locate-dominating-file default-directory f)))
+      (cond
+       ((has "package.json")   (setq-local compile-command "npm run build"))
+       ((has "pom.xml")        (setq-local compile-command "mvn -q compile"))
+       ((or (has "build.gradle") (has "build.gradle.kts"))
+        (setq-local compile-command "./gradlew build"))
+       ((has "CMakeLists.txt") (setq-local compile-command "cmake --build build"))
+       ((has "Makefile")       (setq-local compile-command "make -k"))
+       ((and buffer-file-name (derived-mode-p 'c-mode))
+        (setq-local compile-command
+                    (format "gcc -Wall -Wextra -g -o %s %s"
+                            (shell-quote-argument (file-name-base buffer-file-name))
+                            (shell-quote-argument
+                             (file-name-nondirectory buffer-file-name)))))))))
+
+;;;; LSP
 
 (use-package lsp-bridge
   :straight (lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
@@ -496,8 +678,13 @@ Each language section adds its own packages with `my/mason-use'.")
                         :build (:not compile))
   :custom
   (lsp-bridge-python-command (my/lsp-bridge-python))
+  (lsp-bridge-diagnostic-overlays t)
   (lsp-bridge-enable-hover-diagnostic t)
-  (acm-enable-icon nil)
+  (lsp-bridge-typescript-lsp-server "typescript-go")
+  (lsp-bridge-typescript-react-lsp-server "typescript-go-react")
+  (lsp-bridge-javascript-lsp-server "javascript-go")
+  (lsp-bridge-javascript-react-lsp-server "javascript-go-react")
+  ;; (acm-enable-icon nil)
   :config
   ;; Combos that lsp-bridge ships itself.  Anything else is generated by
   ;; `my/lsp-combo-ensure' in the next section.
@@ -527,17 +714,6 @@ Each language section adds its own packages with `my/mason-use'.")
 
 ;;;; LSP combos (multiserver)
 
-;; lsp-bridge runs one server per buffer unless it finds a combo file
-;; describing how to combine several (say TypeScript + ESLint + Tailwind).
-;; Rather than hand-writing those JSON files, the combos are described here
-;; and written on demand by `my/lsp-combo-ensure'.
-;;
-;; To support another framework, add one row to `my/lsp-combo-table'.
-;; `eslint' and `tailwind' are optional servers: a combo only uses them
-;; when the project actually configures them.  Run `M-x my/lsp-combo-refresh'
-;; after changing the table; `M-x my/lsp-combo-for-file' shows which combo
-;; a file would use.
-
 (require 'json)
 
 (defconst my/lsp-bridge-multiserver-dir
@@ -545,21 +721,14 @@ Each language section adds its own packages with `my/mason-use'.")
 
 ;; (FRAMEWORK SERVER FILES OPTIONAL-SERVERS)
 (defconst my/lsp-combo-table
-  '(("typescript"      "typescript"                  ("ts" "mts" "cts") (eslint))
-    ("javascript"      "javascript"                  ("js" "mjs" "cjs") (eslint))
-    ("typescriptreact" "typescriptreact"             ("tsx")            (eslint tailwind))
-    ("javascriptreact" "javascriptreact"             ("jsx")            (eslint tailwind))
-    ("vue"             "volar"                       ("vue")            (eslint tailwind))
-    ("html"            "vscode-html-language-server" ("html")           (tailwind))
-    ("css"             "vscode-css-language-server"  ("css" "scss")     (tailwind)))
-  "Multiserver combos, one row per framework.
-
-FRAMEWORK names the combo; SERVER is the lsp-bridge language server that
-does the real work.  FILES lists the extensions handled by the combo, and
-OPTIONAL-SERVERS the extra servers it may add:
-
-  eslint    ./eslint.config.* or ./.eslintrc* above the file
-  tailwind  a tailwind.config.* or a package.json mentioning tailwindcss")
+  '(("typescript"      "typescript-go"             ("ts" "mts" "cts") (eslint))
+    ("javascript"      "javascript-go"              ("js" "mjs" "cjs") (eslint))
+    ("typescriptreact" "typescript-go-react"      ("tsx")            (eslint tailwind))
+    ("javascriptreact" "javascript-go-react"      ("jsx")            (eslint tailwind))
+    ("vue"             "volar"                     ("vue")            (eslint tailwind))
+    ("html"            "vscode-html-language-server" ("html")         (tailwind))
+    ("css"             "vscode-css-language-server"  ("css" "scss")   (tailwind)))
+  "bla bla.")
 
 (defconst my/eslint-config-names
   '("eslint.config.js" "eslint.config.mjs" "eslint.config.cjs"
@@ -682,6 +851,7 @@ Interactively, ask for a file and show the answer."
 ;;;; Formatting
 
 (use-package apheleia
+  :diminish "Aphe"
   :config
   (apheleia-global-mode 1))
 
@@ -720,7 +890,7 @@ Interactively, ask for a file and show the answer."
 
 ;;;; JavaScript / TypeScript
 
-(my/mason-use "typescript-language-server" "eslint-lsp"
+(my/mason-use "eslint-lsp"
               "tailwindcss-language-server" "js-debug-adapter")
 
 ;; Grammar registration for `my/install-treesit-grammars'.
@@ -740,28 +910,6 @@ Interactively, ask for a file and show the answer."
   :hook ((js-mode js-jsx-mode js-ts-mode
 		          typescript-ts-mode tsx-ts-mode
 		          json-ts-mode) . add-node-modules-path))
-
-;; npm / pnpm / yarn / bun scripts -> compilation buffer
-(defun my/npm--manager (root)
-  (cond ((file-exists-p (expand-file-name "pnpm-lock.yaml" root)) "pnpm")
-        ((file-exists-p (expand-file-name "yarn.lock" root)) "yarn")
-        ((or (file-exists-p (expand-file-name "bun.lockb" root))
-             (file-exists-p (expand-file-name "bun.lock" root))) "bun")
-        (t "npm")))
-
-(defun my/npm-run ()
-  "Pick a script from the nearest package.json and run it with `compile'."
-  (interactive)
-  (let* ((root (or (locate-dominating-file default-directory "package.json")
-                   (user-error "No package.json found")))
-         (default-directory root)
-         (pkg (with-temp-buffer
-                (insert-file-contents "package.json")
-                (goto-char (point-min))
-                (json-parse-buffer :object-type 'alist)))
-         (scripts (mapcar (lambda (c) (symbol-name (car c))) (alist-get 'scripts pkg)))
-         (script (completing-read "Run script: " scripts nil t)))
-    (compile (format "%s run %s" (my/npm--manager root) script))))
 
 ;; Prettier, through apheleia, when the project provides it.
 (defun my/project-prettier ()
@@ -828,7 +976,7 @@ Interactively, ask for a file and show the answer."
 
 (my/mason-use "jdtls" "google-java-format" "java-debug-adapter")
 
-(my/treesit-remap 'java 'java-mode 'java-ts-mode)
+;; (my/treesit-remap 'java 'java-mode 'java-ts-mode)
 
 ;; Lombok and the java-debug plugin bundled with mason's jdtls.
 (defconst my/mason-java-debug-jar-link
@@ -999,7 +1147,8 @@ Interactively, ask for a file and show the answer."
       json-ts-mode-indent-offset 2)
 
 (use-package web-mode
-  :mode (("\\.hbs\\'" . web-mode)
+  :mode (("\\.html\\'" . web-mode)
+         ("\\.hbs\\'" . web-mode)
          ("\\.mustache\\'" . web-mode)
          ("\\.jsp\\'" . web-mode)
          ("\\.ejs\\'" . web-mode)
@@ -1059,9 +1208,48 @@ Interactively, ask for a file and show the answer."
   :ensure t
   :config
   (defun my/apply-custom-faces ()
-    (custom-set-faces
-     `(font-lock-misc-punctuation-face ((t (:foreground ,(doom-color 'orange)))))
-     ))
+    "bla bla."
+    (let ((bg     (doom-color 'bg))
+          (fg     (doom-color 'fg))
+          (grey   (doom-color 'grey))
+          (bar    (doom-color 'vertical-bar))
+          (red    (doom-color 'red))
+          (orange (doom-color 'orange))
+          (yellow (doom-color 'yellow))
+          (green  (doom-color 'green))
+          (blue   (doom-color 'blue))
+          (violet (doom-color 'violet)))
+      (custom-set-faces
+       ;; Punctuation the theme leaves monochrome.
+       `(font-lock-misc-punctuation-face ((t (:foreground ,orange))))
+
+       ;; Hardcoded greys.
+       `(lsp-bridge-inlay-hint-face ((t (:inherit shadow))))
+       `(lsp-bridge-dart-closing-label-face ((t (:inherit shadow))))
+
+       ;; The references (rg) buffer.
+       `(lsp-bridge-ref-font-lock-header-line-text
+         ((t (:foreground ,green :weight bold))))
+       `(lsp-bridge-ref-font-lock-header-line-edit-mode
+         ((t (:foreground ,orange :weight bold))))
+       `(lsp-bridge-ref-font-lock-command ((t (:inherit shadow :weight bold))))
+       `(lsp-bridge-ref-font-lock-file ((t (:foreground ,blue :weight bold))))
+       `(lsp-bridge-ref-font-lock-line-number ((t (:inherit shadow))))
+       `(lsp-bridge-ref-font-lock-column-number ((t (:inherit shadow))))
+       `(lsp-bridge-ref-font-lock-position-splitter ((t (:inherit shadow))))
+       `(lsp-bridge-ref-font-lock-match ((t (:foreground ,yellow :weight bold))))
+       `(lsp-bridge-ref-font-lock-diagnostic
+         ((t (:foreground ,red :weight bold))))
+       `(lsp-bridge-ref-font-lock-mark-changed
+         ((t (:foreground ,violet :weight bold))))
+       `(lsp-bridge-ref-font-lock-mark-deleted
+         ((t (:foreground ,red :weight bold))))
+       `(lsp-bridge-ref-font-lock-function-location
+         ((t (:foreground ,orange :weight bold))))
+
+       `(acm-frame-border-face ((t (:background ,bar))))
+       `(acm-backend-ctags-annotation-face
+         ((t (:inherit shadow :slant italic)))))))
 
   (defun my/load-theme (theme)
     (mapc #'disable-theme custom-enabled-themes)
@@ -1083,13 +1271,443 @@ Interactively, ask for a file and show the answer."
 
 (use-package vi-tilde-fringe
   :straight t
-  :init (global-vi-tilde-fringe-mode))
+  :init (global-vi-tilde-fringe-mode)
+  :diminish vi-tilde-fringe-mode)
 
 ;;;; AI
 
 (use-package agent-shell
   :straight t)
 
+;; External edits
+
+;; When a file changes outside Emacs (AI agent), recenter on the changed lines and
+;; pulse them; lines that were deleted are shown in red as a "ghost" block
+;; until point moves or the buffer is edited.
+
+(defvar-local my/revert-snapshot nil)
+
+(defun my/revert-snapshot-before ()
+  (setq my/revert-snapshot (buffer-string)))
+
+(defface my/revert-ghost-face
+  '((t :inherit diff-removed :extend t))
+  "Face for lines deleted from outside Emacs.")
+
+(defvar-local my/revert-ghosts nil)
+(defvar-local my/revert-ghost-point nil)
+
+(defun my/revert-clear-ghosts (&rest _)
+  "Remove the ghost overlays showing externally deleted lines."
+  (mapc #'delete-overlay my/revert-ghosts)
+  (setq my/revert-ghosts nil)
+  (remove-hook 'post-command-hook #'my/revert-ghost-clear-on-move t)
+  (remove-hook 'after-change-functions #'my/revert-clear-ghosts t))
+
+(defun my/revert-ghost-clear-on-move ()
+  (unless (eq (point) my/revert-ghost-point)
+    (my/revert-clear-ghosts)))
+
+(defun my/revert-show-ghost-lines (pos lines)
+  "Show LINES, deleted at POS, until point moves or the buffer is edited."
+  (let ((overlay (make-overlay pos pos)))
+    (overlay-put overlay 'before-string
+                 (propertize (concat (mapconcat #'identity lines "\n") "\n")
+                             'face 'my/revert-ghost-face))
+    (push overlay my/revert-ghosts)
+    (add-hook 'post-command-hook #'my/revert-ghost-clear-on-move nil t)
+    (add-hook 'after-change-functions #'my/revert-clear-ghosts nil t)))
+
+(defun my/revert-flash-after ()
+  "Recenter on and pulse the lines that changed during a revert.
+Externally deleted lines are shown in red until point moves."
+  (let ((old my/revert-snapshot))
+    (setq my/revert-snapshot nil)
+    (my/revert-clear-ghosts)
+    (when (and old (not (string= old (buffer-string))) (get-buffer-window))
+      (let* ((old-lines (split-string old "\n"))
+             (new-lines (split-string (buffer-string) "\n"))
+             (prefix 0) (suffix 0))
+        ;; Skip the common prefix and suffix of lines.
+        (while (and (< prefix (length old-lines)) (< prefix (length new-lines))
+                    (string= (nth prefix old-lines) (nth prefix new-lines)))
+          (setq prefix (1+ prefix)))
+        (while (and (< suffix (- (length old-lines) prefix))
+                    (< suffix (- (length new-lines) prefix))
+                    (string= (nth (- (length old-lines) suffix 1) old-lines)
+                             (nth (- (length new-lines) suffix 1) new-lines)))
+          (setq suffix (1+ suffix)))
+        (let ((start (save-excursion (goto-char (point-min))
+                                     (forward-line prefix) (point)))
+              (end (save-excursion (goto-char (point-min))
+                                   (forward-line (- (length new-lines) suffix))
+                                   (point))))
+          ;; A pure deletion leaves no new text behind; show the removed lines
+          ;; as a red ghost block and flash the line at the deletion point.
+          (when (= end start)
+            (my/revert-show-ghost-lines
+             start (cl-subseq old-lines prefix (- (length old-lines) suffix)))
+            (goto-char start)
+            (setq start (line-beginning-position))
+            (setq end (line-end-position))
+            (when (= end start)
+              (setq start (line-beginning-position 0))
+              (setq end (save-excursion (goto-char start) (line-end-position)))))
+          (require 'pulse)
+          (with-selected-window (get-buffer-window)
+            (goto-char start)
+            (recenter))
+          (pulse-momentary-highlight-region start end)
+          (setq my/revert-ghost-point (point)))))))
+
+(add-hook 'before-revert-hook #'my/revert-snapshot-before)
+(add-hook 'after-revert-hook #'my/revert-flash-after)
+
+;; Misc
+
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+
+(use-package crux
+  :bind (("C-k"          . crux-kill-whole-line)
+         ("C-a"          . crux-move-beginning-of-line)
+         ("C-^"          . crux-top-join-line)
+         ("C-c K"        . crux-kill-other-buffers)
+         ("C-c U"        . crux-reopen-as-root)
+         ("C-c C-x r"    . crux-rename-file-and-buffer)
+         ("C-c C-x d"    . crux-delete-file-and-buffer)))
+
+(use-package elfeed
+  :ensure t
+  :config
+  (setq elfeed-feeds
+        '(
+          ("https://archlinux.org/feeds/news/" unix)
+          ("https://protesilaos.com/codelog.xml" emacs prot)
+          )))
+
+
+(use-package symbol-overlay
+  :ensure t
+  :diminish symbol-overlay-mode
+  :bind
+  (("M-n" . symbol-overlay-jump-next)
+   ("M-p" . symbol-overlay-jump-prev))
+  :hook
+  (prog-mode . symbol-overlay-mode))
+
+(use-package nerd-icons
+  :ensure t)
+
+(use-package neotree
+  :ensure t
+  :bind
+  ("C-c t" . neotree-toggle)
+  :config
+  (setq neo-window-width 33)
+  (setq neo-theme
+        (if (display-graphic-p)
+            'nerd-icons
+          'arrow)))
+
+(use-package undo-fu-session
+  :hook (after-init . undo-fu-session-global-mode)
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+
+(use-package iy-go-to-char
+  :straight t
+  :config
+  :bind (("C-'" . iy-go-to-char)
+         ("C-;" . iy-go-to-char-backward)))
+
+;;;; Terminals
+
+(defun my/eshell-prompt ()
+  (let ((branch (car (ignore-errors (process-lines "git" "branch" "--show-current"))))
+        (dirty  (ignore-errors (process-lines "git" "status" "--porcelain"))))
+    (propertize
+     (concat (propertize (abbreviate-file-name (eshell/pwd)) 'face 'eshell-ls-directory)
+             (when branch
+               (propertize (format " (%s%s)" branch (if dirty "*" "")) 'face 'font-lock-string-face))
+             (propertize "\nλ " 'face 'font-lock-function-name-face))
+     'read-only t 'rear-nonsticky t)))
+
+;; Aliases
+(setq eshell-prompt-function #'my/eshell-prompt
+      eshell-banner-message ""
+      eshell-prompt-regexp "^λ "
+      eshell-highlight-prompt nil
+      eshell-history-size 10000
+      eshell-hist-ignoredups t
+      eshell-scroll-to-bottom-on-input 'this
+      eshell-destroy-buffer-when-process-dies t
+      eshell-command-aliases-list
+      '(("ll"  "ls -lh $*")
+        ("la"  "ls -lah $*")
+        ("e"   "find-file $1")
+        ("d"   "dired $1")
+        ("clear" "clear 1")
+        ("gs"  "git status -sb")
+        ("ga"  "git add $*")
+        ("gc"  "git commit -m $*")
+        ("gca" "git commit --amend")
+        ("gp"  "git push")
+        ("gpl" "git pull")
+        ("gco" "git checkout $*")
+        ("gb"  "git branch $*")
+        ("gd"  "git --no-pager diff $*")
+        ("gl"  "git --no-pager log --oneline --graph --decorate -15")
+        ("gm"  "magit-status")))
+
+(use-package ghostel
+  :bind (("C-x m" . ghostel)
+         :map ghostel-semi-char-mode-map
+         ("C-s"  . consult-line)
+         ("C-k"  . my/ghostel-send-C-k-and-kill)
+         ;; I'm used to go up/down the shell history with M-n/p from eshell
+         ;; Simulate this behavior in ghostel by sending C-p and C-n
+         ("M-p" . (lambda () (interactive) (ghostel-send-key "p" "ctrl")))
+         ("M-n" . (lambda () (interactive) (ghostel-send-key "n" "ctrl"))))
+  :config
+  (defun my/ghostel-send-C-k-and-kill ()
+    "Send `C-k' to ghostel.
+Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
+    (interactive)
+    (kill-ring-save (point) (line-end-position))
+    (ghostel-send-key "k" "ctrl"))
+
+  (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer)))
+
+(use-package ghostel-project
+  :straight nil
+  :bind (:map project-prefix-map
+              ("m" . ghostel-project)
+              ("M" . ghostel-project-list-buffers))
+  :config
+  (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
+  (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t))
+
+(use-package ghostel-eshell
+  :straight nil
+  :hook (eshell-load . ghostel-eshell-visual-command-mode))
+
+(use-package ghostel-compile
+  :straight nil
+  :hook (after-init . ghostel-compile-global-mode))
+
+;;;; Org
+
+(with-eval-after-load 'org
+  (keymap-unset org-mode-map "C-c C-k"))
+
+(setq
+ org-directory "~/Documents/org"
+ org-agenda-files (list "~/Documents/org")
+ org-hide-leading-stars t
+ org-ellipsis " ▾"
+ org-hide-emphasis-markers t
+ org-src-tab-acts-natively t
+ org-src-fontify-natively t
+ org-src-preserve-indentation t
+ org-pretty-entities t
+ org-preview-latex-default-process 'dvisvgm
+ org-startup-with-latex-preview t
+ org-image-actual-width nil
+ org-image-max-width 450
+ org-log-done 'note)
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (visual-line-mode 1)
+            (electric-pair-local-mode -1)
+            (org-indent-mode 1)))
+
+;;;; Org tempo
+
+(with-eval-after-load 'org
+  (require 'org-tempo))
+
+(use-package org-download
+  :config
+  (setq-default org-download-heading-lvl nil
+                org-download-image-dir "./images"))
+
+;;;; Literate Programming
+
+(setq org-confirm-babel-evaluate nil
+      python-shell-completion-native-enable nil
+      org-src-window-setup 'current-window)
+
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t) (sql . t))))
+
+(use-package verb
+  :config
+  (setq verb-json-use-mode 'json-ts-mode)
+
+  (with-eval-after-load 'org
+    (define-key org-mode-map
+                (kbd "C-c C-r")
+                verb-command-map))
+
+  (define-key verb-response-body-mode-map
+              (kbd "q")
+              #'verb-kill-response-buffer-and-window))
+
+(use-package daemons :straight t)
+
+;;;; Zen Mode
+
+(use-package olivetti
+  :hook ((eww-mode . olivetti-mode)
+         (olivetti-mode . mod-olivetti--toggle))
+  :bind ("C-c v o" . olivetti-mode)
+  :custom (olivetti-body-width 90))
+
+(defvar-local mod-olivetti--state nil)
+
+(defun mod-olivetti--apply-fringes (&rest _)
+  (when olivetti-mode
+    (dolist (win (get-buffer-window-list (current-buffer) nil t))
+      (set-window-fringes win 0 0 nil t))))
+
+(defun mod-olivetti--toggle ()
+  (if olivetti-mode
+      (progn
+        (setq mod-olivetti--state
+              (list (bound-and-true-p display-line-numbers-mode)
+                    (bound-and-true-p display-fill-column-indicator-mode)
+                    cursor-type))
+        (display-line-numbers-mode -1)
+        (display-fill-column-indicator-mode -1)
+        (setq-local cursor-type 'bar)
+        (mod-olivetti--apply-fringes)
+        (add-hook 'window-configuration-change-hook #'mod-olivetti--apply-fringes nil t))
+    (cl-destructuring-bind (ln fci ct) mod-olivetti--state
+      (when ln (display-line-numbers-mode 1))
+      (when fci (display-fill-column-indicator-mode 1))
+      (setq-local cursor-type ct)
+      (remove-hook 'window-configuration-change-hook #'mod-olivetti--apply-fringes t)
+      (dolist (win (get-buffer-window-list (current-buffer) nil t))
+        (set-window-fringes win nil nil nil nil)))))
+
+;;;; SQL: Frequent Connections -------------------------------------------------------------------------
+
+(use-package pgsql
+  :ensure t)
+
+(use-package sql-indent
+  :hook (sql-mode . sqlind-minor-mode))
+
+(use-package sqlup-mode
+  :hook ((sql-mode . sqlup-mode)
+         (sql-interactive-mode . sqlup-mode)))
+
+;; (use-package sqlformat
+;;   :ensure nil
+;;   :commands (sqlformat sqlformat-buffer sqlformat-region)
+;;   :hook (sql-mode . sqlformat-on-save-mode)
+;;   :init
+;;   (setq sqlformat-command 'pgformatter
+;;         sqlformat-args '("-s2" "-g" "-u2")))
+
+;;
+(defun my/sql-send-buffer-to (target)
+  "Send current buffer's SQL to TARGET SQLi buffer."
+  (interactive
+   (list (read-buffer "Send to SQLi: " nil t
+                      (lambda (b)
+                        (with-current-buffer (if (consp b) (cdr b) b)
+                          (derived-mode-p 'sql-interactive-mode))))))
+  (let ((sql-buffer (get-buffer target)))
+    (sql-send-buffer)))
+
+(global-set-key (kbd "C-c C-a") #'my/sql-send-buffer-to)
+
+;;
+
+(setq sql-postgres-login-params
+      '((user :default "postgres")
+        (database :default "postgres")
+        (server :default "localhost")
+        (port :default 5432)))
+
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (toggle-truncate-lines t)))
+
+;; --- Clutch ---
+
+;; (use-package clutch
+;;   :config
+;;   (setq clutch-connection-alist
+;;         '(("MyDatabase" . (:backend pg
+;;                                     :host "127.0.0.1"
+;;                                     :port 5432
+;;                                     :user "postgres"
+;;                                     :password ""
+;;                                     :database "MyDatabase"))
+;;           ("talently" . (:backend pg
+;;                                   :host "127.0.0.1"
+;;                                   :port 5432
+;;                                   :user "postgres"
+;;                                   :password ""
+;;                                   :database "talently")))))
+
+;; --- Frequent Connections ---
+
+(setq sql-connection-alist
+      '((postgres
+         (sql-product 'postgres)
+         (sql-server "127.0.0.1")
+         (sql-user "postgres")
+         (sql-password "")
+         (sql-database "postgres")
+         (sql-port 5432))
+        (MyDatabase
+         (sql-product 'postgres)
+         (sql-server "127.0.0.1")
+         (sql-user "postgres")
+         (sql-password "")
+         (sql-database "MyDatabase")
+         (sql-port 5432))
+        (talently
+         (sql-product 'postgres)
+         (sql-server "127.0.0.1")
+         (sql-user "postgres")
+         (sql-password "")
+         (sql-database "talently")
+         (sql-port 5432))
+        (salesdb
+         (sql-product 'postgres)
+         (sql-server "127.0.0.1")
+         (sql-user "postgres")
+         (sql-password "")
+         (sql-database "salesdb")
+         (sql-port 5432))))
+
+
+;; lsp-mode
+
+;; (setq lsp-sqls-connections
+;;       '(((driver . "postgresql")
+;;          (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=postgres sslmode=disable"))
+;;         ((driver . "postgresql")
+;;          (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=MyDatabase sslmode=disable"))
+;;         ((driver . "postgresql")
+;;          (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=talently sslmode=disable"))
+;;         ((driver . "postgresql")
+;;          (dataSourceName . "host=127.0.0.1 port=5432 user=postgres dbname=salesdb sslmode=disable"))))
+
+
+
+;; --- Prodigy: Long-Running Services -------------------------------------------------------------------------
+
+(use-package prodigy :straight t)
+
 (provide 'init)
 ;;; init.el ends here
-

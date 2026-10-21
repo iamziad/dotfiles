@@ -29,9 +29,10 @@
 (push '(cursor-type . box) default-frame-alist)
 (push '(cursor-in-non-selected-windows . nil) default-frame-alist)
 
-;; Pixelwise resizing from the very first frame.
-(push '(left-fringe . 0) default-frame-alist)
-(push '(right-fringe . 0) default-frame-alist)
+;; Fringes must have a non-zero width: diff-hl draws its change markers, and
+;; vi-tilde-fringe its tildes, in the left one.
+(push '(left-fringe . 8) default-frame-alist)
+(push '(right-fringe . 8) default-frame-alist)
 
 (when (eq system-type 'gnu/linux)
   (setq x-gtk-use-system-tooltips nil))
