@@ -83,7 +83,7 @@
                     :family "Noto Serif"
                     :height 110)
 (set-face-attribute 'variable-pitch nil
-                    :family "Noto Sans"
+                    :family "Dejavu Sans"
                     :height 120)
 
 (defun my/setup-arabic-font (&optional frame)
@@ -139,11 +139,10 @@
  uniquify-buffer-name-style 'forward
  load-prefer-newer t)
 
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;; Language & Encoding
 (setq default-input-method "arabic")
-
-;; Aliases & Keybindings
-(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Windows & Buffer
 (when (window-system)
@@ -259,28 +258,6 @@
 (with-eval-after-load 'subword
   (diminish 'subword-mode))
 
-;; Tabs
-
-(use-package sort-tab
-  :straight nil
-  :config
-  (require 'sort-tab)
-  (sort-tab-mode 1))
-
-(global-set-key (kbd "M-1") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-2") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-3") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-4") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-5") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-6") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-7") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-8") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-9") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "M-0") 'sort-tab-select-visible-tab)
-(global-set-key (kbd "C-x t C") 'sort-tab-close-all-tabs)
-(global-set-key (kbd "C-x t q") 'sort-tab-close-mode-tabs)
-(global-set-key (kbd "C-x t c") 'sort-tab-close-current-tab)
-
 ;;;; Dired
 
 (require 'dired-x)
@@ -356,7 +333,7 @@
  ("C-}"           . forward-paragraph)
  ("C-{"           . backward-paragraph)
  ("C-c e"         . eshell)
- ("C-x C-b"       . ibuffer)
+ ("C-x C-b"       . projectile-ibuffer)
  ;; Compile & run
  ("C-c c"         . compile)
  ("C-c C"         . recompile)
@@ -367,8 +344,8 @@
  ("C-,"           . duplicate-dwim)
  ("C-c f"         . find-file-at-point)
  ;; Tabs
- ("C-x t h"       . tab-previous)
- ("C-x t l"       . tab-next))
+ ("C-c ;"       . tab-previous)
+ ("C-c '"       . tab-next))
 
 ;;;; Tools
 
@@ -428,25 +405,39 @@ Each language section adds its own packages with `my/mason-use'.")
 (defvar my/treesit-languages nil
   "Tree-sitter grammars used by this configuration.")
 
+(defvar my/treesit-remaps nil
+  "Pending (LANGUAGE OLD-MODE NEW-MODE) triples, retried by
+`my/install-treesit-grammars' after a grammar install so a remap
+doesn't stay missing until the next Emacs restart.")
+
 (defun my/treesit-grammar (language)
   "Register LANGUAGE so `my/install-treesit-grammars' can install it."
   (add-to-list 'my/treesit-languages language t))
 
-(defun my/treesit-remap (language old-mode new-mode)
-  "Use NEW-MODE for OLD-MODE once the LANGUAGE grammar is available."
-  (my/treesit-grammar language)
+(defun my/treesit-try-remap (language old-mode new-mode)
+  "Add OLD-MODE -> NEW-MODE to `major-mode-remap-alist' if LANGUAGE is ready."
   (when (and (fboundp new-mode)
              (treesit-ready-p language t)
              (or (not (eq new-mode 'js-ts-mode))
                  (treesit-ready-p 'jsdoc t)))
     (add-to-list 'major-mode-remap-alist (cons old-mode new-mode))))
 
+(defun my/treesit-remap (language old-mode new-mode)
+  "Use NEW-MODE for OLD-MODE once the LANGUAGE grammar is available."
+  (my/treesit-grammar language)
+  (add-to-list 'my/treesit-remaps (list language old-mode new-mode) t)
+  (my/treesit-try-remap language old-mode new-mode))
+
 (defun my/install-treesit-grammars ()
-  "Install every tree-sitter grammar this configuration uses."
+  "Install every tree-sitter grammar this configuration uses, then
+retry any remap that was skipped at init time because its grammar
+wasn't installed yet."
   (interactive)
   (dolist (language my/treesit-languages)
     (unless (treesit-language-available-p language)
-      (treesit-install-language-grammar language))))
+      (treesit-install-language-grammar language)))
+  (dolist (remap my/treesit-remaps)
+    (apply #'my/treesit-try-remap remap)))
 
 ;;;; Completion and UI
 
@@ -488,41 +479,6 @@ Each language section adds its own packages with `my/mason-use'.")
   :config
   (marginalia-mode 1))
 
-;;;; ibuffer
-
-;; Group buffers by project
-;; (use-package ibuffer-project
-;;   :straight t
-;;   :demand t
-;;   :init
-;;   (setq ibuffer-project-use-cache t)
-;;   :config
-;;   (add-hook 'ibuffer-hook
-;;             (lambda ()
-;;               (setq ibuffer-filter-groups
-;;                     (ibuffer-project-generate-filter-groups))
-;;               (unless (eq ibuffer-sorting-mode
-;;                           'project-file-relative)
-;;                 (ibuffer-do-sort-by-project-file-relative)))))
-
-(use-package nerd-icons)
-
-(use-package nerd-icons-ibuffer
-  :straight t
-  :after (nerd-icons ibuffer-project)
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode)
-  :custom
-  (nerd-icons-ibuffer-color-icon t)
-  (nerd-icons-ibuffer-icon-size 1.0)
-  (nerd-icons-ibuffer-formats
-   '((mark modified read-only locked " "
-           (icon 2 2) " "
-           (name 24 24 :left :elide) " "
-           (size-h 9 -1 :right) " "
-           (mode+ 16 16 :left :elide) " "
-           project-file-relative)
-     (mark " " (name 16 -1) " " filename))))
-
 ;;;; Git
 
 (use-package magit
@@ -553,12 +509,11 @@ Each language section adds its own packages with `my/mason-use'.")
   :init
   (setq projectile-project-search-path '("~/Projects/"))
   :config
-  (define-key projectile-mode-map
-              (kbd "C-x p")
-              'projectile-command-map)
-  :bind
-  ("C-c p" . proced)
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
   (projectile-mode 1))
+
+(use-package hl-todo
+  :hook ((prog-mode yaml-mode conf-mode) . hl-todo-mode))
 
 ;;;; Editing utilities
 
@@ -622,8 +577,10 @@ Each language section adds its own packages with `my/mason-use'.")
   (when (executable-find "direnv")
     (envrc-global-mode 1)))
 
-(use-package hl-todo
-  :hook ((prog-mode yaml-mode conf-mode) . hl-todo-mode))
+(use-package daemons :straight t)
+
+(use-package proced :straight nil
+  :bind ("C-c P" . proced))
 
 (use-package yasnippet
   :ensure t
@@ -680,10 +637,12 @@ Each language section adds its own packages with `my/mason-use'.")
   (lsp-bridge-python-command (my/lsp-bridge-python))
   (lsp-bridge-diagnostic-overlays t)
   (lsp-bridge-enable-hover-diagnostic t)
-  (lsp-bridge-typescript-lsp-server "typescript-go")
-  (lsp-bridge-typescript-react-lsp-server "typescript-go-react")
-  (lsp-bridge-javascript-lsp-server "javascript-go")
-  (lsp-bridge-javascript-react-lsp-server "javascript-go-react")
+  (lsp-bridge-complete-manually t)
+  (lsp-bridge-enable-completion-in-string t)
+  (lsp-bridge-typescript-lsp-server "typescript")
+  (lsp-bridge-typescript-react-lsp-server "typescriptreact")
+  (lsp-bridge-javascript-lsp-server "javascript")
+  (lsp-bridge-javascript-react-lsp-server "javascriptreact")
   ;; (acm-enable-icon nil)
   :config
   ;; Combos that lsp-bridge ships itself.  Anything else is generated by
@@ -693,6 +652,25 @@ Each language section adds its own packages with `my/mason-use'.")
           (("component.html") . "angular_template_html")
           (("component.ts") . "angular_template_typescript")))
   (global-lsp-bridge-mode))
+
+(defvar my/lsp-bridge-auto-complete-modes '(emacs-lisp-mode html-ts-mode css-ts-mode
+                                                            mhtml-mode web-mode yaml-ts-mode json-ts-mode
+                                                            c-mode)
+  "Major modes where lsp-bridge completion should stay automatic.")
+
+(dolist (mode my/lsp-bridge-auto-complete-modes)
+  (add-hook (intern (format "%s-hook" mode))
+            (lambda () (setq-local lsp-bridge-complete-manually nil))))
+
+(defun my/lsp-bridge-tab-dwim ()
+  "Pop the completion menu if mid-symbol and manual; otherwise indent."
+  (interactive)
+  (if (and lsp-bridge-complete-manually
+           (> (point) (save-excursion (back-to-indentation) (point))))
+      (lsp-bridge-popup-complete-menu)
+    (indent-for-tab-command)))
+
+(define-key lsp-bridge-mode-map (kbd "TAB") #'my/lsp-bridge-tab-dwim)
 
 (defvar-keymap my/lsp-bridge-map
   :doc "LSP commands."
@@ -721,14 +699,18 @@ Each language section adds its own packages with `my/mason-use'.")
 
 ;; (FRAMEWORK SERVER FILES OPTIONAL-SERVERS)
 (defconst my/lsp-combo-table
-  '(("typescript"      "typescript-go"             ("ts" "mts" "cts") (eslint))
-    ("javascript"      "javascript-go"              ("js" "mjs" "cjs") (eslint))
-    ("typescriptreact" "typescript-go-react"      ("tsx")            (eslint tailwind))
-    ("javascriptreact" "javascript-go-react"      ("jsx")            (eslint tailwind))
-    ("vue"             "volar"                     ("vue")            (eslint tailwind))
-    ("html"            "vscode-html-language-server" ("html")         (tailwind))
-    ("css"             "vscode-css-language-server"  ("css" "scss")   (tailwind)))
-  "bla bla.")
+  '(("typescript"      "typescript"                  ("ts" "mts" "cts") (eslint))
+    ("javascript"      "javascript"                  ("js" "mjs" "cjs") (eslint))
+    ("typescriptreact" "typescriptreact"             ("tsx")            (eslint tailwind))
+    ("javascriptreact" "javascriptreact"             ("jsx")            (eslint tailwind))
+    ("vue"             "volar"                       ("vue")            (eslint tailwind))
+    ("html"            "vscode-html-language-server" ("html")           (tailwind))
+    ("css"             "vscode-css-language-server"  ("css" "scss")     (tailwind)))
+  "Rows of (FRAMEWORK SERVER FILES OPTIONAL-SERVERS).
+FRAMEWORK/SERVER name the combo and its base lsp-bridge server.  FILES
+are the extensions `my/lsp-bridge-multiserver' matches against.
+OPTIONAL-SERVERS lists which of `eslint'/`tailwind' may be layered on
+top when detected in the project.")
 
 (defconst my/eslint-config-names
   '("eslint.config.js" "eslint.config.mjs" "eslint.config.cjs"
@@ -791,20 +773,31 @@ ESLINT and TAILWIND are the lsp-bridge server names, or nil."
                     (expand-file-name "multiserver"
                                       (file-name-directory library))))))
 
+(defun my/lsp-combo-file-content (file)
+  "Return FILE's content as a string, or nil if it doesn't exist."
+  (and (file-exists-p file)
+       (ignore-errors
+         (with-temp-buffer
+           (insert-file-contents file)
+           (buffer-string)))))
+
 (defun my/lsp-combo-ensure (row eslint tailwind &optional force)
   "Return the name of ROW's combo, writing its JSON file when needed.
-ESLINT and TAILWIND are the lsp-bridge server names, or nil.  With FORCE,
-overwrite an existing file."
+ESLINT and TAILWIND are the lsp-bridge server names, or nil.  The file
+is (re)written whenever FORCE is non-nil or its content no longer
+matches what `my/lsp-combo-spec' currently produces, so a change to
+the generator takes effect on the next file of that kind you open
+instead of staying stuck with whatever was written the first time."
   (pcase-let* ((`(,framework ,server ,_files ,_optional) row)
                (name (concat framework
                              (and eslint "_eslint")
                              (and tailwind "_tailwindcss")))
                (file (my/lsp-combo-file name)))
-    (when (and (or force (not (file-exists-p file)))
-               (not (my/lsp-combo-bundled-p name)))
-      (make-directory my/lsp-bridge-multiserver-dir t)
-      (write-region (json-encode (my/lsp-combo-spec server eslint tailwind))
-                    nil file nil 'silent))
+    (unless (my/lsp-combo-bundled-p name)
+      (let ((json (json-encode (my/lsp-combo-spec server eslint tailwind))))
+        (when (or force (not (equal (my/lsp-combo-file-content file) json)))
+          (make-directory my/lsp-bridge-multiserver-dir t)
+          (write-region json nil file nil 'silent))))
     name))
 
 (defun my/lsp-combo-refresh ()
@@ -821,9 +814,26 @@ overwrite an existing file."
           (when (or eslint tailwind)
             (my/lsp-combo-ensure row eslint tailwind 'force)))))))
 
+(defun my/lsp-bridge-static-combo-p (file)
+  "Return non-nil when FILE is already owned by a compound-extension
+entry in `lsp-bridge-multi-lang-server-extension-list' (Angular's
+\"component.html\"/\"component.ts\", say).  `file-name-extension' only
+sees the last dot-segment, so our generic \"html\"/\"ts\" rows in
+`my/lsp-combo-table' would otherwise match those same files and
+quietly steal them away from their framework-specific combo the
+moment eslint or tailwind is also configured in the project."
+  (let ((name (file-name-nondirectory file)))
+    (cl-some (lambda (entry)
+               (cl-some (lambda (key)
+                          (and (string-match-p "\\." key)
+                               (string-suffix-p (concat "." key) name)))
+                        (car entry)))
+             lsp-bridge-multi-lang-server-extension-list)))
+
 (defun my/lsp-bridge-multiserver (_project-path file)
   "Choose the lsp-bridge combo for FILE, or nil for the default server."
-  (when-let* ((extension (file-name-extension file))
+  (when-let* (((not (my/lsp-bridge-static-combo-p file)))
+              (extension (file-name-extension file))
               (row (seq-find (lambda (row) (member extension (nth 2 row)))
                              my/lsp-combo-table)))
     (let* ((optional (nth 3 row))
@@ -890,7 +900,7 @@ Interactively, ask for a file and show the answer."
 
 ;;;; JavaScript / TypeScript
 
-(my/mason-use "eslint-lsp"
+(my/mason-use "typescript-language-server" "eslint-lsp"
               "tailwindcss-language-server" "js-debug-adapter")
 
 ;; Grammar registration for `my/install-treesit-grammars'.
@@ -976,8 +986,6 @@ Interactively, ask for a file and show the answer."
 
 (my/mason-use "jdtls" "google-java-format" "java-debug-adapter")
 
-;; (my/treesit-remap 'java 'java-mode 'java-ts-mode)
-
 ;; Lombok and the java-debug plugin bundled with mason's jdtls.
 (defconst my/mason-java-debug-jar-link
   (expand-file-name "java-debug-plugin.jar" my/mason-dir))
@@ -1014,7 +1022,13 @@ Interactively, ask for a file and show the answer."
       (expand-file-name "lsp-bridge-langserver/jdtls.json" user-emacs-directory))
 
 (defun my/prune-stale-jdtls-configs ()
-  "Delete cached jdtls configs generated before the java-debug bundle fix."
+  "Delete cached jdtls configs that predate the java-debug bundle fix.
+One-off cleanup, not run automatically: now that freshly generated
+configs always include \"bundles\", scanning and reading every cached
+jdtls.json on every single startup is wasted I/O.  Call this by hand
+(`M-x my/prune-stale-jdtls-configs') only if you ever need to force
+regeneration of the cache again."
+  (interactive)
   (let ((dir (expand-file-name "~/.cache/lsp-bridge-jdtls")))
     (dolist (file (and (file-directory-p dir)
                        (directory-files-recursively dir "jdtls\\.json")))
@@ -1022,8 +1036,6 @@ Interactively, ask for a file and show the answer."
         (insert-file-contents file)
         (unless (search-forward "bundles" nil t)
           (delete-file file))))))
-
-(my/prune-stale-jdtls-configs)
 
 (when-let* ((jar (my/lombok-jar)))
   (setq lsp-bridge-jdtls-jvm-args (list (concat "-javaagent:" jar))))
@@ -1089,7 +1101,30 @@ Interactively, ask for a file and show the answer."
   (my/run-build-command "spring-boot:run" "bootRun"))
 
 ;; Debugging: eglot (jdtls) feeds dape.
-(defvar my/java-debug-start-delay 3)
+(defvar my/java-debug-start-delay 3
+  "Seconds to wait before each dape launch attempt.
+jdtls keeps indexing in the background after the eglot handshake, so
+a single fixed wait can be too short on a cold start; see
+`my/java-debug--attempt', which retries instead of trusting one try.")
+
+(defvar my/java-debug-max-attempts 3
+  "How many times `my/java-debug--attempt' retries before giving up.")
+
+(defun my/java-debug--attempt (buffer attempt)
+  "Try to start dape in BUFFER; retry with backoff up to ATTEMPT times."
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (condition-case err
+          (call-interactively #'dape)
+        (error
+         (if (< attempt my/java-debug-max-attempts)
+             (progn
+               (message "[java-debug] not ready yet (%s), retrying (%d/%d)..."
+                        (error-message-string err) attempt my/java-debug-max-attempts)
+               (run-with-timer my/java-debug-start-delay nil
+                               #'my/java-debug--attempt buffer (1+ attempt)))
+           (message "[java-debug] giving up after %d attempts: %s"
+                    my/java-debug-max-attempts (error-message-string err))))))))
 
 (defun my/java-debug-on ()
   "Start a Java debug session through eglot and dape."
@@ -1106,10 +1141,7 @@ Interactively, ask for a file and show the answer."
                 (remove-hook 'eglot-connect-hook start)
                 (run-with-timer
                  my/java-debug-start-delay nil
-                 (lambda ()
-                   (when (buffer-live-p buffer)
-                     (with-current-buffer buffer
-                       (call-interactively #'dape))))))))
+                 #'my/java-debug--attempt buffer 1))))
       (if (eglot-current-server)
           (funcall start)
         (add-hook 'eglot-connect-hook start)
@@ -1557,8 +1589,6 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
   (define-key verb-response-body-mode-map
               (kbd "q")
               #'verb-kill-response-buffer-and-window))
-
-(use-package daemons :straight t)
 
 ;;;; Zen Mode
 

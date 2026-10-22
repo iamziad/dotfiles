@@ -1,7 +1,7 @@
 [Default Applications]
-x-scheme-handler/http=firefox.desktop
-x-scheme-handler/https=firefox.desktop
-text/html=firefox.desktop
+x-scheme-handler/http=brave-browser.desktop
+x-scheme-handler/https=brave-browser.desktop
+text/html=brave-browser.desktop
 application/pdf=firefox.desktop
 
 image/jpeg=feh.desktop
@@ -27,6 +27,8 @@ text/x-java=emacsclient.desktop
 text/x-shellscript=emacsclient.desktop
 text/css=emacsclient.desktop
 text/x-makefile=emacsclient.desktop
+x-scheme-handler/about=brave-browser.desktop
+x-scheme-handler/unknown=brave-browser.desktop
 
 [Added Associations]
 text/plain=emacsclient.desktop;

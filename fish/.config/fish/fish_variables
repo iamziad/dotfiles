@@ -1,3 +1,3 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR fish_user_paths:/mnt/7E6F\x2dFB0D/natours/node_modules/\x2ebin\x1e/home/ziad/Projects/natours/node_modules/\x2ebin\x1e/usr/lib/jvm/java\x2d25\x2dopenjdk/bin\x1e/home/ziad/\x2elocal/bin
+SETUVAR fish_user_paths:/tmp/node_modules/\x2ebin\x1e/mnt/7E6F\x2dFB0D/natours/node_modules/\x2ebin\x1e/home/ziad/Projects/natours/node_modules/\x2ebin\x1e/usr/lib/jvm/java\x2d25\x2dopenjdk/bin\x1e/home/ziad/\x2elocal/bin

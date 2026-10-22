@@ -5,7 +5,12 @@ set -euo pipefail
 
 NAME=$1
 SIGN=$2
-CACHE_FILE="/home/ziad/ddc_bus_${NAME}.txt"
+
+CACHE_DIR="$HOME/.cache/my-brightness"
+mkdir -p "$CACHE_DIR"
+
+CACHE_FILE="$CACHE_DIR/ddc_bus_${NAME}.txt"
+NOTIFY_ID_FILE="$CACHE_DIR/ddc_notify_${NAME}.txt"
 
 get_bus() {
     ddcutil detect 2>/dev/null | awk -v name="$NAME" '
@@ -19,10 +24,12 @@ get_bus() {
 if [[ ! -f "$CACHE_FILE" ]]; then
     notify-send "DDCutil" "Detecting bus for $NAME…"
     BUS_NUM=$(get_bus)
+
     if [[ -z "$BUS_NUM" ]]; then
         notify-send "Error" "Couldn't find display: $NAME"
         exit 1
     fi
+
     echo "$BUS_NUM" > "$CACHE_FILE"
 fi
 
@@ -33,39 +40,53 @@ get_value() {
         | grep -oP 'current value =\s*\K[0-9]+'
 }
 
-CURRENT=$(get_value)
+CURRENT=$(get_value || true)
+
 if [[ -z "$CURRENT" ]]; then
     # Cache might be stale — try re-detecting once
     rm -f "$CACHE_FILE"
     BUS_NUM=$(get_bus)
+
     if [[ -z "$BUS_NUM" ]]; then
         notify-send "Error" "Lost connection to $NAME"
         exit 1
     fi
+
     echo "$BUS_NUM" > "$CACHE_FILE"
     BUS=$BUS_NUM
-    CURRENT=$(get_value)
+    CURRENT=$(get_value || true)
+
+    if [[ -z "$CURRENT" ]]; then
+        notify-send "Error" "Couldn't read brightness for $NAME"
+        exit 1
+    fi
 fi
 
 case "$SIGN" in
-    +) NEW=$(( CURRENT + 10 )) ;;
-    -) NEW=$(( CURRENT - 10 )) ;;
-    *) NEW=$SIGN ;;           # absolute value passed directly
+    +) NEW=$((CURRENT + 10)) ;;
+    -) NEW=$((CURRENT - 10)) ;;
+    *) NEW=$SIGN ;; # Absolute value passed directly
 esac
 
-# clamp 0–100
-NEW=$(( NEW < 0   ? 0   : NEW ))
+# Clamp to 0–100
+NEW=$(( NEW < 0 ? 0 : NEW ))
 NEW=$(( NEW > 100 ? 100 : NEW ))
 
-NOTIFY_ID_FILE="/home/ziad/ddc_notify_${NAME}.txt"
+# Replace the previous notification, if one exists
+NOTIFY_ARGS=()
 
 if [[ -f "$NOTIFY_ID_FILE" ]]; then
-    NOTIFY_ARGS="-r $(cat "$NOTIFY_ID_FILE")"
-else
-    NOTIFY_ARGS=""
+    OLD_ID=$(<"$NOTIFY_ID_FILE")
+    if [[ -n "$OLD_ID" ]]; then
+        NOTIFY_ARGS=(-r "$OLD_ID")
+    fi
 fi
 
 ddcutil --bus "$BUS" --noverify --sleep-multiplier 0.05 setvcp 10 "$NEW"
 
-NEW_ID=$(notify-send -p $NOTIFY_ARGS -h "int:value:$NEW" "$NAME — Brightness" "${NEW}%")
+NEW_ID=$(notify-send -p "${NOTIFY_ARGS[@]}" \
+    -h "int:value:$NEW" \
+    "$NAME — Brightness" \
+    "${NEW}%")
+
 echo "$NEW_ID" > "$NOTIFY_ID_FILE"
