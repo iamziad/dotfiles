@@ -5,14 +5,13 @@ config/alacritty/colors.toml
 *~
 \#*\#
 *.elc
-emacs/*
-!emacs/modules/
-!emacs/lisp/
-!emacs/snippets/
-!emacs/themes/
-!emacs/init.el
-!emacs/early-init.el
-!emacs/var/dape/adapters/
+/emacs/.emacs.d/*
+!/emacs/.emacs.d/init.el
+!/emacs/.emacs.d/early-init.el
+!/emacs/.emacs.d/modules/
+!/emacs/.emacs.d/lisp/
+!/emacs/.emacs.d/snippets/
+!/emacs/.emacs.d/themes/
 
 # Vim
 autoload/
