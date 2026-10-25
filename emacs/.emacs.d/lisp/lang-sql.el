@@ -7,10 +7,8 @@
   :hook ((sql-mode . sqlup-mode)
          (sql-interactive-mode . sqlup-mode)))
 
-(sql-input-ring-file-name
- (locate-user-emacs-file ".sqli_history")
-
-  (with-eval-after-load 'sql
+(with-eval-after-load 'sql
+  (sql-input-ring-file-name (locate-user-emacs-file ".sqli_history"))
     (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
   ;; Apply SQL syntax highlighting in SQLi buffers.

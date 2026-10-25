@@ -1,8 +1,11 @@
 ;; ;; ;; -*- lexical-binding: t; -*-
 
 (use-package yasnippet
+  :ensure t
+  :custom
+  (yas-snippet-dirs
+   (list (expand-file-name "snippets/" user-emacs-directory)))
   :config
-  ;; (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
   (yas-global-mode 1))
 
 (use-package vertico

@@ -3,10 +3,8 @@
 (require 'package)
 (package-initialize)
 
-;; Load the modules from ./lisp.
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
-;; Customize writes to its own file, never into this file or the modules.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t t)
 
