@@ -13,3 +13,6 @@ undo/
 auto-save-list/
 tramp
 .\#*
+
+# --- AI ---
+.agent-shell
