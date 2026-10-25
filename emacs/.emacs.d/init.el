@@ -24,6 +24,7 @@
 (require 'init-spelling)
 (require 'init-dumb-jump)
 (require 'init-flycheck)
+(require 'init-zen-mode)
 (require 'init-literate-programming)
 (require 'lang-c)
 (require 'lang-javascript)

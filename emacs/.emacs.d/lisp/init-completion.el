@@ -8,6 +8,29 @@
   :config
   (yas-global-mode 1))
 
+(use-package completion-preview
+  :ensure nil
+  :custom
+  (completion-preview-minimum-symbol-length 2)
+  :config
+  (define-key completion-preview-active-mode-map (kbd "M-]") #'completion-preview-next-candidate)
+  (define-key completion-preview-active-mode-map (kbd "M-[") #'completion-preview-prev-candidate)
+  (setq global-completion-preview-modes
+        '(not minibuffer-mode
+              emacs-lisp-mode
+              lisp-interaction-mode
+              c-mode
+              c-ts-mode
+              html-mode
+              mhtml-mode
+              css-mode
+              scss-mode
+              web-mode
+              conf-mode
+              html-ts-mode
+              css-ts-mode))
+  (global-completion-preview-mode 1))
+
 (use-package vertico
   :init
   (vertico-mode))
@@ -113,28 +136,5 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (add-hook 'counsel-load-theme #'(lambda () (interactive) (kind-icon-reset-cache)))
   (add-hook 'load-theme         #'(lambda () (interactive) (kind-icon-reset-cache))))
-
-(use-package completion-preview
-  :ensure nil
-  :custom
-  (completion-preview-minimum-symbol-length 2)
-  :config
-  (define-key completion-preview-active-mode-map (kbd "M-]") #'completion-preview-next-candidate)
-  (define-key completion-preview-active-mode-map (kbd "M-[") #'completion-preview-prev-candidate)
-  (setq global-completion-preview-modes
-        '(not minibuffer-mode
-              emacs-lisp-mode
-              lisp-interaction-mode
-              c-mode
-              c-ts-mode
-              html-mode
-              mhtml-mode
-              css-mode
-              scss-mode
-              web-mode
-              conf-mode
-              html-ts-mode
-              css-ts-mode))
-  (global-completion-preview-mode 1))
 
 (provide 'init-completion)

@@ -17,18 +17,14 @@
  ("C-c ?" . which-key-show-top-level)
  )
 
-(defun my/kill-other-windows-and-buffers ()
-  "Kill the buffers shown in other windows, then delete those windows.
-The current buffer is never killed, even if it is also shown elsewhere."
-  (interactive)
-  (let* ((current (selected-window))
-         (buffers (seq-uniq
-                   (mapcar #'window-buffer
-                           (remq current (window-list nil 'no-minibuf))))))
-    (dolist (buf (remq (current-buffer) buffers))
-      (when (buffer-live-p buf)
-        (kill-buffer buf)))
-    (delete-other-windows)))
+(bind-keys :prefix-map my-leader-map
+           :prefix "C-z"
+           ("c"   . org-capture)
+           ("t"   . org-babel-tangle)
+           ("s"   . org-download-clipboard)
+           ("m l" . magit-list-repositories)
+           ("r"   . my/quick-mark)
+           ("j"   . my/quick-jump))
 
 (keymap-global-set "C-c w 1" #'my/kill-other-windows-and-buffers)
 
@@ -64,5 +60,31 @@ The current buffer is never killed, even if it is also shown elsewhere."
    ("C-c C-x r"                        . crux-rename-file-and-buffer)
    ("C-c C-x d"                        . crux-delete-file-and-buffer)
    ("<remap> <move-beginning-of-line>" . crux-move-beginning-of-line)))
+
+;;; Utilities
+
+(defun my/quick-mark (char)
+  "Save current position in register CHAR."
+  (interactive (list (read-char "Mark to register: ")))
+  (point-to-register char)
+  (message "Saved to register %c" char))
+
+(defun my/quick-jump (char)
+  "Jump to the position stored in register CHAR."
+  (interactive (list (read-char "Jump to register: ")))
+  (jump-to-register char))
+
+(defun my/kill-other-windows-and-buffers ()
+  "Kill the buffers shown in other windows, then delete those windows.
+The current buffer is never killed, even if it is also shown elsewhere."
+  (interactive)
+  (let* ((current (selected-window))
+         (buffers (seq-uniq
+                   (mapcar #'window-buffer
+                           (remq current (window-list nil 'no-minibuf))))))
+    (dolist (buf (remq (current-buffer) buffers))
+      (when (buffer-live-p buf)
+        (kill-buffer buf)))
+    (delete-other-windows)))
 
 (provide 'init-keys)

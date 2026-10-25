@@ -9,7 +9,7 @@
 
 (with-eval-after-load 'sql
   (sql-input-ring-file-name (locate-user-emacs-file ".sqli_history"))
-    (add-to-list 'sql-postgres-options "--no-psqlrc"))
+  (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
   ;; Apply SQL syntax highlighting in SQLi buffers.
   (defun my/sql-interactive-font-lock ()
