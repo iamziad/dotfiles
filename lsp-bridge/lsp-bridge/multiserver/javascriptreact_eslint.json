@@ -1,0 +1,6 @@
+{
+  "default": "javascriptreact",
+  "diagnostics": ["javascriptreact", "vscode-eslint-language-server"],
+  "code_action": ["javascriptreact", "vscode-eslint-language-server"],
+  "execute_command": ["javascriptreact", "vscode-eslint-language-server"]
+}

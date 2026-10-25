@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: import_util
-# key: iutil
-# --
-import java.util.${1:Arrays};

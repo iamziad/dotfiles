@@ -6,12 +6,13 @@ config/alacritty/colors.toml
 \#*\#
 *.elc
 emacs/*
-emacs/modules/
-emacs/snippets/
-emacs/themes/
-emacs/init.el
-emacs/early-init.el
-emacs/var/dape/adapters/
+!emacs/modules/
+!emacs/lisp/
+!emacs/snippets/
+!emacs/themes/
+!emacs/init.el
+!emacs/early-init.el
+!emacs/var/dape/adapters/
 
 # Vim
 autoload/

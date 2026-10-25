@@ -1,0 +1,12 @@
+{
+  "default": "vscode-html-language-server",
+  "completion": ["tailwindcss", "emmet-ls", "vscode-html-language-server"],
+  "completion_item_resolve": [
+    "tailwindcss",
+    "emmet-ls",
+    "vscode-html-language-server"
+  ],
+  "diagnostics": ["vscode-html-language-server", "emmet-ls", "tailwindcss"],
+  "code_action": ["vscode-html-language-server", "emmet-ls", "tailwindcss"],
+  "execute_command": ["vscode-html-language-server", "emmet-ls", "tailwindcss"]
+}

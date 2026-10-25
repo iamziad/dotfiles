@@ -209,9 +209,6 @@ bindsym $mod+q kill
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
-bindsym F1 exec firefox
-bindsym F2 exec thunar
-bindsym F3 exec qalculate-gtk
 bindsym F4 exec --no-startup-id xcolor -s clipboard
 bindsym $mod+z exec emacsclient -c
 bindsym $mod+Shift+g exec --no-startup-id my-toggle-darkmode
