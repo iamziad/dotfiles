@@ -1,10 +1,11 @@
 [user]
-	name = Ziad Ahmed
-	email = dev.ziadahmed@gmail.com
+    name = Ziad Ahmed
+    email = dev.ziadahmed@gmail.com
 
 [core]
-	editor = emacsclient -r
-	excludesfile = ~/.config/git/ignore
+    editor = emacsclient -r
+    excludesfile = ~/.config/git/ignore
+    autocrlf = input
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
