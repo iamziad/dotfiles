@@ -1,15 +1,5 @@
 ;; -*- lexical-binding: t; -*-
 
-(use-package syntax-subword
-  :custom (syntax-subword-skip-spaces t)
-  :diminish syntax-subword-mode
-  :config
-  (global-syntax-subword-mode -1)
-  (global-set-key (kbd "M-F") #'syntax-subword-forward)
-  (global-set-key (kbd "M-B") #'syntax-subword-backward)
-  (global-set-key (kbd "M-D") #'syntax-subword-kill)
-  (global-set-key (kbd "<M-S-backspace>") #'syntax-subword-backward-kill))
-
 (use-package iy-go-to-char
   :vc (:url "https://github.com/emacsattic/iy-go-to-char")
   :bind* (("C-'" . iy-go-to-char)
@@ -62,5 +52,12 @@
   :config
   (require 'mc-hide-unmatched-lines-mode)
   (setq mc/always-run-for-all t))
+
+(use-package drag-stuff
+  :ensure t
+  :diminish drag-stuff-mode
+  :config
+  (drag-stuff-global-mode 1)
+  (drag-stuff-define-keys))
 
 (provide 'init-editing)

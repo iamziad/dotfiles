@@ -2,15 +2,18 @@
 
 (require 'dired-x)
 
-(setq dired-listing-switches "-alh --group-directories-first")
-(setq dired-dwim-target t)
-(setq delete-by-moving-to-trash t)
-(setq dired-kill-when-opening-new-dired-buffer t)
-(setq dired-auto-revert-buffer t)
-(setq dired-mouse-drag-files t)
-(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-(setq image-dired-thumb-size 250)
-(setq image-dired-thumbnail-storage 'standard)
+(use-package dired
+  :ensure nil
+  :config
+  (setq dired-listing-switches "-alh --group-directories-first")
+  (setq dired-dwim-target t)
+  (setq delete-by-moving-to-trash t)
+  (setq dired-kill-when-opening-new-dired-buffer t)
+  (setq dired-auto-revert-buffer t)
+  (setq dired-mouse-drag-files t)
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+  (setq image-dired-thumb-size 250)
+  (setq image-dired-thumbnail-storage 'standard))
 
 (use-package async
   :ensure t

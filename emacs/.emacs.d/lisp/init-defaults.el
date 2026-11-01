@@ -14,7 +14,22 @@
   (with-eval-after-load 'which-key
     (diminish 'which-key-mode))
   (with-eval-after-load 'eldoc
-    (diminish 'eldoc-mode)))
+    (diminish 'eldoc-mode))
+  (with-eval-after-load 'subword
+    (diminish 'subword-mode)))
+
+(use-package gcmh
+  :ensure t
+  :demand t
+  :diminish gcmh-mode
+  :custom
+  (gcmh-idle-delay 'auto)
+  (gcmh-auto-idle-delay-factor 10)
+  (gcmh-high-cons-threshold (* 128 1024 1024))
+  :config
+  (gcmh-mode 1))
+
+(prefer-coding-system 'utf-8-unix)
 
 (setq make-backup-files nil
       create-lockfiles nil
@@ -37,7 +52,8 @@
 (dolist (hook '(prog-mode-hook org-mode-hook markdown-mode-hook))
   (add-hook hook #'display-line-numbers-mode))
 
-(setq display-line-numbers-type 'relative
+(setq warning-minimum-level :error
+      display-line-numbers-type 'relative
       sentence-end-double-space nil
       use-short-answers t
       kill-do-not-save-duplicates t
@@ -63,6 +79,7 @@
       scroll-error-top-bottom t
       auto-window-vscroll nil
       ;; Misc
+      eldoc-echo-area-use-multiline-p nil
       ring-bell-function 'ignore
       shell-command-prompt-show-cwd t
       inhibit-compacting-font-caches t

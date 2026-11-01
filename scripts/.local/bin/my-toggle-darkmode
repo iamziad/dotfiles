@@ -52,12 +52,6 @@ fi
 
 echo "$NEW_THEME" > "$STATE_FILE"
 
-# Emacs: push the same decision to any running daemon. Safe even with
-# no server up -- emacsclient just fails quietly.
-if command -v emacsclient &>/dev/null; then
-    emacsclient --eval "(toggle-theme '$MODE)" &>/dev/null
-fi
-
 pkill -RTMIN+10 i3blocks 2>/dev/null
 
 echo "Switched to $NEW_THEME ($MODE)"

@@ -1,20 +1,23 @@
 ;; -*- lexical-binding: t; -*-
 
 (bind-keys*
- ("C-}" . forward-paragraph)
- ("C-{" . backward-paragraph)
- ("C-," . duplicate-dwim)
- ("C-c e" . eshell)
- ("C-c c" . project-compile)
- ("C-c C" . recompile)
- ("C-c f" . find-file-at-point)
- ("C-c C-f" . find-file-other-window)
- ("C-x C-k" . kill-buffer-and-window)
- ("C-<tab>" . mode-line-other-buffer)
- ("C-x C-j" . dired-jump)
- ("C-c p" . project-prefix-map)
- ("C-x g" . magit-status)
- ("C-c ?" . which-key-show-top-level)
+ ("C-}"      . forward-paragraph)
+ ("C-{"      . backward-paragraph)
+ ("C-,"      . duplicate-dwim)
+ ("C-c e e"  . eshell)
+ ("C-c e o"  . my/eshell-other-window)
+ ("C-c c"    . compile)
+ ("C-c C"    . recompile)
+ ("C-c f"    . find-file-at-point)
+ ("C-c C-f"  . find-file-other-window)
+ ("C-x C-k"  . kill-buffer-and-window)
+ ("C-<tab>"  . mode-line-other-buffer)
+ ("C-x C-j"  . dired-jump)
+ ("C-x g"    . magit-status)
+ ("C-c ?"    . which-key-show-top-level)
+ ("C-c w 1"  . my/kill-other-windows-and-buffers)
+ ("C-c w b"  . my/window-right-to-below)
+ ("C-c w r"  . my/window-below-to-right)
  )
 
 (bind-keys :prefix-map my-leader-map
@@ -24,9 +27,8 @@
            ("s"   . org-download-clipboard)
            ("m l" . magit-list-repositories)
            ("r"   . my/quick-mark)
-           ("j"   . my/quick-jump))
-
-(keymap-global-set "C-c w 1" #'my/kill-other-windows-and-buffers)
+           ("j"   . my/quick-jump)
+           )
 
 ;; Windmove
 (defvar-keymap my/windmove-repeat-map
@@ -40,13 +42,19 @@
 (keymap-global-set "C-c w k" #'windmove-up)
 (keymap-global-set "C-c w j" #'windmove-down)
 
+;; (use-package ace-window
+;;   :ensure t
+;;   :bind (("M-o" . ace-window)
+;;          ("M-s s" . ace-swap-window))
+;;   :config
+;;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
 ;; Tabs
 (setq tab-bar-show 1)
 
 (dolist (i (number-sequence 1 9))
   (keymap-global-set (format "M-%d" i)
                      (lambda () (interactive) (tab-bar-select-tab i))))
-(keymap-global-set "C-x t k" #'tab-close)
 (keymap-global-set "C-x t o" #'tab-close-other)
 
 (use-package crux
@@ -86,5 +94,31 @@ The current buffer is never killed, even if it is also shown elsewhere."
       (when (buffer-live-p buf)
         (kill-buffer buf)))
     (delete-other-windows)))
+
+(defun my/window-right-to-below ()
+  "Move the window to the right of the selected window to below it."
+  (interactive)
+  (let ((win (window-in-direction 'right)))
+    (if (not win)
+        (message "No window at the right")
+      (let ((buf (window-buffer win)))
+        (delete-window win)
+        (set-window-buffer (split-window-below) buf)))))
+
+(defun my/window-below-to-right ()
+  "Move the window below the selected window to the right of it."
+  (interactive)
+  (let ((win (window-in-direction 'below)))
+    (if (not win)
+        (message "No window at the bottom")
+      (let ((buf (window-buffer win)))
+        (delete-window win)
+        (set-window-buffer (split-window-right) buf)))))
+
+(defun my/eshell-other-window ()
+  "."
+  (interactive)
+  (let ((buf (save-window-excursion (eshell))))
+    (pop-to-buffer buf)))
 
 (provide 'init-keys)

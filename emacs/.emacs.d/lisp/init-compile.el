@@ -1,13 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq compilation-always-kill t)
-(setq compilation-ask-about-save nil)
-(setq compilation-max-output-line-length nil)
-(setq compilation-scroll-output 'first-error)
-
-(advice-add 'compilation-start :after
-            (lambda (&rest _)
-              (when-let* ((w (get-buffer-window "*compilation*")))
-                (select-window w))))
+(use-package compile
+  :ensure nil
+  :config
+  (setq compilation-always-kill t
+      compilation-ask-about-save nil
+      compilation-max-output-line-length nil
+      compilation-scroll-output 'first-error))
 
 (provide 'init-compile)

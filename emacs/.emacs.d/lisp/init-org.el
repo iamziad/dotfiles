@@ -1,12 +1,17 @@
 ;; -*- lexical-binding: t; -*-
 
 (setq org-directory "~/Documents/org"
-      org-agenda-files (list "~/Documents/org")
+      org-agenda-files (list org-directory)
       org-hide-leading-stars t
       org-ellipsis " ▾"
       org-hide-emphasis-markers t
       org-pretty-entities t
-      org-log-done 'note
+      org-todo-keywords
+      '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))
+       org-M-RET-may-split-line '((default . nil))
+       org-insert-heading-respect-content t
+       org-log-done 'time
+       org-log-into-drawer t
       ;; Source blocks (literate programming)
       org-confirm-babel-evaluate nil
       org-src-window-setup 'current-window

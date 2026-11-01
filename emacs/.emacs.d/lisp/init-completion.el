@@ -1,4 +1,12 @@
-;; ;; ;; -*- lexical-binding: t; -*-
+;;; init-completion.el --- Completion setup -*- lexical-binding: t; -*-
+
+(defvar my/auto-completion-modes
+  '(emacs-lisp-mode lisp-interaction-mode
+                    c-mode c-ts-mode
+                    html-mode mhtml-mode html-ts-mode
+                    css-mode css-ts-mode scss-mode
+                    web-mode conf-mode)
+  ".")
 
 (use-package yasnippet
   :ensure t
@@ -11,29 +19,22 @@
 (use-package completion-preview
   :ensure nil
   :custom
-  (completion-preview-minimum-symbol-length 2)
+  (completion-preview-minimum-symbol-length 3)
   :config
   (define-key completion-preview-active-mode-map (kbd "M-]") #'completion-preview-next-candidate)
   (define-key completion-preview-active-mode-map (kbd "M-[") #'completion-preview-prev-candidate)
   (setq global-completion-preview-modes
-        '(not minibuffer-mode
-              emacs-lisp-mode
-              lisp-interaction-mode
-              c-mode
-              c-ts-mode
-              html-mode
-              mhtml-mode
-              css-mode
-              scss-mode
-              web-mode
-              conf-mode
-              html-ts-mode
-              css-ts-mode))
+        `(not minibuffer-mode
+              ,@my/auto-completion-modes))
   (global-completion-preview-mode 1))
 
 (use-package vertico
   :init
   (vertico-mode))
+
+;; (use-package vertico-posframe
+;;   :config
+;;   (vertico-posframe-mode 1))
 
 (use-package orderless
   :init
@@ -71,22 +72,24 @@
   (defun my/corfu-enable-auto ()
     (setq-local corfu-auto t))
 
-  (dolist (hook '(emacs-lisp-mode-hook
-                  c-mode-hook
-                  c-ts-mode-hook
-                  html-mode-hook
-                  mhtml-mode-hook
-                  css-mode-hook
-                  scss-mode-hook
-                  web-mode-hook
-                  conf-mode-hook
-                  html-ts-mode-hook
-                  css-ts-mode-hook))
-    (add-hook hook #'my/corfu-enable-auto))
+  (dolist (mode my/auto-completion-modes)
+    (add-hook (intern (format "%s-hook" mode)) #'my/corfu-enable-auto))
 
   (with-eval-after-load 'cc-mode
-    (define-key c-mode-base-map (kbd "TAB") #'indent-for-tab-command))
-  )
+    (define-key c-mode-base-map (kbd "TAB") #'indent-for-tab-command)))
+
+(with-eval-after-load 'org
+  ;; Trigger completion-preview while typing in Org.
+  (add-to-list 'completion-preview-commands
+               'org-self-insert-command)
+
+  ;; Update the preview when deleting characters.
+  (add-to-list 'completion-preview-commands
+               'org-delete-backward-char)
+
+  (define-key org-mode-map
+              (kbd "C-M-i")
+              #'completion-at-point))
 
 (use-package dabbrev
   :bind (("M-/" . dabbrev-completion)
@@ -119,9 +122,6 @@
               (defun my/corfu-add-cape-dabbrev-h ()
                 (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t))))
   :config
-  ;; lsp-mode's `lsp-completion-at-point' advice dropped — that function no
-  ;; longer exists now that lsp-mode is gone; eglot's equivalent is advised
-  ;; below instead.
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
@@ -138,3 +138,4 @@
   (add-hook 'load-theme         #'(lambda () (interactive) (kind-icon-reset-cache))))
 
 (provide 'init-completion)
+;;; init-completion.el ends here

@@ -3,7 +3,7 @@
 (with-eval-after-load 'org
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t) (sql . t)))
+   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t) (sql . t) (sqlite . t)))
   (keymap-unset org-mode-map "C-c C-k")
   (require 'org-tempo))
 
@@ -15,4 +15,4 @@
   (define-key verb-response-body-mode-map (kbd "q")
               (lambda () (interactive) (quit-window t))))
 
-(provide 'init-literate-programming)
+(provide 'init-literate-prog)

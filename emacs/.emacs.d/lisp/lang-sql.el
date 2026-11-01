@@ -1,5 +1,18 @@
 ;;; lang-sql.el --- SQL configuration -*- lexical-binding: t; -*-
 
+(use-package sqlite-mode
+  :ensure nil
+  :defer
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\*SQLITE .*\\*"
+                 (display-buffer-reuse-window
+                  display-buffer-below-selected)
+                 (window-height . 0.45)))
+  :bind (:map sqlite-mode-map
+              ("n" . next-line)
+               ("p" . previous-line)))
+
 (use-package sql-indent
   :hook (sql-mode . sqlind-minor-mode))
 
@@ -8,7 +21,9 @@
          (sql-interactive-mode . sqlup-mode)))
 
 (with-eval-after-load 'sql
-  (sql-input-ring-file-name (locate-user-emacs-file ".sqli_history"))
+  (setq sql-input-ring-file-name
+        (locate-user-emacs-file ".sqli_history"))
+
   (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
   ;; Apply SQL syntax highlighting in SQLi buffers.
@@ -55,7 +70,7 @@
   :hook ((sql-mode . my/sql-set-postgres-docset)
          (sql-interactive-mode . my/sql-set-postgres-docset))
   :config
-  (defun my/sql-set-postgres-docset ()
+  (defun my/sql-set-postgres-docset (&rest _)
     "Use the PostgreSQL docset for PostgreSQL buffers."
     (when (eq sql-product 'postgres)
       (setq-local dash-at-point-docset "psql")))
