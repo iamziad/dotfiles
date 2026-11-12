@@ -1,11 +1,166 @@
-;; -*- lexical-binding: t; -*-
+;;; init-defaults.el --- Defaults and built-in modes -*- lexical-binding: t; -*-
 
-(require 'use-package)
-(setq use-package-always-ensure t)
+(require 'subr-x)
 
-(use-package no-littering
+;;; State directories ---------------------------------------------------------
+
+(use-package no-littering :ensure t)
+
+;;; External tools ------------------------------------------------------------
+
+(defun my/add-to-exec-path (directory)
+  "Add DIRECTORY to `exec-path' and PATH when it exists."
+  (when (and directory (file-directory-p directory))
+    (unless (member directory exec-path)
+      (setq exec-path (append exec-path (list directory))))
+    (let ((path (getenv "PATH")))
+      (unless (member directory (split-string path ":" t))
+        (setenv "PATH" (concat path ":" directory))))))
+
+;;; Garbage collection --------------------------------------------------------
+
+(use-package gcmh
   :ensure t
-  :demand t)
+  :diminish gcmh-mode
+  :init
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold (* 100 1024 1024))
+  :hook (window-setup . gcmh-mode))
+
+;;; Files and backups ---------------------------------------------------------
+
+(setq create-lockfiles nil
+      make-backup-files t
+      backup-by-copying t
+      version-control t
+      delete-old-versions t
+      kept-new-versions 5
+      kept-old-versions 2
+      auto-save-default t
+      auto-save-timeout 20
+      auto-save-interval 200
+      delete-by-moving-to-trash t)
+
+;;; Interaction ---------------------------------------------------------------
+
+(setq use-dialog-box nil
+      use-file-dialog nil
+      use-short-answers t
+      ring-bell-function 'ignore
+      x-gtk-use-system-tooltips nil
+      help-window-select t
+      echo-keystrokes 0.02
+      suggest-key-bindings 5
+      enable-recursive-minibuffers t
+      large-file-warning-threshold (* 100 1024 1024)
+      confirm-kill-processes nil
+      kill-ring-max 200
+      mark-ring-max 32
+      set-mark-command-repeat-pop t
+      mouse-yank-at-point t
+      scroll-preserve-screen-position t
+      scroll-margin 2
+      scroll-conservatively 101
+      scroll-step 1
+      auto-window-vscroll nil
+      fast-but-imprecise-scrolling t
+      vc-follow-symlinks t
+      warning-minimum-level :error
+      initial-major-mode 'fundamental-mode
+      column-number-indicator-zero-based nil
+      read-process-output-max (* 1024 1024))
+
+;;; Editing defaults ----------------------------------------------------------
+
+(setq-default indent-tabs-mode nil
+              tab-width 4
+              standard-indent 4
+              fill-column 100
+              require-final-newline t
+              sentence-end-double-space nil
+              truncate-lines nil
+              word-wrap t
+              cursor-in-non-selected-windows nil
+              case-fold-search t
+              completion-ignore-case t
+              read-file-name-completion-ignore-case t
+              read-buffer-completion-ignore-case t
+              tab-always-indent 'complete
+              indicate-empty-lines nil
+              default-input-method "arabic"
+              show-trailing-whitespace nil)
+
+(setq show-paren-style 'parenthesis
+      electric-pair-preserve-balance t
+      electric-pair-delete-adjacent-pairs t
+      blink-matching-paren t)
+
+(prefer-coding-system 'utf-8)
+
+;;; Built-in modes ------------------------------------------------------------
+
+(delete-selection-mode 1)
+(electric-pair-mode 1)
+(show-paren-mode 1)
+(winner-mode 1)
+(repeat-mode 1)
+(column-number-mode 1)
+(which-key-mode 1)
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
+
+;; Search behavior
+(setq isearch-lazy-count t
+      lazy-count-prefix-format nil
+      lazy-count-suffix-format " (%s/%s)"
+      isearch-allow-motion t
+      isearch-allow-scroll t
+      isearch-wrap-pause 'no-ding
+      isearch-repeat-on-direction-change t)
+
+;;; Recent files, history and places -----------------------------------------
+
+(setq recentf-max-saved-items 500
+      recentf-auto-cleanup 'never
+      recentf-exclude
+      `("/tmp/" "/ssh:" "/sudo:"
+        "\\`\\*"
+        "\\.\\(?:zip\\|tar\\|gz\\|xz\\|zst\\)\\'"))
+
+(recentf-mode 1)
+
+(setq history-length 500
+      savehist-autosave-interval 30
+      savehist-additional-variables
+      '(extended-command-history
+        command-history
+        search-ring
+        regexp-search-ring
+        kill-ring
+        corfu-history
+        consult-history))
+
+(savehist-mode 1)
+(save-place-mode 1)
+
+;;; Xref and imenu
+
+(setq xref-search-program (if (executable-find "rg") 'ripgrep 'grep))
+(setq imenu-auto-rescan t
+      imenu-max-items 200)
+
+;;; Diffs and grep ------------------------------------------------------------
+
+(setq ediff-window-setup-function #'ediff-setup-windows-plain
+      ediff-split-window-function #'split-window-horizontally
+      diff-font-lock-prettify t
+      grep-highlight-matches 'auto)
+
+;;; Startup chrome ------------------------------------------------------------
+
+(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 (use-package diminish
   :ensure t
@@ -18,149 +173,5 @@
   (with-eval-after-load 'subword
     (diminish 'subword-mode)))
 
-(use-package gcmh
-  :ensure t
-  :demand t
-  :diminish gcmh-mode
-  :custom
-  (gcmh-idle-delay 'auto)
-  (gcmh-auto-idle-delay-factor 10)
-  (gcmh-high-cons-threshold (* 128 1024 1024))
-  :config
-  (gcmh-mode 1))
-
-(prefer-coding-system 'utf-8-unix)
-
-(setq make-backup-files nil
-      create-lockfiles nil
-      version-control t
-      kept-new-versions 5
-      kept-old-versions 2
-      delete-old-versions t
-      require-final-newline t
-      vc-follow-symlinks t
-      vc-allow-remote-status t)
-
-(setq-default initial-major-mode 'org-mode
-              indent-tabs-mode nil
-              tab-width 4
-              fill-column 100
-              truncate-lines nil
-              duplicate-line-final-position 1
-              default-input-method "arabic")
-
-(dolist (hook '(prog-mode-hook org-mode-hook markdown-mode-hook))
-  (add-hook hook #'display-line-numbers-mode))
-
-(setq warning-minimum-level :error
-      display-line-numbers-type 'relative
-      sentence-end-double-space nil
-      use-short-answers t
-      kill-do-not-save-duplicates t
-      confirm-kill-emacs 'yes-or-no-p
-      kill-ring-max 200
-      mark-ring-max 32
-      save-interprogram-paste-before-kill t
-      select-enable-clipboard t
-      mouse-yank-at-point t
-      ;; Mode line
-      line-number-mode t
-      column-number-mode t
-      x-underline-at-descent-line nil
-      ;; Parens
-      show-paren-delay 0
-      show-paren-mode t
-      show-paren-style 'parenthesis
-      show-paren-context-when-offscreen 'overlay
-      ;; Scroll
-      scroll-preserve-screen-position 1
-      scroll-conservatively 10
-      scroll-margin 10
-      scroll-error-top-bottom t
-      auto-window-vscroll nil
-      ;; Misc
-      eldoc-echo-area-use-multiline-p nil
-      ring-bell-function 'ignore
-      shell-command-prompt-show-cwd t
-      inhibit-compacting-font-caches t
-      frame-resize-pixelwise t
-      help-window-select t
-      ediff-window-setup-function #'ediff-setup-windows-plain
-      large-file-warning-threshold (* 50 1024 1024))
-
-(setq-default cursor-in-non-selected-windows nil)
-
-(setq lazy-count-prefix-format "(%s/%s) "
-      isearch-lazy-count t
-      isearch-allow-motion t
-      isearch-allow-scroll t
-      isearch-repeat-on-direction-change t
-      isearch-wrap-pause 'no-ding)
-
-(subword-mode 1)
-(blink-cursor-mode -1)
-(delete-selection-mode 1)
-(electric-pair-mode 1)
-(show-paren-mode 1)
-(winner-mode 1)
-(repeat-mode 1)
-(global-hl-line-mode 1)
-(size-indication-mode -1)
-(which-key-mode 1)
-(setq show-paren-delay 0.1)
-(when (boundp 'show-paren-context-when-offscreen)
-  (setq show-paren-context-when-offscreen 'overlay))
-
-(setq undo-limit (* 16 1024 1024)
-      undo-strong-limit (* 32 1024 1024)
-      undo-outer-limit (* 64 1024 1024))
-
-(setq enable-recursive-minibuffers nil
-      completion-ignore-case t
-      read-file-name-completion-ignore-case t
-      history-length 1000
-      history-delete-duplicates t
-      tab-always-indent 'complete)
-
-(minibuffer-depth-indicate-mode 1)
-
-(setq recentf-max-saved-items 200)
-(recentf-mode 1)
-(savehist-mode 1)
-(save-place-mode 1)
-
-(dolist (dir '("elpa" "var" ".cache" "tree-sitter"))
-  (add-to-list 'recentf-exclude (expand-file-name dir user-emacs-directory)))
-
-(global-auto-revert-mode 1)
-(setq auto-revert-verbose nil
-      global-auto-revert-non-file-buffers t)
-
-(global-so-long-mode 1)
-
-(setq read-process-output-max (* 4 1024 1024))
-
-(setq explicit-shell-file-name (or (executable-find "bash") "/bin/sh"))
-
-(use-package exec-path-from-shell
-  :if (memq window-system '(mac ns x pgtk))
-  :custom
-  (exec-path-from-shell-arguments '("-l"))
-  (exec-path-from-shell-variables '("PATH" "MANPATH" "JAVA_HOME"))
-  :config (exec-path-from-shell-initialize))
-
-(setq xref-search-program (if (executable-find "rg") 'ripgrep 'grep))
-(setq warning-minimum-level :warning)
-
-;;;; Emacs Lisp
-(use-package rainbow-delimiters
-  :hook (emacs-lisp-mode . rainbow-delimiters-mode))
-
-;; imenu
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (add-to-list 'imenu-generic-expression
-                         '("Sections" "^;;;\\{1,4\\} \\(.+?\\)[ -]*$" 1))))
-
-
 (provide 'init-defaults)
+;;; init-defaults.el ends here

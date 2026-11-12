@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package eww
-  :ensure nil
+  :straight nil
   :config
   (setq browse-url-handlers
         '(("wikipedia\\.org" . eww-browse-url)

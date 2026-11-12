@@ -1,12 +1,14 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package magit
+  :ensure t
   :custom
   (magit-diff-refine-hunk t)
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   (magit-save-repository-buffers 'dontask))
 
 (use-package gitignore-templates
+  :ensure t
   :config
   (setq gitignore-templates-api 'github))
 

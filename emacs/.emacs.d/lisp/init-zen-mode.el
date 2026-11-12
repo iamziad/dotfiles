@@ -4,7 +4,7 @@
   :hook ((eww-mode . olivetti-mode)
          (olivetti-mode . mod-olivetti--toggle))
   :bind ("C-c v o" . olivetti-mode)
-  :custom (olivetti-body-width 90))
+  :custom (olivetti-body-width 100))
 
 (defvar-local mod-olivetti--state nil)
 

@@ -17,10 +17,10 @@
   (yas-global-mode 1))
 
 (use-package completion-preview
-  :ensure nil
-  :custom
-  (completion-preview-minimum-symbol-length 3)
+  :straight nil
+  :demand t
   :config
+  (setq completion-preview-minimum-symbol-length 3)
   (define-key completion-preview-active-mode-map (kbd "M-]") #'completion-preview-next-candidate)
   (define-key completion-preview-active-mode-map (kbd "M-[") #'completion-preview-prev-candidate)
   (setq global-completion-preview-modes
@@ -31,6 +31,12 @@
 (use-package vertico
   :init
   (vertico-mode))
+
+(use-package vertico-directory
+  :straight nil
+  :after vertico
+  :bind (:map vertico-map
+              ("M-DEL" . vertico-directory-delete-word)))
 
 ;; (use-package vertico-posframe
 ;;   :config
@@ -57,10 +63,8 @@
   (corfu-count 16)
   (corfu-min-width 45)
   (corfu-max-width 120)
-  (corfu-popupinfo-delay '(0.5 . 1.0))
   :hook
   (corfu-mode . corfu-history-mode)
-  (corfu-mode . corfu-popupinfo-mode)
   (minibuffer-setup . (lambda () (corfu-mode -1)))
   :init
   (global-corfu-mode)
@@ -68,44 +72,37 @@
   (setq tab-always-indent 'complete)
   (with-eval-after-load 'savehist
     (add-to-list 'savehist-additional-variables 'corfu-history))
-
   (defun my/corfu-enable-auto ()
     (setq-local corfu-auto t))
-
   (dolist (mode my/auto-completion-modes)
     (add-hook (intern (format "%s-hook" mode)) #'my/corfu-enable-auto))
-
   (with-eval-after-load 'cc-mode
     (define-key c-mode-base-map (kbd "TAB") #'indent-for-tab-command)))
 
-(with-eval-after-load 'org
-  ;; Trigger completion-preview while typing in Org.
-  (add-to-list 'completion-preview-commands
-               'org-self-insert-command)
-
-  ;; Update the preview when deleting characters.
-  (add-to-list 'completion-preview-commands
-               'org-delete-backward-char)
-
-  (define-key org-mode-map
-              (kbd "C-M-i")
-              #'completion-at-point))
+(use-package corfu-popupinfo
+  :after corfu
+  :straight nil
+  :custom
+  (corfu-popupinfo-delay '(0.25 . 0.1))
+  (corfu-popupinfo-hide nil)
+  :config
+  (corfu-popupinfo-mode 1))
 
 (use-package dabbrev
+  :straight nil
   :bind (("M-/" . dabbrev-completion)
          ("C-M-/" . dabbrev-expand))
+  :custom
+  (dabbrev-upcase-means-case-search t)
+  (dabbrev-case-replace nil)
+  (dabbrev-friend-buffer-function
+   (lambda (buffer)
+     (< (buffer-size buffer) (* 1024 1024))))
   :config
-  (defvar my/corfu-buffer-scanning-size-limit (* 1 1024 1024))
-  (defun my/corfu-dabbrev-friend-buffer-p (other-buffer)
-    (< (buffer-size other-buffer) my/corfu-buffer-scanning-size-limit))
-  (setq dabbrev-friend-buffer-function #'my/corfu-dabbrev-friend-buffer-p
-        dabbrev-upcase-means-case-search t
-        dabbrev-case-replace nil)
   (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
   (add-to-list 'dabbrev-ignored-buffer-modes 'authinfo-mode)
   (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
-  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
-  (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
+  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode))
 
 (use-package cape
   :init
@@ -118,24 +115,17 @@
   (setq cape-dabbrev-check-other-buffers t)
   (dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook
                                  comint-mode-hook minibuffer-setup-hook eshell-mode-hook))
-    (add-hook hook
-              (defun my/corfu-add-cape-dabbrev-h ()
-                (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t))))
+    (defun my/cape-add-dabbrev ()
+      (add-hook 'completion-at-point-functions #'cape-dabbrev 20 t))
+
+    (dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook
+                                   comint-mode-hook minibuffer-setup-hook eshell-mode-hook))
+      (add-hook hook #'my/cape-add-dabbrev)))
   :config
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
-
-(use-package kind-icon
-  :config
-  (setq kind-icon-default-face 'corfu-default)
-  (setq kind-icon-default-style '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.9 :scale 1))
-  (setq kind-icon-blend-frac 0.08)
-  (setq kind-icon-use-icons nil)
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  (add-hook 'counsel-load-theme #'(lambda () (interactive) (kind-icon-reset-cache)))
-  (add-hook 'load-theme         #'(lambda () (interactive) (kind-icon-reset-cache))))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here

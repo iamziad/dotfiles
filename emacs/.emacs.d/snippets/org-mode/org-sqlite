@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: sqlite template
-# key: lite
-# --
-
-#+begin_src sqlite :db "~/Projects/${1}" :colnames yes
-${0}
-#+end_src

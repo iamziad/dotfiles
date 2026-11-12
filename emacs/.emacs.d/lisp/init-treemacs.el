@@ -22,27 +22,14 @@
   ;; :custom
   ;; (treemacs-no-png-images t)
   :bind
-  (("C-c t t" . treemacs)
-   ("C-c t 1" . treemacs-delete-other-windows)
-   ("C-c t d" . treemacs-select-directory)
+  (("C-c v t" . treemacs)
+   ("C-c v 1" . treemacs-delete-other-windows)
+   ("C-c v d" . treemacs-select-directory)
    ("M-0"     . treemacs-select-window)))
-
-;; (use-package nerd-icons
-;;   :ensure t)
-
-(use-package treemacs-nerd-icons
-  :ensure t
-  :after treemacs
-  :config
-  (treemacs-load-theme "nerd-icons"))
 
 (use-package treemacs-magit
   :ensure t
   :after (treemacs magit))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
 
 (defun my/treemacs-open-in-tab ()
   "."
@@ -52,7 +39,7 @@
     (when (and path (file-regular-p path))
       (tab-bar-new-tab)
       (delete-other-windows
-      (find-file path)))))
+       (find-file path)))))
 
 (with-eval-after-load 'treemacs
   (define-key treemacs-mode-map (kbd "t") #'my/treemacs-open-in-tab))

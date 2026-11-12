@@ -1,44 +1,45 @@
-;; -*- lexical-binding: t; -*-
-
-(require 'dired-x)
+;;; init-dired.el --- Dired -*- lexical-binding: t; -*-
 
 (use-package dired
-  :ensure nil
+  :straight nil
   :config
-  (setq dired-listing-switches "-alh --group-directories-first")
-  (setq dired-dwim-target t)
-  (setq delete-by-moving-to-trash t)
-  (setq dired-kill-when-opening-new-dired-buffer t)
-  (setq dired-auto-revert-buffer t)
-  (setq dired-mouse-drag-files t)
-  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-  (setq image-dired-thumb-size 250)
-  (setq image-dired-thumbnail-storage 'standard))
+  (setq dired-listing-switches "-ahlv --group-directories-first"
+        dired-dwim-target t
+        dired-kill-when-opening-new-dired-buffer t
+        dired-auto-revert-buffer 'dired-directory-changed-p
+        dired-mouse-drag-files t
+        dired-movement-style 'bounded-files
+        dired-deletion-confirmer 'y-or-n-p
+        dired-recursive-deletes 'top
+        dired-recursive-copies 'always
+        dired-omit-verbose nil
+        dired-omit-files
+        (concat "\\`[.]\\'"
+                "\\|\\(?:\\.js\\)?\\.meta\\'"
+                "\\|\\.\\(?:elc\\|a\\|o\\|pyc\\|pyo\\|swp\\|class\\)\\'"
+                "\\|^\\.DS_Store\\'"
+                "\\|^\\.\\(?:svn\\|git\\)\\'"
+                "\\|^\\.ccls-cache\\'"
+                "\\|^__pycache__\\'"
+                "\\|^\\.project\\(?:ile\\)?\\'"
+                "\\|^flycheck_.*"
+                "\\|^flymake_.*")
+        image-dired-thumb-size 250
+        image-dired-thumbnail-storage 'standard))
 
 (use-package async
-  :ensure t
-  :init
-  (dired-async-mode 1))
+  :init (dired-async-mode 1))
 
 (use-package dired-open-with
-  :ensure t
   :after dired
-  :bind
-  (:map dired-mode-map
-        ("b" . dired-open-with)))
-
-(use-package nerd-icons-dired
-  :config
-  :hook (dired-mode . nerd-icons-dired-mode))
+  :bind (:map dired-mode-map
+              ("b" . dired-open-with)))
 
 (use-package dired-git-info
-  :ensure t
   :after dired
-  :custom
-  (dgi-auto-hide-details-p nil)
-  :bind
-  (:map dired-mode-map
-        (")" . dired-git-info-mode)))
+  :custom (dgi-auto-hide-details-p nil)
+  :bind (:map dired-mode-map
+              (")" . dired-git-info-mode)))
 
 (use-package dired-subtree
   :after dired
@@ -47,3 +48,4 @@
               ("TAB" . dired-subtree-toggle)))
 
 (provide 'init-dired)
+;;; init-dired.el ends here

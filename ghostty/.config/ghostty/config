@@ -1,0 +1,13 @@
+font-family = "JetBrains Mono"
+font-size = 12
+window-padding-x = 10
+window-padding-y = 10
+theme = Gruvbox Dark
+gtk-titlebar = false
+cursor-style = block
+shell-integration-features = no-cursor
+scrollback-limit = 5000
+clipboard-write = allow
+copy-on-select = true
+term = xterm-256color
+desktop-notifications = false

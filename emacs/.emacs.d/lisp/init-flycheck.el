@@ -6,24 +6,24 @@
          (yaml-mode . flycheck-mode))
   :custom
   ;; (flycheck-eglot-exclusive nil)
-  (flycheck-keymap-prefix (kbd "C-c C-d"))
+  (flycheck-keymap-prefix (kbd "C-c 1"))
   (flycheck-annotate-current-line-style 'eol)
   :config
   ;; (global-flycheck-annotate-mode 1)
   ;; (global-flycheck-eglot-mode 1)
   (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
-        flycheck-highlighting-mode 'symbols)
+        flycheck-idle-change-delay 1.0
+        flycheck-display-errors-delay 0.3
+        flycheck-highlighting-mode 'symbols
+        flycheck-keymap-prefix (kbd "C-c !"))
   (dolist (face '(flycheck-annotate-error
                   flycheck-annotate-warning
                   flycheck-annotate-info))
     (set-face-attribute face nil :height 0.9))
+  (dolist (face '(flycheck-error flycheck-warning flycheck-info))
+    (set-face-attribute face nil :background 'unspecified))
   :bind
-  (("C-c C-d a" . global-flycheck-annotate-mode)))
-
-(with-eval-after-load 'flycheck
-  (set-face-attribute 'flycheck-error nil :background 'unspecified)
-  (set-face-attribute 'flycheck-warning nil :background 'unspecified)
-  (set-face-attribute 'flycheck-info nil :background 'unspecified))
+  (("C-c 1 a" . global-flycheck-annotate-mode)))
 
 (defvar-keymap my/flycheck-repeat-map
   :repeat t

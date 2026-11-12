@@ -29,6 +29,8 @@ text/css=emacsclient.desktop
 text/x-makefile=emacsclient.desktop
 x-scheme-handler/about=brave-browser.desktop
 x-scheme-handler/unknown=brave-browser.desktop
+x-scheme-handler/eclipse+installer=_home_ziad_Downloads_eclipse-installer_.desktop
+x-scheme-handler/jetbrains=jetbrainsd.desktop
 
 [Added Associations]
 text/plain=emacsclient.desktop;

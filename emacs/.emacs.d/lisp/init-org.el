@@ -8,10 +8,10 @@
       org-pretty-entities t
       org-todo-keywords
       '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))
-       org-M-RET-may-split-line '((default . nil))
-       org-insert-heading-respect-content t
-       org-log-done 'time
-       org-log-into-drawer t
+      org-M-RET-may-split-line '((default . nil))
+      org-insert-heading-respect-content t
+      org-log-done 'time
+      org-log-into-drawer t
       ;; Source blocks (literate programming)
       org-confirm-babel-evaluate nil
       org-src-window-setup 'current-window
@@ -57,8 +57,18 @@
          "* TODO %^{Title}\n [[%x][Link]]\n :PROPERTIES:\n :TYPE: %^{Type|Video|Article|Tutorial|Lecture/Conference}\n :END:\n\n %?\n %U\n")))
 
 (use-package org-download
+  :ensure t
   :custom
   (org-download-heading-lvl nil)
   (org-download-image-dir "./images"))
+
+;;;; Literate Programming
+
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t) (sql . t) (sqlite . t)))
+  (keymap-unset org-mode-map "C-c C-k")
+  (require 'org-tempo))
 
 (provide 'init-org)

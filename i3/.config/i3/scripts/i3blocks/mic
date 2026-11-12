@@ -9,19 +9,25 @@ esac
 
 # No microphone found
 if [[ -z "$status" ]]; then
-    echo " "
-    echo " "
+    # echo " "
+    # echo " "
+    echo "mic"
+    echo "mic"
     echo "#fb4934"
     exit 0
 fi
 
 # Check mute state
 if [[ "$status" == *"[MUTED]"* ]]; then
-    echo " "
-    echo " "
+    # echo " "
+    # echo " "
+    echo "mic"
+    echo "mic"
     echo "#928374"
 else
-    echo ""
-    echo ""
+    # echo ""
+    # echo ""
+    echo "mic"
+    echo "mic"
     echo "#00ff00"
 fi

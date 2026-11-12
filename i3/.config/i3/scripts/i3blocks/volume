@@ -23,29 +23,29 @@ fi
 
 percent=$(awk -v v="${BASH_REMATCH[1]}" 'BEGIN{printf "%d", v*100}')
 
-if printf '%s' "$vol_raw" | grep -q MUTED; then
-    icon=" "; color="#928374"
-elif [ "$percent" -eq 0 ]; then
-    icon=" "; color="#928374"
-elif [ "$percent" -lt 35 ]; then
-    icon=" "; color="#eeeeee"
-elif [ "$percent" -lt 70 ]; then
-    icon=" "; color="#eeeeee"
-else
-    icon=" "; color="#eeeeee"
-fi
-
 # if printf '%s' "$vol_raw" | grep -q MUTED; then
-#     icon="VOL:"; color="#928374"
+#     icon=" "; color="#928374"
 # elif [ "$percent" -eq 0 ]; then
-#     icon="VOL:"; color="#928374"
+#     icon=" "; color="#928374"
 # elif [ "$percent" -lt 35 ]; then
-#     icon="VOL:"; color="#eeeeee"
+#     icon=" "; color="#eeeeee"
 # elif [ "$percent" -lt 70 ]; then
-#     icon="VOL:"; color="#eeeeee"
+#     icon=" "; color="#eeeeee"
 # else
-#     icon="VOL:"; color="#eeeeee"
+#     icon=" "; color="#eeeeee"
 # fi
+
+if printf '%s' "$vol_raw" | grep -q MUTED; then
+    icon="VOL:"; color="#928374"
+elif [ "$percent" -eq 0 ]; then
+    icon="VOL:"; color="#928374"
+elif [ "$percent" -lt 35 ]; then
+    icon="VOL:"; color="#eeeeee"
+elif [ "$percent" -lt 70 ]; then
+    icon="VOL:"; color="#eeeeee"
+else
+    icon="VOL:"; color="#eeeeee"
+fi
 
 echo "<span color='$color'>$icon $percent%</span>"
 echo "$icon $percent%"

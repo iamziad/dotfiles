@@ -1,34 +1,46 @@
-;; -*- lexical-binding: t; -*-
+;;; init-lsp-booster.el --- LSP performance booster -*- lexical-binding: t; -*-
 
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
+(require 'json)
+(require 'subr-x)
 
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
+(defun my/lsp-booster-json-parse-advice (old-fn &rest args)
+  "Parse emacs-lsp-booster bytecode responses, or call OLD-FN."
+  (or (when (equal (following-char) ?#)
+        (let ((bytecode (read (current-buffer))))
+          (when (byte-code-function-p bytecode)
+            (funcall bytecode))))
+      (apply old-fn args)))
 
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)
+(defun my/lsp-booster-final-command-advice (old-fn command &optional test?)
+  "Wrap local LSP COMMAND with emacs-lsp-booster when supported."
+  (let ((original (funcall old-fn command test?))
+        (booster (executable-find "emacs-lsp-booster")))
+    (if (and original
+             booster
+             (not test?)
              (not (file-remote-p default-directory))
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))
-             (executable-find "emacs-lsp-booster"))
+             (bound-and-true-p lsp-use-plists)
+             (not (functionp 'json-rpc-connection)))
         (progn
-          (when-let* ((command-from-exec-path (executable-find (car orig-result))))
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
+          (when-let ((resolved (executable-find (car original))))
+            (setcar original resolved))
+          (message "Using emacs-lsp-booster for %s" (car original))
+          (cons booster original))
+      original)))
 
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+(when (executable-find "emacs-lsp-booster")
+  (let ((parser (if (fboundp 'json-parse-buffer)
+                    'json-parse-buffer
+                  'json-read)))
+    (unless (advice-member-p #'my/lsp-booster-json-parse-advice parser)
+      (advice-add parser :around #'my/lsp-booster-json-parse-advice))))
+
+(with-eval-after-load 'lsp-mode
+  (unless (advice-member-p #'my/lsp-booster-final-command-advice
+                           'lsp-resolve-final-command)
+    (advice-add 'lsp-resolve-final-command
+                :around
+                #'my/lsp-booster-final-command-advice)))
 
 (provide 'init-lsp-booster)
+;;; init-lsp-booster.el ends here
