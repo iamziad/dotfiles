@@ -1,5 +1,11 @@
 ;;;; -*- lexical-binding: t; -*-
 
+;;;; No buttons only text
+
+(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
 ;;;; Fonts
 
 (setq text-scale-mode-step 1.1
@@ -68,6 +74,7 @@
  '(flycheck-info ((t (:background unspecified)))))
 
 (use-package auto-dark
+  :straight t
   :diminish auto-dark-mode
   :custom
   (auto-dark-themes '((doom-gruvbox) (modus-operandi)))

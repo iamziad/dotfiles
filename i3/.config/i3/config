@@ -175,8 +175,8 @@ mode "Gaps: Inner(+/-) - Outer(shift +/-) - No gaps(0) - Restore(r) - Cancel(Esc
 bindsym $mod+g mode "Gaps: Inner(+/-) - Outer(shift +/-) - No gaps(0) - Restore(r) - Cancel(Esc)"
 
 # Startup
-# exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id /usr/libexec/xfce-polkit
+ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+#exec --no-startup-id /usr/libexec/xfce-polkit
 exec --no-startup-id xss-lock -- i3lock -c 282828
 exec --no-startup-id ~/.screenlayout/dual.sh
 exec --no-startup-id redshift-gtk
@@ -185,7 +185,7 @@ exec --no-startup-id emacs --daemon
 exec --no-startup-id dunst
 exec --no-startup-id picom --config ~/.config/picom/picom.conf
 exec_always --no-startup-id setxkbmap -layout us,ara -option grp:win_space_toggle,ctrl:nocaps
-exec_always --no-startup-id xset r rate 230 35
+exec_always --no-startup-id xset r rate 230 30
 exec_always --no-startup-id my-random-wallpaper
 
 # Media controls

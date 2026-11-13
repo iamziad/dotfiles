@@ -41,4 +41,10 @@
                 (when-let* ((window (get-buffer-window "*Flycheck errors*")))
                   (select-window window)))))
 
+;; Chain eslint
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-diagnostics-mode-hook
+            (lambda ()
+              (flycheck-add-next-checker 'lsp '(t . javascript-eslint)))))
+
 (provide 'init-flycheck)

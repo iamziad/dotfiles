@@ -30,12 +30,7 @@
 ;;; Files and backups ---------------------------------------------------------
 
 (setq create-lockfiles nil
-      make-backup-files t
-      backup-by-copying t
-      version-control t
-      delete-old-versions t
-      kept-new-versions 5
-      kept-old-versions 2
+      make-backup-files nil
       auto-save-default t
       auto-save-timeout 20
       auto-save-interval 200
@@ -88,7 +83,8 @@
               tab-always-indent 'complete
               indicate-empty-lines nil
               default-input-method "arabic"
-              show-trailing-whitespace nil)
+              duplicate-line-final-position 1
+              duplicate-region-final-position 1)
 
 (setq show-paren-style 'parenthesis
       electric-pair-preserve-balance t
@@ -155,12 +151,6 @@
       ediff-split-window-function #'split-window-horizontally
       diff-font-lock-prettify t
       grep-highlight-matches 'auto)
-
-;;; Startup chrome ------------------------------------------------------------
-
-(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 (use-package diminish
   :ensure t

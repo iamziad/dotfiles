@@ -21,6 +21,10 @@
 
 (setq straight-use-package-by-default t)
 
+(dolist (package '(project flymake xref))
+  (straight-use-package
+   `(,package :type built-in)))
+
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t t)
 
@@ -44,19 +48,21 @@
 (require 'init-git)
 (require 'init-ai)
 (require 'init-treesitter)
-(require 'init-flycheck)
+;; (require 'init-flycheck)
+(require 'init-flymake)
 (require 'init-prog)
 (require 'init-http)
 (require 'init-markdown)
-(require 'init-lsp)
-(require 'init-lsp-booster)
-(require 'init-treemacs)
+;; (require 'init-lsp)
+;; (require 'init-lsp-booster)
+(require 'init-eglot)
+;; (require 'init-treemacs)
 (require 'init-zen-mode)
 
-(require 'init-c)
-(require 'init-java)
-(require 'init-javascript)
-(require 'init-sql)
+(require 'lang-c)
+(require 'lang-java)
+(require 'lang-javascript)
+(require 'lang-sql)
 ;;(require 'init-web)
 
 ;;; init.el ends here

@@ -1,6 +1,6 @@
 set -g fish_greeting ""
 
-set -gx JAVA_HOME /usr/lib/jvm/java-25-openjdk-amd64
+set -gx JAVA_HOME /usr/lib/jvm/default
 fish_add_path /home/ziad/.opencode/bin
 fish_add_path $JAVA_HOME/bin
 fish_add_path ~/.local/bin

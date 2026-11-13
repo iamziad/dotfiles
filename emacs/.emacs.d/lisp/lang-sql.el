@@ -1,4 +1,4 @@
-;;; init-sql.el --- SQL configuration -*- lexical-binding: t; -*-
+;;; lang-sql.el --- SQL configuration -*- lexical-binding: t; -*-
 
 (use-package sqlite-mode
   :straight nil
@@ -33,5 +33,5 @@
   :bind (:map sql-mode-map
               ("C-c C-q f" . sqlformat)))
 
-(provide 'init-sql)
-;;; init-sql.el ends here
+(provide 'lang-sql)
+;;; lang-sql.el ends here
