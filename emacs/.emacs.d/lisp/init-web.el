@@ -1,5 +1,7 @@
 ;;; init-web.el --- Web development support -*- lexical-binding: t; -*-
 
+;;;; Web basics -------------------------------------------
+
 (use-package web-mode
   :ensure t
   :mode ("\\.phtml\\'"
@@ -46,11 +48,11 @@
   :straight t
   :hook ((html-ts-mode mhtml-mode html-mode sgml-mode
                        css-ts-mode css-mode
-                       js-jsx-mode tsx-ts-mode) . emmet-mode)
+                       js-jsx-mode tsx-ts-mode web-mode) . emmet-mode)
   :config
   (setq emmet-move-cursor-between-quotes t)
   (add-to-list 'emmet-css-major-modes 'css-ts-mode)
-  (define-key emmet-mode-keymap (kbd "C-c >") #'emmet-expand-line)
+  (define-key emmet-mode-keymap (kbd "C-.") #'emmet-expand-line)
   (add-hook 'tsx-ts-mode-hook (lambda () (setq-local emmet-expand-jsx-className? t)))
   (add-hook 'js-ts-mode-hook  (lambda () (setq-local emmet-expand-jsx-className? t))))
 
@@ -58,14 +60,34 @@
   :straight t
   :diminish auto-rename-tag-mode
   :hook ((html-ts-mode mhtml-mode html-mode
-                       js-ts-mode tsx-ts-mode) . auto-rename-tag-mode))
+                       js-ts-mode tsx-ts-mode web-mode) . auto-rename-tag-mode))
 
 (use-package rainbow-mode
   :hook ((css-mode css-ts-mode scss-mode web-mode html-ts-mode) . rainbow-mode))
 
 (use-package sgml-mode
   :ensure nil
-  :hook ((html-mode mhtml-mode) . sgml-electric-tag-pair-mode))
+  :hook ((html-mode mhtml-mode web-mode) . sgml-electric-tag-pair-mode))
+
+;;;; LSP - TypeScript, JavaScript, CSS, Astro, Vue, and Svelte -------------------------------------------
+
+(use-package eglot-typescript-preset
+  :after eglot
+  :custom
+  (eglot-typescript-preset-lsp-server 'rass)
+  (eglot-typescript-preset-rass-tools
+   '(typescript-language-server eslint tailwindcss-language-server))
+  (eglot-typescript-preset-css-lsp-server 'rass))
+
+;;; HTML + Tailwindcss
+(with-eval-after-load 'eglot
+  (put 'web-mode 'eglot-language-id "html")
+  (put 'mhtml-mode 'eglot-language-id "html")
+
+  (add-to-list 'eglot-server-programs
+               '((mhtml-mode html-mode web-mode html-ts-mode sgml-mode)
+                 "rass" "--" "vscode-html-language-server" "--stdio"
+                 "--" "tailwindcss-language-server" "--stdio")))
 
 (provide 'init-web)
 ;;; init-web.el ends here

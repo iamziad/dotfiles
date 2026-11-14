@@ -114,6 +114,10 @@
       isearch-wrap-pause 'no-ding
       isearch-repeat-on-direction-change t)
 
+;;; Hooks -----------------------------------------
+
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+
 ;;; Recent files, history and places -----------------------------------------
 
 (setq recentf-max-saved-items 500

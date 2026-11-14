@@ -2,7 +2,16 @@
 
 (use-package flymake
   :ensure nil
-  :hook (prog-mode . flymake-mode)
+  :hook ((prog-mode . flymake-mode)
+         (html-mode . flymake-mode)
+         (mhtml-mode . flymake-mode)
+         (html-ts-mode . flymake-mode)
+         (mhtml-ts-mode . flymake-mode)
+         (css-mode . flymake-mode)
+         (css-ts-mode . flymake-mode)
+         (scss-mode . flymake-mode)
+         (json-mode . flymake-mode)
+         (json-ts-mode . flymake-mode))
   :bind
   (:map flymake-mode-map
         ("C-c 1 n" . flymake-goto-next-error)
@@ -40,5 +49,12 @@ With prefix argument, show all diagnostics."
     "l" #'flymake-show-buffer-diagnostics
     "w" #'flymake-show-project-diagnostics
     "a" #'my/flymake-toggle-eol))
+
+(with-eval-after-load 'flymake
+  (dolist (face '(flymake-error
+                  flymake-warning
+                  flymake-note))
+    (set-face-attribute face nil
+                        :foreground 'unspecified)))
 
 (provide 'init-flymake)

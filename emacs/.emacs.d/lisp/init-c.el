@@ -5,4 +5,4 @@
 
 (add-hook 'makefile-mode-hook (lambda () (setq indent-tabs-mode t)))
 
-(provide 'lang-c)
+(provide 'init-c)

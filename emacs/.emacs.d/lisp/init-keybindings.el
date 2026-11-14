@@ -94,6 +94,50 @@
    ("C-c C-x d"                        . crux-delete-file-and-buffer)
    ("<remap> <move-beginning-of-line>" . crux-move-beginning-of-line)))
 
+(use-package net-utils
+  :straight nil
+  :bind (:map mode-specific-map
+              :prefix-map net-utils-prefix-map
+              :prefix "n"
+              ("p" . ping)
+              ("i" . ifconfig)
+              ("w" . iwconfig)
+              ("n" . netstat)
+              ("a" . arp)
+              ("r" . route)
+              ("h" . nslookup-host)
+              ("d" . dig)
+              ("s" . smbclient)
+              ("t" . traceroute))
+  :config
+  ;; Set default netstat options
+  ;; so when I call it, it will list all open ports with processes
+  (setq netstat-program-options '("-tulpn")))
+
+(use-package selected
+  :hook ((text-mode prog-mode) . selected-minor-mode)
+  :init (defvar selected-org-mode-map (make-sparse-keymap))
+  :bind (:map selected-keymap
+              ("q" . selected-off)
+              ("u" . upcase-region)
+              ("d" . downcase-region)
+              ("w" . count-words-region)
+              ("m" . apply-macro-to-region-lines)
+              ;; multiple cursors
+              ("v" . mc/vertical-align-with-space)
+              ("a" . mc/mark-all-dwim)
+              ("A" . mc/mark-all-like-this)
+              ("m" . mc/mark-more-like-this-extended)
+              ("p" . mc/mark-previous-like-this)
+              ("P" . mc/unmark-previous-like-this)
+              ("S" . mc/skip-to-previous-like-this)
+              ("n" . mc/mark-next-like-this)
+              ("N" . mc/unmark-next-like-this)
+              ("s" . mc/skip-to-next-like-this)
+              ("r" . mc/edit-lines)
+              :map selected-org-mode-map
+              ("t" . org-table-convert-region)))
+
 ;;; Utilities
 
 (defun my/quick-mark (char)

@@ -21,7 +21,7 @@
 
 (setq straight-use-package-by-default t)
 
-(dolist (package '(project flymake xref))
+(dolist (package '(project flymake xref eglot org))
   (straight-use-package
    `(,package :type built-in)))
 
@@ -48,21 +48,24 @@
 (require 'init-git)
 (require 'init-ai)
 (require 'init-treesitter)
-;; (require 'init-flycheck)
 (require 'init-flymake)
 (require 'init-prog)
 (require 'init-http)
 (require 'init-markdown)
-;; (require 'init-lsp)
-;; (require 'init-lsp-booster)
 (require 'init-eglot)
-;; (require 'init-treemacs)
 (require 'init-zen-mode)
 
-(require 'lang-c)
-(require 'lang-java)
-(require 'lang-javascript)
-(require 'lang-sql)
-;;(require 'init-web)
+(require 'init-c)
+(require 'init-java)
+(require 'init-javascript)
+(require 'init-sql)
+(require 'init-web)
+
+;;; Abandoned
+;; (require 'init-flycheck)
+;; (require 'init-lsp)
+;; (require 'init-lsp-booster)
+;; (require 'init-treemacs)
 
 ;;; init.el ends here
+(put 'upcase-region 'disabled nil)

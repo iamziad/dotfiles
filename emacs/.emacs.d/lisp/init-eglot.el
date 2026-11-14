@@ -1,9 +1,10 @@
-
 ;; -*- lexical-binding: t; -*-
 
 (use-package eglot
-  :ensure t
+  :straight nil
   :commands (eglot eglot-ensure)
+  :hook ((prog-mode . eglot-ensure)
+         (sgml-mode . eglot-ensure))
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect nil)
@@ -28,7 +29,8 @@
   (define-key eglot-mode-map (kbd "C-c l q") #'eglot-shutdown))
 
 (with-eval-after-load 'eglot
-  (dolist (face '(eglot-semantic-declaration
+  (dolist (face '(eglot-highlight-symbol-face
+                  eglot-semantic-declaration
                   eglot-semantic-modifier
                   eglot-semantic-namespace
                   eglot-semantic-readonly))
@@ -38,7 +40,6 @@
                         :background 'unspecified)))
 
 ;;;; Debugging
-
 (use-package dape
   :ensure t
   :init
@@ -51,4 +52,8 @@
   :custom
   (window-sides-vertical t))
 
-(provide 'lang-eglot)
+;;;; Breadcrumbs
+(use-package breadcrumb
+  :hook ((java-mode . breadcrumb-local-mode)))
+
+(provide 'init-eglot)
