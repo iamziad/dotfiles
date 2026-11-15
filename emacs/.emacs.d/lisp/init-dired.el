@@ -1,7 +1,7 @@
 ;;; init-dired.el --- Dired -*- lexical-binding: t; -*-
 
 (use-package dired
-  :straight nil
+  :ensure nil
   :config
   (setq dired-listing-switches "-ahlv --group-directories-first"
         dired-dwim-target t
@@ -28,20 +28,24 @@
         image-dired-thumbnail-storage 'standard))
 
 (use-package async
+  :ensure t
   :init (dired-async-mode 1))
 
 (use-package dired-open-with
+  :ensure t
   :after dired
   :bind (:map dired-mode-map
               ("b" . dired-open-with)))
 
 (use-package dired-git-info
+  :ensure t
   :after dired
   :custom (dgi-auto-hide-details-p nil)
   :bind (:map dired-mode-map
               (")" . dired-git-info-mode)))
 
 (use-package dired-subtree
+  :ensure t
   :after dired
   :custom (dired-subtree-use-backgrounds nil)
   :bind (:map dired-mode-map

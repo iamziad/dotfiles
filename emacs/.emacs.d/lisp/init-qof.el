@@ -1,17 +1,20 @@
 ;; -*- lexical-binding: t; -*-
 
-(use-package avy
-  :demand t
-  :bind (("C-c j" . avy-goto-char-2)
-         ))
+;; (use-package avy
+;;   :ensure t
+;;   :demand t
+;;   :bind (("C-c j" . avy-goto-char-2)
+;;          ))
 
 (use-package smart-hungry-delete
+  :ensure t
   :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
          ([remap delete-backward-char]          . smart-hungry-delete-backward-char)
          ([remap delete-char]                   . smart-hungry-delete-forward-char))
   :init (smart-hungry-delete-add-default-hooks))
 
 (use-package whitespace-cleanup-mode
+  :ensure t
   :custom
   (whitespace-cleanup-mode-preserve-point t)
   (whitespace-cleanup-mode-only-if-initially-clean nil)
@@ -19,9 +22,11 @@
   :config (global-whitespace-cleanup-mode +1))
 
 (use-package expand-region
+  :ensure t
   :bind ("C-=" . er/expand-region))
 
 (use-package multiple-cursors
+  :ensure t
   :bind (("C->"     . mc/mark-next-like-this)
          ("C-<"     . mc/mark-previous-like-this)
          ("C-M-<"   . mc/skip-to-previous-like-this)

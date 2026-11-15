@@ -16,8 +16,12 @@
   :config
   (yas-global-mode 1))
 
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
+
 (use-package completion-preview
-  :straight nil
+  :ensure nil
   :demand t
   :config
   (setq completion-preview-minimum-symbol-length 3)
@@ -29,11 +33,12 @@
   (global-completion-preview-mode 1))
 
 (use-package vertico
+  :ensure t
   :init
   (vertico-mode))
 
 (use-package vertico-directory
-  :straight nil
+  :ensure nil
   :after vertico
   :bind (:map vertico-map
               ("M-DEL" . vertico-directory-delete-word)))
@@ -43,11 +48,13 @@
 ;;   (vertico-posframe-mode 1))
 
 (use-package orderless
+  :ensure t
   :init
   (setq completion-styles '(orderless basic)
         completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package marginalia
+  :ensure t
   :init (marginalia-mode 1))
 
 (use-package corfu
@@ -81,7 +88,7 @@
 
 (use-package corfu-popupinfo
   :after corfu
-  :straight nil
+  :ensure nil
   :custom
   (corfu-popupinfo-delay '(0.25 . 0.1))
   (corfu-popupinfo-hide nil)
@@ -89,7 +96,7 @@
   (corfu-popupinfo-mode 1))
 
 (use-package dabbrev
-  :straight nil
+  :ensure nil
   :bind (("M-/" . dabbrev-completion)
          ("C-M-/" . dabbrev-expand))
   :custom
@@ -105,6 +112,7 @@
   (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode))
 
 (use-package cape
+  :ensure t
   :init
   (add-hook 'prog-mode-hook
             (defun my/corfu-add-cape-file-h ()

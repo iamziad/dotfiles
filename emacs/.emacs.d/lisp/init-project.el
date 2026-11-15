@@ -7,7 +7,7 @@
 ;;;; Project.el ------------------------------------------------------------------
 
 (use-package project
-  :straight nil
+  :ensure nil
 
   :custom
   (project-vc-extra-root-markers

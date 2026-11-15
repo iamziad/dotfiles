@@ -1,6 +1,7 @@
 ;;; init-consult.el -*- lexical-binding: t; -*-
 
 (use-package consult
+  :ensure t
   :bind (("C-x b"   . consult-buffer)
          ("C-x 4 b" . consult-buffer-other-window)
          ("C-x p b" . consult-project-buffer)

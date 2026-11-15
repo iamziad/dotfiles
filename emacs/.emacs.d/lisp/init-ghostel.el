@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package ghostel
+  :ensure t
   :hook
   (after-init . ghostel-status-indicator-mode)
   :preface
@@ -17,11 +18,12 @@ Like normal Emacs `C-k': kill to end of line and put it in the kill ring."
          ("M-p" . (lambda () (interactive) (ghostel-send-key "p" "ctrl")))
          ("M-n" . (lambda () (interactive) (ghostel-send-key "n" "ctrl"))))
   :config
+  (ghostel-compile-global-mode 1)
   (add-to-list 'ghostel-eval-cmds
                '("magit-status-setup-buffer" magit-status-setup-buffer)))
 
 (use-package ghostel-project
-  :straight nil
+  :ensure nil
   :bind (:map project-prefix-map
               ("m" . ghostel-project)
               ("M" . ghostel-project-list-buffers))
@@ -31,11 +33,11 @@ Like normal Emacs `C-k': kill to end of line and put it in the kill ring."
                '(ghostel-project-list-buffers "Ghostel buffers") t))
 
 (use-package ghostel-eshell
-  :straight nil
+  :ensure nil
   :hook (eshell-load . ghostel-eshell-visual-command-mode))
 
-(use-package ghostel-compile
-  :straight nil
-  :hook (after-init . ghostel-compile-global-mode))
+;; (use-package ghostel-compile
+;;   :ensure nil
+;;   :hook (after-init . ghostel-compile-global-mode))
 
 (provide 'init-ghostel)

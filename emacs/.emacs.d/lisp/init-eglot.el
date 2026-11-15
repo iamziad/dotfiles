@@ -1,10 +1,26 @@
 ;; -*- lexical-binding: t; -*-
 
+(defvar my/eglot-ensure
+  '(java-mode
+    c-mode
+    js-ts-mode
+    typescript-ts-mode
+    tsx-ts-mode
+    css-ts-mode
+    mhtml-mode
+    html-mode
+    web-mode
+    html-ts-mode
+    sgml-mode
+    css-mode
+    json-mode))
+
 (use-package eglot
-  :straight nil
+  :ensure nil
   :commands (eglot eglot-ensure)
-  :hook ((prog-mode . eglot-ensure)
-         (sgml-mode . eglot-ensure))
+  :init
+  (dolist (mode my/eglot-ensure)
+    (add-hook (intern (format "%s-hook" mode)) #'eglot-ensure))
   :custom
   (eglot-autoshutdown t)
   (eglot-sync-connect nil)
@@ -48,12 +64,13 @@
   (dape-buffer-window-arrangement 'right))
 
 (use-package emacs
-  :straight nil
+  :ensure nil
   :custom
   (window-sides-vertical t))
 
-;;;; Breadcrumbs
+;;;; Breadcrumb
 (use-package breadcrumb
+  :ensure t
   :hook ((java-mode . breadcrumb-local-mode)))
 
 (provide 'init-eglot)

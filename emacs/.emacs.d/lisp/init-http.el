@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package verb
+  :ensure t
   :config
   (setq verb-json-use-mode 'json-ts-mode)
   (with-eval-after-load 'org

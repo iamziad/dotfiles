@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package java-kit
-  :straight (:host github :repo "LuciusChen/java-kit")
+  :ensure (:host github :repo "LuciusChen/java-kit")
   :config
   (setopt java-kit-jdtls-jvm-arguments
           '("-Xmx4G" "-XX:+UseStringDeduplication")
@@ -10,4 +10,3 @@
   :hook ((java-mode java-ts-mode) . java-kit-mode))
 
 (provide 'init-java)
-

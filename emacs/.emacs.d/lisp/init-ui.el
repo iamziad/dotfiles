@@ -58,7 +58,7 @@
 ;;;; Themes
 
 (use-package doom-themes
-  :defer t
+  :ensure t
   :custom
   (doom-themes-enable-italic nil)
   (doom-themes-enable-bold nil)
@@ -74,7 +74,7 @@
  '(flycheck-info ((t (:background unspecified)))))
 
 (use-package auto-dark
-  :straight t
+  :ensure t
   :diminish auto-dark-mode
   :custom
   (auto-dark-themes '((doom-gruvbox) (modus-operandi)))
@@ -86,6 +86,7 @@
 (fringe-mode '(8 . 0))
 
 (use-package vi-tilde-fringe
+  :ensure t
   :init (global-vi-tilde-fringe-mode 1)
   :diminish vi-tilde-fringe-mode)
 

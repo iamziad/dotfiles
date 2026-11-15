@@ -1,6 +1,0 @@
-{
-  "default": "javascript",
-  "diagnostics": ["javascript", "vscode-eslint-language-server"],
-  "code_action": ["javascript", "vscode-eslint-language-server"],
-  "execute_command": ["javascript", "vscode-eslint-language-server"]
-}

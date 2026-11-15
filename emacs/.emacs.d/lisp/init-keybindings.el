@@ -83,6 +83,7 @@
 ;;   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (use-package crux
+  :ensure t
   :bind
   (("C-j"                              . crux-top-join-line)
    ("M-C-m"                            . crux-smart-open-line)
@@ -95,7 +96,7 @@
    ("<remap> <move-beginning-of-line>" . crux-move-beginning-of-line)))
 
 (use-package net-utils
-  :straight nil
+  :ensure nil
   :bind (:map mode-specific-map
               :prefix-map net-utils-prefix-map
               :prefix "n"
@@ -115,6 +116,9 @@
   (setq netstat-program-options '("-tulpn")))
 
 (use-package selected
+  :ensure t
+  :diminish selected-global-mode
+  :diminish selected-minor-mode
   :hook ((text-mode prog-mode) . selected-minor-mode)
   :init (defvar selected-org-mode-map (make-sparse-keymap))
   :bind (:map selected-keymap

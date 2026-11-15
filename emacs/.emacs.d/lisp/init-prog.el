@@ -7,7 +7,7 @@
               auto-mode-alist))
 
 (use-package whitespace
-  :straight nil
+  :ensure nil
   :hook (prog-mode . whitespace-mode)
   :custom
   (whitespace-style '(face trailing tabs tab-mark))
@@ -16,7 +16,7 @@
      (tab-mark 9 [8594 9] [92 9]))))
 
 (use-package hideshow
-  :straight nil
+  :ensure nil
   :hook (prog-mode . hs-minor-mode)
   :diminish hs-minor-mode
   :config
@@ -29,6 +29,8 @@
   (keymap-global-set "C-c t f" #'toggle-fold))
 
 (use-package symbol-overlay
+  :ensure t
+  :diminish symbol-overlay-mode
   :hook (prog-mode . symbol-overlay-mode)
 
   :custom
@@ -47,6 +49,7 @@
         ("C-c C-s p" . symbol-overlay-jump-prev)))
 
 (use-package syntax-subword
+  :ensure t
   :custom (syntax-subword-skip-spaces t)
   :diminish syntax-subword-mode
   ;; :hook (prog-mode . syntax-subword-mode)
@@ -61,7 +64,8 @@
   :ensure t
   :bind ("C-c r" . quickrun))
 
-(use-package devdocs-browser)
+(use-package devdocs-browser
+  :ensure t)
 
 (use-package apheleia
   :ensure t

@@ -45,7 +45,7 @@
         ("C-c C-e t" . web-mode-element-transpose)))
 
 (use-package emmet-mode
-  :straight t
+  :ensure t
   :hook ((html-ts-mode mhtml-mode html-mode sgml-mode
                        css-ts-mode css-mode
                        js-jsx-mode tsx-ts-mode web-mode) . emmet-mode)
@@ -57,12 +57,13 @@
   (add-hook 'js-ts-mode-hook  (lambda () (setq-local emmet-expand-jsx-className? t))))
 
 (use-package auto-rename-tag
-  :straight t
+  :ensure t
   :diminish auto-rename-tag-mode
   :hook ((html-ts-mode mhtml-mode html-mode
                        js-ts-mode tsx-ts-mode web-mode) . auto-rename-tag-mode))
 
 (use-package rainbow-mode
+  :ensure t
   :hook ((css-mode css-ts-mode scss-mode web-mode html-ts-mode) . rainbow-mode))
 
 (use-package sgml-mode
@@ -71,7 +72,11 @@
 
 ;;;; LSP - TypeScript, JavaScript, CSS, Astro, Vue, and Svelte -------------------------------------------
 
+(use-package twind
+  :ensure (:host github :repo "akirak/twind.el"))
+
 (use-package eglot-typescript-preset
+  :ensure t
   :after eglot
   :custom
   (eglot-typescript-preset-lsp-server 'rass)

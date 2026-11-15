@@ -129,6 +129,10 @@
 
 (recentf-mode 1)
 
+(add-hook 'recentf-mode-hook
+          (lambda ()
+            (run-with-idle-timer 60 t #'recentf-save-list)))
+
 (setq history-length 500
       savehist-autosave-interval 30
       savehist-additional-variables
@@ -156,6 +160,11 @@
       diff-font-lock-prettify t
       grep-highlight-matches 'auto)
 
+(use-package zone
+  :ensure nil
+  :config
+  (zone-when-idle 300))
+
 (use-package diminish
   :ensure t
   :demand t
@@ -164,6 +173,8 @@
     (diminish 'which-key-mode))
   (with-eval-after-load 'eldoc
     (diminish 'eldoc-mode))
+  (with-eval-after-load 'whitespace
+    (diminish 'whitespace-mode))
   (with-eval-after-load 'subword
     (diminish 'subword-mode)))
 

@@ -18,7 +18,7 @@
   :init
   (setq lsp-keymap-prefix "C-c l"
         lsp-completion-provider :none
-        lsp-diagnostics-provider :flycheck
+        lsp-diagnostics-provider :flymake
         lsp-idle-delay 0.3
         lsp-enable-file-watchers t
         lsp-file-watch-threshold 10000
@@ -71,7 +71,7 @@
     (add-to-list 'lsp-file-watch-ignored-directories re)))
 
 (use-package lsp-completion
-  :straight nil
+  :ensure nil
   :hook (lsp-mode . lsp-completion-mode))
 
 ;;; lsp-ui --------------------------------------------------------------------

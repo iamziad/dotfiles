@@ -15,6 +15,7 @@
   (message "jinx disabled: install enchant and gcc (or a prebuilt jinx-mod)"))
 
 (use-package jinx
+  :ensure t
   :if (my/jinx-available-p)
   :diminish jinx-mode
   :hook (emacs-startup . global-jinx-mode)

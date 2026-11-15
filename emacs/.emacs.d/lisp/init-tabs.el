@@ -9,6 +9,7 @@
 (keymap-global-set "C-x t o" #'tab-close-other)
 
 (use-package vim-tab-bar
+  :ensure t
   :init
   (vim-tab-bar-mode 1)
   :config

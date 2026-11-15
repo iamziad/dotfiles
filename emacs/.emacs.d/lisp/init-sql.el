@@ -1,7 +1,7 @@
 ;;; init-sql.el --- SQL configuration -*- lexical-binding: t; -*-
 
 (use-package sqlite-mode
-  :straight nil
+  :ensure nil
   :defer
   :config
   (add-to-list 'display-buffer-alist
@@ -14,9 +14,11 @@
               ("p" . previous-line)))
 
 (use-package sql-indent
+  :ensure t
   :hook (sql-mode . sqlind-minor-mode))
 
 (use-package sqlup-mode
+  :ensure t
   :hook ((sql-mode . sqlup-mode)
          (sql-interactive-mode . sqlup-mode)))
 

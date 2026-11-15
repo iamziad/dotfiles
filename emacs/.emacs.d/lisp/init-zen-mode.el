@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 (use-package olivetti
+  :ensure t
   :hook ((eww-mode . olivetti-mode)
          (olivetti-mode . mod-olivetti--toggle))
   :bind ("C-c v o" . olivetti-mode)
