@@ -8,12 +8,13 @@
     tsx-ts-mode
     css-ts-mode
     mhtml-mode
+    mhtml-ts-mode
     html-mode
     web-mode
     html-ts-mode
     sgml-mode
     css-mode
-    json-mode))
+    json-ts-mode))
 
 (use-package eglot
   :ensure nil
@@ -38,39 +39,63 @@
   (add-hook 'eglot-managed-mode-hook
             #'my/eglot-enable-inlay-hints)
 
+  (defvar-local my/eglot-hints-refresh-timer nil)
+
+  (defun my/eglot-schedule-hints-refresh (&rest _)
+    "Force jit-lock to re-request inlay hints shortly after edits settle."
+    (when (bound-and-true-p eglot-inlay-hints-mode)
+      (when (timerp my/eglot-hints-refresh-timer)
+        (cancel-timer my/eglot-hints-refresh-timer))
+      (setq my/eglot-hints-refresh-timer
+            (run-with-idle-timer
+             (+ eglot-send-changes-idle-time 0.5)
+             nil
+             (lambda (buf)
+               (when (buffer-live-p buf)
+                 (with-current-buffer buf
+                   (jit-lock-refontify))))
+             (current-buffer)))))
+
+  (defun my/eglot-setup-hints-refresh ()
+    "Hook a local after-change-functions entry to refresh inlay hints."
+    (add-hook 'after-change-functions
+              #'my/eglot-schedule-hints-refresh nil t))
+
+  (add-hook 'eglot-managed-mode-hook #'my/eglot-setup-hints-refresh)
+
   (define-key eglot-mode-map (kbd "C-c l a") #'eglot-code-actions)
   (define-key eglot-mode-map (kbd "C-c l r") #'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c l f") #'eglot-format-buffer)
   (define-key eglot-mode-map (kbd "C-c l o") #'eglot-code-actions-organize-imports)
   (define-key eglot-mode-map (kbd "C-c l q") #'eglot-shutdown))
 
+(defun my/eglot-organize-imports ()
+  "Ask the current language server to organize imports.
+Emacs 31 removed `eglot-code-actions-organize-imports', so use the standard
+code-action entry point with the `source.organizeImports' kind."
+  (interactive)
+  (eglot-code-actions (point) nil "source.organizeImports"))
+
 (with-eval-after-load 'eglot
   (dolist (face '(eglot-highlight-symbol-face
                   eglot-semantic-declaration
                   eglot-semantic-modifier
                   eglot-semantic-namespace
+                  eglot-semantic-static
                   eglot-semantic-readonly))
     (set-face-attribute face nil
                         :inherit 'unspecified
                         :foreground 'unspecified
                         :background 'unspecified)))
 
-;;;; Debugging
-(use-package dape
+;;;; Documentation
+(use-package eldoc-box
   :ensure t
-  :init
-  (setq dape-key-prefix "\C-cd")
+  :commands (eldoc-box-help-at-point)
   :custom
-  (dape-buffer-window-arrangement 'right))
-
-(use-package emacs
-  :ensure nil
-  :custom
-  (window-sides-vertical t))
-
-;;;; Breadcrumb
-(use-package breadcrumb
-  :ensure t
-  :hook ((java-mode . breadcrumb-local-mode)))
+  (eldoc-box-max-pixel-width 600)
+  (eldoc-box-max-pixel-height 400)
+  :bind
+  ("C-c l h" . eldoc-box-help-at-point))
 
 (provide 'init-eglot)

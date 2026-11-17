@@ -1,4 +1,6 @@
-;; -*- lexical-binding: t; -*-
+;;; init-org.el --- Org mode, capture, and Anki -*- lexical-binding: t; -*-
+
+(require 'init-keybindings)
 
 (setq org-directory "~/Documents/org"
       org-agenda-files (list org-directory)
@@ -18,18 +20,19 @@
       org-src-tab-acts-natively t
       org-src-fontify-natively t
       org-src-preserve-indentation t
-      python-shell-completion-native-enable nil
       ;; Images and LaTeX
       org-preview-latex-default-process 'dvisvgm
       org-startup-with-latex-preview t
       org-image-actual-width nil
       org-image-max-width 450)
 
-(add-hook 'org-mode-hook
-          (lambda ()
-            (visual-line-mode 1)
-            (electric-pair-local-mode -1)
-            (org-indent-mode 1)))
+(defun my/org-mode-setup ()
+  "Configure the current Org buffer."
+  (visual-line-mode 1)
+  (electric-pair-local-mode -1)
+  (org-indent-mode 1))
+
+(add-hook 'org-mode-hook #'my/org-mode-setup)
 
 (add-to-list 'display-buffer-alist
              '("\\*Org Select\\*\\|CAPTURE"
@@ -62,13 +65,36 @@
   (org-download-heading-lvl nil)
   (org-download-image-dir "./images"))
 
-;;;; Literate Programming
+(use-package iscroll
+  :ensure t
+  :hook ((text-mode nov-mode pdf-tools-mode) . iscroll-mode))
+
+(use-package anki-editor
+  :ensure t
+  :after org
+  :custom
+  (anki-editor-create-decks t))
+
+;;; Literate programming ------------------------------------------------------
 
 (with-eval-after-load 'org
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((emacs-lisp . t) (C . t) (shell . t) (java . t) (js . t) (sql . t) (sqlite . t)))
+   '((emacs-lisp . t)
+     (C . t)
+     (shell . t)
+     (java . t)
+     (js . t)
+     (sql . t)
+     (sqlite . t)))
   (keymap-unset org-mode-map "C-c C-k")
   (require 'org-tempo))
 
+;;; Leader bindings -----------------------------------------------------------
+
+(keymap-set my/leader-map "c" #'org-capture)
+(keymap-set my/leader-map "t" #'org-babel-tangle)
+(keymap-set my/leader-map "s" #'org-download-clipboard)
+
 (provide 'init-org)
+;;; init-org.el ends here

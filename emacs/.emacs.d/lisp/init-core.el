@@ -1,10 +1,13 @@
-;;; init-defaults.el --- Defaults and built-in modes -*- lexical-binding: t; -*-
+;;; init-core.el --- Core and built-in modes -*- lexical-binding: t; -*-
 
 (require 'subr-x)
 
 ;;; State directories ---------------------------------------------------------
 
-(use-package no-littering :ensure t)
+(use-package no-littering
+  :ensure t
+  :demand t)
+(elpaca-wait)
 
 ;;; External tools ------------------------------------------------------------
 
@@ -19,13 +22,24 @@
 
 ;;; Garbage collection --------------------------------------------------------
 
+(use-package diminish
+  :ensure t
+  :demand t
+  :config
+  (with-eval-after-load 'which-key (diminish 'which-key-mode))
+  (with-eval-after-load 'eldoc (diminish 'eldoc-mode))
+  (with-eval-after-load 'whitespace (diminish 'whitespace-mode))
+  (with-eval-after-load 'abbrev (diminish 'abbrev-mode))
+  (with-eval-after-load 'subword (diminish 'subword-mode)))
+
 (use-package gcmh
   :ensure t
   :diminish gcmh-mode
   :init
   (setq gcmh-idle-delay 5
-        gcmh-high-cons-threshold (* 100 1024 1024))
-  :hook (window-setup . gcmh-mode))
+        gcmh-high-cons-threshold (* 100 1024 1024)
+        gc-cons-percentage 0.1)
+  :hook (emacs-startup . gcmh-mode))
 
 ;;; Files and backups ---------------------------------------------------------
 
@@ -62,7 +76,6 @@
       vc-follow-symlinks t
       warning-minimum-level :error
       initial-major-mode 'fundamental-mode
-      column-number-indicator-zero-based nil
       read-process-output-max (* 1024 1024))
 
 ;;; Editing defaults ----------------------------------------------------------
@@ -77,9 +90,6 @@
               word-wrap t
               cursor-in-non-selected-windows nil
               case-fold-search t
-              completion-ignore-case t
-              read-file-name-completion-ignore-case t
-              read-buffer-completion-ignore-case t
               tab-always-indent 'complete
               indicate-empty-lines nil
               default-input-method "arabic"
@@ -95,6 +105,7 @@
 
 ;;; Built-in modes ------------------------------------------------------------
 
+(setq global-auto-revert-non-file-buffers t)
 (delete-selection-mode 1)
 (electric-pair-mode 1)
 (show-paren-mode 1)
@@ -103,9 +114,9 @@
 (column-number-mode 1)
 (which-key-mode 1)
 (global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t)
 
-;; Search behavior
+;;; Search behaviour ----------------------------------------------------------
+
 (setq isearch-lazy-count t
       lazy-count-prefix-format nil
       lazy-count-suffix-format " (%s/%s)"
@@ -114,24 +125,19 @@
       isearch-wrap-pause 'no-ding
       isearch-repeat-on-direction-change t)
 
-;;; Hooks -----------------------------------------
-
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-
 ;;; Recent files, history and places -----------------------------------------
 
-(setq recentf-max-saved-items 500
-      recentf-auto-cleanup 'never
-      recentf-exclude
-      `("/tmp/" "/ssh:" "/sudo:"
-        "\\`\\*"
-        "\\.\\(?:zip\\|tar\\|gz\\|xz\\|zst\\)\\'"))
-
-(recentf-mode 1)
-
-(add-hook 'recentf-mode-hook
-          (lambda ()
-            (run-with-idle-timer 60 t #'recentf-save-list)))
+(use-package recentf
+  :defer 2
+  :config
+  (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (setq recentf-max-saved-items 500
+        recentf-max-menu-items 15
+        ;; disable recentf-cleanup on Emacs start, because it can cause
+        ;; problems with remote files
+        recentf-auto-cleanup 'never)
+  (recentf-mode))
 
 (setq history-length 500
       savehist-autosave-interval 30
@@ -160,23 +166,5 @@
       diff-font-lock-prettify t
       grep-highlight-matches 'auto)
 
-(use-package zone
-  :ensure nil
-  :config
-  (zone-when-idle 300))
-
-(use-package diminish
-  :ensure t
-  :demand t
-  :config
-  (with-eval-after-load 'which-key
-    (diminish 'which-key-mode))
-  (with-eval-after-load 'eldoc
-    (diminish 'eldoc-mode))
-  (with-eval-after-load 'whitespace
-    (diminish 'whitespace-mode))
-  (with-eval-after-load 'subword
-    (diminish 'subword-mode)))
-
-(provide 'init-defaults)
-;;; init-defaults.el ends here
+(provide 'init-core)
+;;; init-core.el ends here

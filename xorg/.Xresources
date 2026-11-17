@@ -1,7 +1,7 @@
 Xcursor.theme: Adwaita
 Xcursor.size: 24
 
-xterm*faceName: JetBrainsMono Nerd Font:size=11:antialias=true
+xterm*faceName: JetBrains Mono:size=11:antialias=true
 
 xterm*background: #282828
 xterm*foreground: #ebdbb2

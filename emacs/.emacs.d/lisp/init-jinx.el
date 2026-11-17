@@ -1,12 +1,9 @@
-;;; init-jinx.el --- Spell checking with jinx -*- lexical-binding: t; -*-
-
-;; sudo pacman -S enchant hunspell hunspell-en_us
+;;; init-jinx.el --- Spell checking with Jinx -*- lexical-binding: t; -*-
 
 (defun my/jinx-available-p ()
-  "Return non-nil when jinx's external requirements are present."
+  "Return non-nil when Jinx's external requirements are present."
   (and (executable-find "enchant-2")
-       ;; A C compiler is needed to build jinx-mod, unless it is
-       ;; already built.
+       ;; A C compiler is needed to build jinx-mod, unless it is built.
        (or (executable-find "gcc")
            (executable-find "cc")
            (locate-library "jinx-mod"))))
@@ -19,34 +16,24 @@
   :if (my/jinx-available-p)
   :diminish jinx-mode
   :hook (emacs-startup . global-jinx-mode)
-  :bind (("M-$" . jinx-correct)
+  :bind (("M-$"   . jinx-correct)
          ("C-M-$" . jinx-languages))
   :custom
-  ;; English only
-  (jinx-languages "en_US")
+  (jinx-languages "en_US ar")
   :config
-  ;; In programming modes: check only comments, docstrings and strings
-  (add-to-list 'jinx-include-faces
-               '(prog-mode font-lock-comment-face
-                           font-lock-comment-delimiter-face
-                           font-lock-doc-face
-                           font-lock-string-face))
-
-  ;; In git commit buffers (magit): skip the "# ..." comment block
-  ;; (file lists, branch names, etc.) and only check the message itself
+  ;; In Git commit buffers, skip the comment block (file lists, branch names,
+  ;; etc.) and only check the message itself.  The default value already
+  ;; excludes several of these faces; this adds the missing comment faces.
   (add-to-list 'jinx-exclude-faces
                '(git-commit-mode font-lock-comment-face
                                  font-lock-comment-delimiter-face
                                  git-commit-comment-heading
-                                 git-commit-comment-file
-                                 git-commit-comment-branch-local
-                                 git-commit-comment-branch-remote
-                                 git-commit-comment-detached
-                                 git-commit-comment-action))
+                                 git-commit-comment-detached))
 
-  ;; Skip code-looking identifiers inside comments/strings/commit messages
+  ;; Skip code-looking identifiers inside comments, strings, and messages.
+  ;; Jinx appends matching entries, so the defaults remain active.
   (add-to-list 'jinx-exclude-regexps
-               '(t "\\<[[:alnum:]]+_[[:alnum:]_]+\\>"         ; snake_case
+               '(t "\\<[[:alnum:]]+_[[:alnum:]_]+\\>"          ; snake_case
                    "\\<[[:lower:]]+[[:upper:]][[:alnum:]]*\\>"))) ; camelCase
 
 (provide 'init-jinx)

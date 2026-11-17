@@ -1,7 +1,28 @@
 ;;; init-consult.el -*- lexical-binding: t; -*-
 
+(defun my/search-project ()
+  "Search the current project for the symbol at point."
+  (interactive)
+  (let ((project (project-current t)))
+    (unless project
+      (user-error "No project found"))
+    (consult-ripgrep (project-root project)
+                     (thing-at-point 'symbol t))))
+
+(defvar-keymap my/search-map
+  :doc "Search commands (C-c s)."
+  "s" #'consult-line
+  "r" #'my/search-project
+  "g" #'consult-grep
+  "o" #'consult-outline
+  "i" #'consult-imenu
+  "m" #'consult-mark)
+
+(keymap-global-set "C-c s" my/search-map)
+
 (use-package consult
   :ensure t
+  :demand t
   :bind (("C-x b"   . consult-buffer)
          ("C-x 4 b" . consult-buffer-other-window)
          ("C-x p b" . consult-project-buffer)

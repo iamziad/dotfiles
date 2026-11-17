@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t; -*-
+;;; init-elpaca.el --- Elpaca package manager bootstrap -*- lexical-binding: t; -*-
 
 (defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -39,16 +39,16 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-;; built-in
+;; Built-in packages must never be installed from a package archive.
 (dolist (package '(project flymake xref eglot org eldoc jsonrpc))
   (add-to-list 'elpaca-ignored-dependencies package))
 
-
-;; use-package integration
+;; use-package integration.  Packages are installed on demand unless a
+;; declaration explicitly uses :ensure nil.
 (elpaca elpaca-use-package
-        (elpaca-use-package-mode)
-        (setq elpaca-use-package-by-default t))
+  (elpaca-use-package-mode)
+  (setq elpaca-use-package-by-default t))
 (elpaca-wait)
 
-
 (provide 'init-elpaca)
+;;; init-elpaca.el ends here

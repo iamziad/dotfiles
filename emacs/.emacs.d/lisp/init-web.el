@@ -1,5 +1,10 @@
 ;;; init-web.el --- Web development support -*- lexical-binding: t; -*-
 
+;;;; Treesitter
+
+(add-to-list 'auto-mode-alist '("\\.css\\'"   . css-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.json\\'"  . json-ts-mode))
+
 ;;;; Web basics -------------------------------------------
 
 (use-package web-mode
@@ -70,10 +75,7 @@
   :ensure nil
   :hook ((html-mode mhtml-mode web-mode) . sgml-electric-tag-pair-mode))
 
-;;;; LSP - TypeScript, JavaScript, CSS, Astro, Vue, and Svelte -------------------------------------------
-
-(use-package twind
-  :ensure (:host github :repo "akirak/twind.el"))
+;;;; LSP - TypeScript, JavaScript, CSS, Astro, Vue, and Svelte ---------------------------------------
 
 (use-package eglot-typescript-preset
   :ensure t
@@ -93,6 +95,9 @@
                '((mhtml-mode html-mode web-mode html-ts-mode sgml-mode)
                  "rass" "--" "vscode-html-language-server" "--stdio"
                  "--" "tailwindcss-language-server" "--stdio")))
+
+(use-package twind
+  :ensure (:host github :repo "akirak/twind.el"))
 
 (provide 'init-web)
 ;;; init-web.el ends here

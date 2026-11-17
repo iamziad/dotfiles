@@ -1,4 +1,4 @@
-;;; init-dired.el --- Dired -*- lexical-binding: t; -*-
+;;; init-dired.el --- Dired configuration -*- lexical-binding: t; -*-
 
 (use-package dired
   :ensure nil
@@ -11,8 +11,12 @@
         dired-movement-style 'bounded-files
         dired-deletion-confirmer 'y-or-n-p
         dired-recursive-deletes 'top
-        dired-recursive-copies 'always
-        dired-omit-verbose nil
+        dired-recursive-copies 'always))
+
+(use-package dired-x
+  :ensure nil
+  :config
+  (setq dired-omit-verbose nil
         dired-omit-files
         (concat "\\`[.]\\'"
                 "\\|\\(?:\\.js\\)?\\.meta\\'"
@@ -23,13 +27,25 @@
                 "\\|^__pycache__\\'"
                 "\\|^\\.project\\(?:ile\\)?\\'"
                 "\\|^flycheck_.*"
-                "\\|^flymake_.*")
-        image-dired-thumb-size 250
-        image-dired-thumbnail-storage 'standard))
+                "\\|^flymake_.*"))
+  (add-hook 'dired-mode-hook #'dired-omit-mode))
+
+(use-package image-dired
+  :ensure nil
+  :custom
+  (image-dired-thumb-size 250)
+  (image-dired-thumbnail-storage 'standard))
 
 (use-package async
   :ensure t
-  :init (dired-async-mode 1))
+  :config
+  (dired-async-mode 1))
+
+(use-package dired-du
+  :ensure t
+  :after dired
+  :config
+  (setq dired-du-size-format t))
 
 (use-package dired-open-with
   :ensure t
@@ -40,14 +56,16 @@
 (use-package dired-git-info
   :ensure t
   :after dired
-  :custom (dgi-auto-hide-details-p nil)
+  :custom
+  (dgi-auto-hide-details-p nil)
   :bind (:map dired-mode-map
               (")" . dired-git-info-mode)))
 
 (use-package dired-subtree
   :ensure t
   :after dired
-  :custom (dired-subtree-use-backgrounds nil)
+  :custom
+  (dired-subtree-use-backgrounds nil)
   :bind (:map dired-mode-map
               ("TAB" . dired-subtree-toggle)))
 

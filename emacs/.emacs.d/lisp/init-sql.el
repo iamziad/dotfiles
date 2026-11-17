@@ -2,16 +2,15 @@
 
 (use-package sqlite-mode
   :ensure nil
-  :defer
+  :defer t
   :config
   (add-to-list 'display-buffer-alist
                '("\\*SQLITE .*\\*"
                  (display-buffer-reuse-window
                   display-buffer-below-selected)
                  (window-height . 0.45)))
-  :bind (:map sqlite-mode-map
-              ("n" . next-line)
-              ("p" . previous-line)))
+  (keymap-set sqlite-mode-map "n" #'next-line)
+  (keymap-set sqlite-mode-map "p" #'previous-line))
 
 (use-package sql-indent
   :ensure t
@@ -25,15 +24,13 @@
 (with-eval-after-load 'sql
   (setq sql-input-ring-file-name
         (locate-user-emacs-file ".sqli_history"))
-
   (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
-;; SQL formatting
 (use-package sqlformat
   :ensure t
   :after sql
-  :bind (:map sql-mode-map
-              ("C-c C-q f" . sqlformat)))
+  :config
+  (keymap-set sql-mode-map "C-c C-q f" #'sqlformat))
 
 (provide 'init-sql)
 ;;; init-sql.el ends here
