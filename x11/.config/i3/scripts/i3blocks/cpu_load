@@ -1,0 +1,15 @@
+#!/bin/sh
+
+LOAD=$(awk '{print $1}' /proc/loadavg)
+
+CPU=$(mpstat 1 1 | awk '/Average:/ {print 100 - $NF}')
+
+printf "%.1f (%.0f%%)\n" "$LOAD" "$CPU"
+
+if [ "$CPU" -gt 80 ]; then
+    echo "#ff0000"
+elif [ "$CPU" -gt 50 ]; then
+    echo "#fffc00"
+else
+    echo "#ebdbb2"
+fi

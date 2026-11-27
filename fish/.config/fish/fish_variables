@@ -1,0 +1,5 @@
+# This file contains fish universal variable definitions.
+# VERSION: 3.0
+SETUVAR --export JAVA_HOME:/usr/lib/jvm/java\x2d25\x2dopenjdk\x2damd64
+SETUVAR __fish_initialized:4300
+SETUVAR fish_user_paths:/home/ziad/front/node_modules/\x2ebin\x1e/usr/lib/jvm/default/bin\x1e/home/ziad/Projects/ztm\x2dnodejs/nasa/client/node_modules/\x2ebin\x1e/home/ziad/Projects/ztm\x2dnodejs/nasa/server/node_modules/\x2ebin\x1e/usr/lib/jvm/java\x2d25\x2dopenjdk\x2damd64/bin\x1e/home/ziad/Projects/ztm\x2dnodejs/express\x2dfirst\x2dapp/node_modules/\x2ebin\x1e/home/ziad/\x2eopencode/bin\x1e/tmp/opencode/tsproj/node_modules/\x2ebin\x1e/tmp/node_modules/\x2ebin\x1e/mnt/7E6F\x2dFB0D/natours/node_modules/\x2ebin\x1e/home/ziad/Projects/natours/node_modules/\x2ebin\x1e/usr/lib/jvm/java\x2d25\x2dopenjdk/bin\x1e/home/ziad/\x2elocal/bin
